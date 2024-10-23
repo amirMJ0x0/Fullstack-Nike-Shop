@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Nav from "./components/Nav";
 import {
   CustomerReviews,
   Hero,
@@ -9,11 +8,11 @@ import {
   Subscribe,
   SuperQuality,
   Footer,
-} from "./sections";
+} from "../sections";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
-function App() {
+const HomePage = () => {
   useEffect(() => {
     Aos.init({ once: true, duration: 1000 });
   }, []);
@@ -46,6 +45,6 @@ function App() {
       </section>
     </main>
   );
-}
+};
 
-export default App;
+export default HomePage;

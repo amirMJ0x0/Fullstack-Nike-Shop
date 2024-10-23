@@ -1,17 +1,43 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import ProductsList from "../components/ProductsList";
-import ProductPage from "../components/ProductPage";
-import MainLayout from "../layout/MainLayout";
+import { lazy, Suspense } from "react";
+const MainLayout = lazy(() => import("../layout/MainLayout"));
+const ProductPage = lazy(() => import("../pages/ProductPage"));
+const ProductsList = lazy(() => import("../components/ProductsList"));
+const HomePage = lazy(() => import("../pages/HomePage"));
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <Suspense>
+        <MainLayout />
+      </Suspense>
+    ),
     errorElement: <div>error 404</div>,
     children: [
-      { path: "/", element: <App /> },
-      { path: "/products", element: <ProductsList /> },
-      { path: "/product:productId", element: <ProductPage /> },
+      {
+        path: "/",
+        element: (
+          <Suspense>
+            <HomePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/products",
+        element: (
+          <Suspense>
+            <ProductsList />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/product:productId",
+        element: (
+          <Suspense>
+            <ProductPage />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);

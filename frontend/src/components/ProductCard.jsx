@@ -1,12 +1,14 @@
 import { Card, CardBody, Image, Stack, Heading, Text } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
 
-const ProductCard = ({ imgURL, name, price }) => {
+const ProductCard = ({ imageUrl, name, price, description }) => {
+  console.log(imageUrl, name, price);
+
   return (
-    <Card maxW="sm" data-aos="fade-up" shadow="none">
+    <Card maxW="sm" data-aos="fade-up" shadow="base">
       <CardBody>
         <Image
-          src={imgURL}
+          src={imageUrl}
           alt="Green double couch with wooden legs"
           borderRadius="lg"
           position="relative"
@@ -18,7 +20,7 @@ const ProductCard = ({ imgURL, name, price }) => {
           <Heading size="md">{name}</Heading>
 
           <Text color="coral" fontSize="2xl" fontWeight="semibold">
-            {price}
+            {price}$
           </Text>
         </Stack>
       </CardBody>
