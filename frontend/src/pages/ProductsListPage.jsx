@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "../../services/productServices";
 import { CgSpinner } from "react-icons/cg";
 import { Divider, Select } from "@chakra-ui/react";
-import ProductCard from "./ProductCard";
+import ProductCard from "../components/ProductCard";
 
-const ProductsList = () => {
+const ProductsListPage = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: async () => getAllProducts(),
@@ -55,4 +55,4 @@ const ProductsList = () => {
   );
 };
 
-export default ProductsList;
+export default ProductsListPage;
