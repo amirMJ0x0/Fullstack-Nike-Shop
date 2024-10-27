@@ -15,16 +15,19 @@ const Footer = () => {
             Your perfect Size In Store. Get Rewards
           </p>
           <div className="flex items-center gap-5 mt-8">
-            {socialMedia.map((icon) => (
-              <div className="flex justify-center items-center size-12 bg-white rounded-full">
+            {socialMedia.map((icon, index) => (
+              <div
+                className="flex justify-center items-center size-12 bg-white rounded-full"
+                key={index}
+              >
                 <img src={icon.src} alt={icon.alt} width={24} height={24} />
               </div>
             ))}
           </div>
         </div>
         <div className="flex justify-between gap-10 flex-wrap max-sm:mt-14">
-          {footerLinks.map((section) => (
-            <div className="" key={section}>
+          {footerLinks.map((section, index) => (
+            <div className="" key={index}>
               <h4 className="text-white font-montserrat text-2xl leading-normal font-medium mb-6">
                 {section.title}
               </h4>
