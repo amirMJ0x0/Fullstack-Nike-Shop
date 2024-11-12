@@ -1,17 +1,15 @@
 import { Link } from "react-router-dom";
-import { hamburger } from "../assets/icons";
 import headerLogo from "../assets/images/header-logo.svg";
-import { navLinks } from "../constants";
 import { useState } from "react";
-import { FaHamburger } from "react-icons/fa";
-import { TbMenuDeep } from "react-icons/tb";
+import { FaUser } from "react-icons/fa";
 import { RiCloseFill, RiMenu3Line } from "react-icons/ri";
-import { Badge, CloseButton, Divider } from "@chakra-ui/react";
+import { Divider } from "@chakra-ui/react";
 import { FaCartShopping } from "react-icons/fa6";
+import { useAuth } from "../context/AuthProvider";
 
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const { userData, logOut } = useAuth();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -42,16 +40,36 @@ const Nav = () => {
               </Link>
             </div>
           </li>
-          {/* Log in and Sign up */}
+          {/* Log in and Sign up | Profile*/}
           <li className="info-text flex items-center gap-5 max-lg:hidden">
-            <Link>
-              <div className="p-3 hover:opacity-65">Log in</div>
-            </Link>
-            <Link>
-              <div className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
-                Sign up
-              </div>
-            </Link>
+            {!userData.data ? (
+              <>
+                <Link to={"/Login"}>
+                  <div className="p-3 hover:opacity-65">Log in</div>
+                </Link>
+                <Link to={"/Register"}>
+                  <div className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
+                    Sign up
+                  </div>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={"/profile"}
+                  className="flex justify-center items-center gap-2 text-2xl"
+                >
+                  <span>{userData?.data?.username}</span>
+                  <FaUser />
+                </Link>
+                <button onClick={logOut}>
+                  <div className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
+                    logout
+                  </div>
+                </button>
+              </>
+            )}
+
             <Divider orientation="vertical" h={"30px"} />
             <div className="font-montserrat leading-normal lg:text-3xl relative p-1 cursor-pointer">
               <FaCartShopping className="" />

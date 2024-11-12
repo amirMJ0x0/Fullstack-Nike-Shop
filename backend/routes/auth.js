@@ -1,0 +1,91 @@
+// routes/auth.js
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // مدل کاربر
+const router = express.Router();
+
+const secretKey = "ro8BS6Hiivgzy8Xuu09JDjlNLnSLldY5";
+
+
+// مسیر ثبت‌نام
+router.post('/register', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+
+        // چک کردن اینکه آیا ایمیل یا نام‌کاربری قبلاً ثبت شده‌اند
+        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username or email already in use' });
+        }
+
+        // هش کردن پسورد
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({ username, email, password: hashedPassword });
+        await newUser.save();
+
+        res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// مسیر ورود
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign({ id: user._id }, secretKey, { expiresIn: '1d' });
+
+        res.cookie('token', token
+            , {
+                httpOnly: true, // دسترسی از سمت سرور فقط
+                secure: process.env.NODE_ENV === 'production', // فقط در HTTPS در حالت پروداکشن
+                maxAge: 24 * 60 * 60 * 1000, // 1 روز اعتبار
+            }
+        );
+        res.json({ data: { id: user._id, username: user.username, email: user.email }, statusCode: 200 });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+router.get("/userInfo", async (req, res) => {
+    try {
+        const { token } = req.cookies
+        if (!token) {
+            return res.json({ message: 'Unauthorized', statusCode: 401 });
+        }
+        const decoded = jwt.verify(token, secretKey);
+        const user = await User.findById(decoded.id); // پیدا کردن کاربر با استفاده از id در توکن
+        if (!user) return res.status(404).json({ message: "User not found" });
+        res.json({ data: user, userStatus: "Authorized" });
+
+    } catch (err) {
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        res.status(500).json({ error: "Failed to fetch user" });
+    }
+});
+
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.status(200).json({ message: 'Logged out successfully', statusCode: 200 });
+});
+
+module.exports = router;

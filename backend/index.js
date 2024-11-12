@@ -1,13 +1,23 @@
 const mongoose = require('mongoose');
+const authRoutes = require('./routes/auth');
 const cors = require('cors')
+const cookieParser = require('cookie-parser');
 const Product = require('./models/Product');
-
 const express = require('express');
-const app = express();
-const port = 3000;
+// require('dotenv').config();
 
-app.use(cors()) //enable CORS for all requests
+const app = express();
+const port = process.env.PORT || 3000;
+
+// تنظیمات CORS
+app.use(cors({
+    origin: 'http://localhost:5173', // آدرس فرانت‌اند
+    credentials: true // فعال کردن ارسال کوکی‌ها
+}));
+app.use(cookieParser())
 app.use(express.json());
+app.use('/auth', authRoutes);
+
 
 mongoose.connect('mongodb://localhost:27017/Nike', {
     useNewUrlParser: true,

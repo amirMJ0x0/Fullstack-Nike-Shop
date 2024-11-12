@@ -10,8 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import Aos from "aos";
 
 const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
+  Aos.init({
+    once: true,
+  });
   return (
     <Card maxW="sm" data-aos="fade-up" shadow="none">
       <CardBody>

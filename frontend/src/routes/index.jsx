@@ -4,6 +4,9 @@ const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
 const ProductsListPage = lazy(() => import("../pages/ProductsListPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -31,10 +34,26 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/product:productId",
+        path: "/products/:productId",
         element: (
           <Suspense>
             <ProductPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/Login",
+        element: (
+          <Suspense>
+            <LoginPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/Register",
+        element: (
+          <Suspense>
+            <RegisterPage />
           </Suspense>
         ),
       },
