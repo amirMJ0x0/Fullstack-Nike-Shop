@@ -7,49 +7,19 @@ export const navLinks = [
     { href: "/about-us", label: "About Us" },
 ];
 
-export const shoes = [
-    {
-        thumbnail: thumbnailShoe1,
-        bigShoe: bigShoe1,
-    },
-    {
-        thumbnail: thumbnailShoe2,
-        bigShoe: bigShoe2,
-    },
-    {
-        thumbnail: thumbnailShoe3,
-        bigShoe: bigShoe3,
-    },
-];
-
+export const productFilters = [
+    { label: "Gender", filterType: "gender", options: ["Men", "Female", "Unisex"] },
+    { label: "Size", filterType: "size", options: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"] },
+    { label: "Color", filterType: "color", options: ["Red", "Blue", "Green", "Black", "White"] },
+    { label: "Shop by Price", filterType: "price", options: ["0$ - 25$", "25$ - 50$", "50$ - 100$", "100$ - 150$", "Over 150$"] },
+    { label: "Sale", filterType: "sale", options: ["Sale"] },
+]
 export const statistics = [
     { value: '1k+', label: 'Brands' },
     { value: '500+', label: 'Shops' },
     { value: '250k+', label: 'Customers' },
 ];
 
-export const products = [
-    {
-        imgURL: shoe4,
-        name: "Nike Air Jordan-01",
-        price: "$200.20",
-    },
-    {
-        imgURL: shoe5,
-        name: "Nike Air Jordan-10",
-        price: "$210.20",
-    },
-    {
-        imgURL: shoe6,
-        name: "Nike Air Jordan-100",
-        price: "$220.20",
-    },
-    {
-        imgURL: shoe7,
-        name: "Nike Air Jordan-001",
-        price: "$230.20",
-    },
-];
 
 export const services = [
     {

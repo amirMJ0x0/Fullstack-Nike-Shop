@@ -16,9 +16,14 @@ const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
   Aos.init({
     once: true,
   });
+  let windowWidth = window.innerWidth;
   return (
-    <Card maxW="sm" data-aos="fade-up" shadow="none">
-      <CardBody>
+    <Card
+      maxW={{ base: "100%", sm: "sm", md: "md" }}
+      shadow="none"
+      className=""
+    >
+      <CardBody p={{ base: "1" }}>
         {isLoading ? (
           <>
             <Skeleton borderRadius="2xl" className="size-72"></Skeleton>
@@ -49,7 +54,7 @@ const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
         ) : (
           <>
             <div
-              className={`size-72 bg-cover ${
+              className={`h-40 md:size-72 bg-cover ${
                 !isLoading && "bg-card"
               } flex justify-center items-center`}
             >
@@ -58,20 +63,33 @@ const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
                 alt={name}
                 borderRadius="lg"
                 position="relative"
-                w={"90%"}
+                w={"80%"}
+                h={{ base: "120px", md: "180px" }}
+                objectFit="cover"
               />
             </div>
 
-            <Stack mt="6" spacing="3">
-              <Text className="flex items-center gap-2">
-                <FaStar className="text-yellow-400 text-2xl" /> ({score})
+            <Stack mt={{ base: "2", md: "6" }} spacing={{ base: "1", md: "3" }}>
+              <Text className="flex items-center gap-2 max-sm:text-sm">
+                <FaStar className="text-yellow-400 text-xl sm:text-2xl" /> (
+                {score})
               </Text>
 
               <Link to={`/products/${_id}`}>
-                <Heading size="md">{name}</Heading>
+                <Heading
+                  letterSpacing={"tight"}
+                  size={{ base: "sm", md: "md" }}
+                  // className="text-md tracking-tighter md:text-xl font-bold"
+                >
+                  {name}
+                </Heading>
               </Link>
 
-              <Text color="coral" fontSize="2xl" fontWeight="semibold">
+              <Text
+                color="coral"
+                fontSize={{ base: "md", md: "2xl" }}
+                fontWeight="semibold"
+              >
                 {price}$
               </Text>
             </Stack>
