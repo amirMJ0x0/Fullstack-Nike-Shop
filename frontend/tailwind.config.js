@@ -1,3 +1,5 @@
+import { transform } from 'framer-motion';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -37,6 +39,14 @@ export default {
       },
       screens: {
         "wide": "1440px"
+      }, keyframes: {
+        back: {
+          '0% , 100%': { transform: 'translateX(-1rem)' },
+          '50%': { transform: 'translateX(0rem)' }
+        }
+      },
+      animation: {
+        back: 'back 1s ease-in-out infinite'
       }
     },
   },

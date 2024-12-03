@@ -6,6 +6,8 @@ const ProductsListPage = lazy(() => import("../pages/ProductsListPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +17,7 @@ export const router = createBrowserRouter([
         <MainLayout />
       </Suspense>
     ),
-    errorElement: <div>error 404</div>,
+    errorElement: <NotFoundPage />,
     children: [
       {
         path: "/",
@@ -54,6 +56,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense>
             <RegisterPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/Profile",
+        element: (
+          <Suspense>
+            <ProfilePage />
           </Suspense>
         ),
       },
