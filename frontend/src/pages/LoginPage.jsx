@@ -4,22 +4,32 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthProvider";
 import {
   Button,
-  FormControl,
   Heading,
   Input,
   Link as ChLink,
+  FormErrorMessage,
+  FormControl,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { FaBackward } from "react-icons/fa";
-import { IoIosArrowRoundBack } from "react-icons/io";
+import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginValidationSchema } from "../utils/validation";
+
 const LoginPage = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginValidationSchema),
+  });
   const [data, setData] = useState();
   const { loginAction } = useAuth();
   const onSubmit = (data) => {
     setData(data);
     if (data.email !== "" && data.password !== "") {
       loginAction(data);
+
       return;
     }
   };
@@ -28,12 +38,18 @@ const LoginPage = () => {
   };
   return (
     <div className="flex justify-center items-center h-screen bg-white-400">
-      <div className="max-md:w-11/12 md:w-1/4 p-5 bg-slate-100 rounded-lg relative">
+      <div className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative">
         <a
           onClick={goBack}
           className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
         >
           <IoIosArrowRoundBack size={"2rem"} /> Back
+        </a>
+        <a
+          href="/"
+          className="absolute right-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+        >
+          Home <IoIosArrowRoundForward size={"2rem"} />
         </a>
         <Heading
           as="h3"
@@ -46,33 +62,48 @@ const LoginPage = () => {
 
         <form
           onSubmit={handleSubmit((data) => {
-            console.log(data);
+            console.log(errors);
             onSubmit(data);
           })}
           className="flex flex-col gap-5 mt-10"
         >
-          <Input
-            type="text"
-            variant={"flushed"}
-            placeholder="test@gmail.com"
-            {...register("email")}
-            focusBorderColor="#ff6452"
-          />
+          {/* email input  */}
+          <div>
+            <Input
+              type="text"
+              variant={"flushed"}
+              placeholder="test@gmail.com"
+              {...register("email")}
+              focusBorderColor="#ff6452"
+            />
+            {errors.email?.message && (
+              <small className="text-red-600">{errors.email?.message}</small>
+            )}
+          </div>
 
-          <Input
-            type="password"
-            variant={"flushed"}
-            placeholder="password"
-            {...register("password")}
-            focusBorderColor="#ff6452"
-          />
+          {/* password input  */}
+
+          <FormControl>
+            <Input
+              type="password"
+              variant={"flushed"}
+              placeholder="password"
+              {...register("password")}
+              focusBorderColor="#ff6452"
+            />
+            {errors.password?.message && (
+              <small className="text-red-600 ">
+                {errors.password?.message}
+              </small>
+            )}
+          </FormControl>
 
           <Button
             className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90 mt-4"
             color={"white"}
             type="submit"
           >
-            <span>Submit</span>
+            <span>LOGIN</span>
           </Button>
           <span className="text-sm text-center text-slate-gray font-montserrat tracking-tighter">
             Don't have an account?{" "}

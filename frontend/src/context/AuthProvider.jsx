@@ -3,10 +3,13 @@ import { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "../../services/userServices";
+import { Alert, AlertIcon, useToast } from "@chakra-ui/react";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const toast = useToast();
+  const BASE_URL = "http://localhost:3000";
 
   const {
     data: userData = { data: null, userStatus: "Unauthorized" },
@@ -17,14 +20,25 @@ const AuthProvider = ({ children }) => {
     refetchInterval: 60000,
     retry: false,
   });
-
+  const registerAction = async (data) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/register`, data);
+      if (response.status === 201) {
+        navigate("/login");
+      } else {
+        console.log("Register error: ", response.status);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const loginAction = async (data) => {
     try {
-      const res = await axios.post("http://localhost:3000/auth/login", data, {
+      const res = await axios.post(`${BASE_URL}/auth/login`, data, {
         withCredentials: true,
       });
       if (res.status === 200) {
-        // navigate("/");
+        navigate("/");
         refetch();
         // setUserData(res.data.data);
       } else console.log("Login error: ", res.status);
@@ -36,7 +50,7 @@ const AuthProvider = ({ children }) => {
   const logOut = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/auth/logout",
+        `${BASE_URL}/auth/logout`,
         {},
         {
           withCredentials: true,
@@ -50,7 +64,9 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ userData, loginAction, logOut }}>
+    <AuthContext.Provider
+      value={{ userData, loginAction, logOut, registerAction }}
+    >
       {children}
     </AuthContext.Provider>
   );

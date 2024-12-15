@@ -1,7 +1,132 @@
+import { Button, Heading, Input, Spacer } from "@chakra-ui/react";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { registerValidationSchema } from "../utils/validation";
 
 const RegisterPage = () => {
-  return <div>RegisterPage</div>;
+  const { registerAction } = useAuth();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(registerValidationSchema),
+  });
+  const onSubmit = (data) => {
+    registerAction(data);
+  };
+  const goBack = () => {
+    history.back();
+  };
+  return (
+    <div className="flex justify-center items-center h-screen bg-white-400">
+      <div className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative">
+        <a
+          onClick={goBack}
+          className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+        >
+          <IoIosArrowRoundBack size={"2rem"} /> Back
+        </a>
+        <a
+          href="/"
+          className="absolute right-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+        >
+          Home <IoIosArrowRoundForward size={"2rem"} />
+        </a>
+        <Heading
+          as="h3"
+          size="lg"
+          textAlign={"center"}
+          className="!font-palanquin text-coral-red"
+        >
+          Register
+        </Heading>
+
+        <form
+          onSubmit={handleSubmit((data) => {
+            onSubmit(data);
+          })}
+          className="flex flex-col gap-5 mt-10"
+        >
+          {/* email input */}
+          <div>
+            <Input
+              type="text"
+              variant={"flushed"}
+              placeholder="username"
+              {...register("username")}
+              focusBorderColor="#ff6452"
+            />
+            {errors.username?.message && (
+              <small className="text-red-600">{errors.username?.message}</small>
+            )}
+          </div>
+
+          <div>
+            <Input
+              type="text"
+              variant={"flushed"}
+              placeholder="email"
+              {...register("email")}
+              focusBorderColor="#ff6452"
+            />
+            {errors.email?.message && (
+              <small className="text-red-600">{errors.email?.message}</small>
+            )}
+          </div>
+
+          <div>
+            <Input
+              type="password"
+              variant={"flushed"}
+              placeholder="password"
+              {...register("password")}
+              focusBorderColor="#ff6452"
+            />
+            {errors.password?.message && (
+              <small className="text-red-600">{errors.password?.message}</small>
+            )}
+          </div>
+
+          <div>
+            <Input
+              type="password"
+              variant={"flushed"}
+              placeholder="confirm password"
+              {...register("confirmPassword")}
+              focusBorderColor="#ff6452"
+            />
+            {errors.confirmPassword?.message && (
+              <small className="text-red-600">
+                {errors.confirmPassword?.message}
+              </small>
+            )}
+          </div>
+
+          <Button
+            className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90 mt-4"
+            color={"white"}
+            type="submit"
+          >
+            <span>SIGN UP</span>
+          </Button>
+          <span className="text-sm text-center text-slate-gray font-montserrat tracking-tighter">
+            Already Have account?{" "}
+            <Link
+              to={"/Login"}
+              className="text-coral-red font-semibold underline"
+            >
+              Login
+            </Link>
+          </span>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default RegisterPage;
