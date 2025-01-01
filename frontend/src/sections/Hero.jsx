@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { arrowRight } from "../assets/icons";
-import { bigShoe1 } from "../assets/images";
+import { bigShoe1, bigShoe2, bigShoe3 } from "../assets/images";
 import Button from "../components/Button";
-import ShoeCard from "../components/ShoeCard";
 import { statistics } from "../constants";
+import { Swiper, SwiperSlide } from "swiper/react";
+import CountUp from "react-countup";
+
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 const Hero = () => {
-  const [bigShoeImg, setBigShoeImg] = useState(bigShoe1);
+  const [isEnded, setIsEnded] = useState(false);
+
   return (
     <section
-      className="w-full flex xl:flex-row flex-col justify-center min-h-screen gap-10 max-container"
+      className="w-full flex xl:flex-row justify-center min-h-screen  max-container "
       id="home"
     >
-      <div className="relative xl:w-2/5 flex flex-col justify-center items-start w-full max-xl:padding-x pt-28">
+      <div className="relative xl:w-3/5 flex flex-col justify-start items-start  max-xl:padding-x pt-14 lg:w-1/2">
         <p className="text-xl font-montserrat text-coral-red">
           Our Summer Collection
         </p>
@@ -30,9 +37,22 @@ const Hero = () => {
         <Button label="Shop Now" iconURL={arrowRight} />
 
         <div className="flex max-sm:justify-around justify-start items-start flex-wrap w-full mt-20 gap-16 ">
-          {statistics.map((stat, index) => (
-            <div key={stat.label} className="">
-              <p className="text-4xl font-palanquin font-bold">{stat.value}</p>
+          {statistics.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <p className="text-4xl font-palanquin font-bold">
+                {isEnded ? (
+                  stat.value
+                ) : (
+                  <>
+                    <CountUp
+                      end={stat.num}
+                      duration={3}
+                      onEnd={() => setIsEnded(true)}
+                    />{" "}
+                    +
+                  </>
+                )}
+              </p>
               <p className="font-montserrat text-slate-gray leading-7">
                 {stat.label}
               </p>
@@ -41,29 +61,30 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="relative flex-1 flex justify-center items-center xl:min-h-screen max-xl:py-14 max-sm:hidden">
-        <img
-          src={bigShoeImg}
-          alt="shoe collection"
-          width={540}
-          height={500}
-          className="object-contain relative z-10 pb-16"
-        />
-        {/* <div className="flex sm:gap-6 gap-4 absolute -bottom-[-1%] sm:left-[20%] max-sm:px-6">
-          {shoes.map((shoe, index) => {
-            return (
-              <div className="" key={index}>
-                <ShoeCard
-                  imgURL={shoe}
-                  changeBigShoeImage={(shoe) => {
-                    setBigShoeImg(shoe);
-                  }}
-                  bigShoeImg={bigShoeImg}
-                />
-              </div>
-            );
-          })}
-        </div> */}
+      <div className="relative  flex justify-center items-center max-xl:py-14 max-lg:hidden h-[500px] w-1/2 mt-24">
+        <Swiper
+          spaceBetween={30}
+          centeredSlides={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          // navigation={true}
+          modules={[Autoplay, Pagination, Navigation]}
+        >
+          <SwiperSlide>
+            <img src={bigShoe1} alt="Shoe 1" className="object-contain " />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img src={bigShoe2} alt="Shoe 2" className="object-contain " />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img src={bigShoe3} alt="Shoe 3" className="object-contain " />
+          </SwiperSlide>
+        </Swiper>
       </div>
     </section>
   );

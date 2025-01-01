@@ -1,5 +1,4 @@
-import { Button, Heading, Input, Spacer } from "@chakra-ui/react";
-import React from "react";
+import { Button, Heading, Input } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";

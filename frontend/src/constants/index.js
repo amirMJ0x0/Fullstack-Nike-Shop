@@ -15,9 +15,9 @@ export const productFilters = [
     { label: "Sale", filterType: "sale", options: ["Sale"] },
 ]
 export const statistics = [
-    { value: '1k+', label: 'Brands' },
-    { value: '500+', label: 'Shops' },
-    { value: '250k+', label: 'Customers' },
+    { num: 1000, value: '1k+', label: 'Brands' },
+    { num: 500, value: '500+', label: 'Shops' },
+    { num: 250, value: '250k+', label: 'Customers' },
 ];
 
 
