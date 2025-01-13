@@ -81,7 +81,7 @@ const PopularProducts = () => {
         >
           {popularProducts?.slice(0, 6).map((product) => (
             <SwiperSlide key={product._id}>
-              <ProductCard {...product} />
+              <ProductCard {...product} entryAnimation="fade-down" />
             </SwiperSlide>
           ))}
         </Swiper>

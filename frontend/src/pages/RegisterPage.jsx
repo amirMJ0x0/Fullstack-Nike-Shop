@@ -1,4 +1,4 @@
-import { Button, Heading, Input } from "@chakra-ui/react";
+import { Box, Button, Heading, Input, Text } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
@@ -22,8 +22,11 @@ const RegisterPage = () => {
     history.back();
   };
   return (
-    <div className="flex justify-center items-center h-screen bg-white-400">
-      <div className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative">
+    <Box className="flex justify-center items-center h-screen">
+      <Box
+        className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative"
+        _dark={{ bg: "gray.700" }}
+      >
         <a
           onClick={goBack}
           className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
@@ -113,7 +116,10 @@ const RegisterPage = () => {
           >
             <span>SIGN UP</span>
           </Button>
-          <span className="text-sm text-center text-slate-gray font-montserrat tracking-tighter">
+          <Text
+            className="text-sm text-center text-slate-gray font-montserrat tracking-tighter"
+            _dark={{ color: "gray.300" }}
+          >
             Already Have account?{" "}
             <Link
               to={"/Login"}
@@ -121,10 +127,10 @@ const RegisterPage = () => {
             >
               Login
             </Link>
-          </span>
+          </Text>
         </form>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

@@ -12,12 +12,25 @@ import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import Aos from "aos";
 
-const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
+const ProductCard = ({
+  _id,
+  imageUrl,
+  name,
+  price,
+  score,
+  isLoading,
+  entryAnimation = "",
+}) => {
   Aos.init({
     once: true,
   });
   return (
-    <Card maxW={"-webkit-max-content"} borderRadius={"2xl"} shadow="lg">
+    <Card
+      maxW={"-webkit-max-content"}
+      borderRadius={"2xl"}
+      shadow="md"
+      data-aos={entryAnimation}
+    >
       <CardBody p={{ base: "1", md: 3 }}>
         {isLoading ? (
           <>

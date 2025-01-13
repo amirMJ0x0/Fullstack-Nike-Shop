@@ -12,6 +12,7 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaCartShopping } from "react-icons/fa6";
@@ -41,32 +42,24 @@ const Nav = () => {
 
         {/* Desktop Navigation */}
         <ul className="flex-1 flex justify-between items-center max-lg:hidden pl-16">
-          <li className="flex gap-10">
-            <div
-              className="font-montserrat leading-normal lg:text-lg "
-              bg={bgColor}
-              color={textColor}
-            >
+          <li className="flex gap-10 info-text">
+            <div className="font-montserrat leading-normal lg:text-lg ">
               <Link to={"/products"} className="">
-                Products
+                <Text _dark={{ color: "gray.400" }}>
+                  Products
+                </Text>
               </Link>
             </div>
-            <div
-              className="font-montserrat leading-normal lg:text-lg "
-              bg={bgColor}
-              color={textColor}
-            >
+            <div className="font-montserrat leading-normal lg:text-lg ">
               <Link to={"/about-us"} className="">
-                About Us
+                <Text _dark={{ color: "gray.400" }}>About Us</Text>
               </Link>
             </div>
-            <div
-              className="font-montserrat leading-normal lg:text-lg "
-              bg={bgColor}
-              color={textColor}
-            >
+            <div className="font-montserrat leading-normal lg:text-lg ">
               <Link to={"/weblog"} className="">
-                Blogs
+                <Text _dark={{ color: "gray.400" }}>
+                  Blogs
+                </Text>
               </Link>
             </div>
           </li>
@@ -75,12 +68,12 @@ const Nav = () => {
             {!userData.data ? (
               <>
                 <Link to={"/Login"}>
-                  <div className="p-3 hover:opacity-65">Log in</div>
+                  <Text className="p-3 hover:opacity-65">Log in</Text>
                 </Link>
                 <Link to={"/Register"}>
-                  <div className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
+                  <Text className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
                     Sign up
-                  </div>
+                  </Text>
                 </Link>
               </>
             ) : (
@@ -106,7 +99,11 @@ const Nav = () => {
               // className="dark:!opacity-15"
             />
             <Menu>
-              <MenuButton as={Button} className="!bg-transparent !text-xl" marginRight={'-3.5'}>
+              <MenuButton
+                as={Button}
+                className="!bg-transparent !text-xl"
+                marginRight={"-3.5"}
+              >
                 {colorMode === "light" ? (
                   <BsSun />
                 ) : colorMode === "dark" ? (
