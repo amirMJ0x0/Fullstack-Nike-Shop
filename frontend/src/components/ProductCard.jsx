@@ -16,14 +16,9 @@ const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
   Aos.init({
     once: true,
   });
-  let windowWidth = window.innerWidth;
   return (
-    <Card
-      maxW={{ base: "100%", sm: "sm", md: "md" }}
-      shadow="none"
-      className=""
-    >
-      <CardBody p={{ base: "1" }}>
+    <Card maxW={"-webkit-max-content"} borderRadius={"2xl"} shadow="lg">
+      <CardBody p={{ base: "1", md: 3 }}>
         {isLoading ? (
           <>
             <Skeleton borderRadius="2xl" className="size-72"></Skeleton>
@@ -56,12 +51,11 @@ const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
             <div
               className={`h-40 md:size-72 bg-cover ${
                 !isLoading && "bg-card"
-              } flex justify-center items-center`}
+              } flex justify-center items-center `}
             >
               <Image
                 src={imageUrl[0]}
                 alt={name}
-                borderRadius="lg"
                 position="relative"
                 w={"80%"}
                 h={{ base: "120px", md: "180px" }}
@@ -69,7 +63,7 @@ const ProductCard = ({ _id, imageUrl, name, price, score, isLoading }) => {
               />
             </div>
 
-            <Stack mt={{ base: "2", md: "6" }} spacing={{ base: "1", md: "3" }}>
+            <Stack mt={{ base: "2", md: "4" }} spacing={{ base: "1", md: "3" }}>
               <Text className="flex items-center gap-2 max-sm:text-sm">
                 <FaStar className="text-yellow-400 text-xl sm:text-2xl" /> (
                 {score})

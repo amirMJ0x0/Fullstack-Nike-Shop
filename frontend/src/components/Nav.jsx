@@ -3,13 +3,31 @@ import headerLogo from "../assets/images/header-logo.svg";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiCloseFill, RiMenu3Line } from "react-icons/ri";
-import { Divider } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Stack,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { FaCartShopping } from "react-icons/fa6";
 import { useAuth } from "../context/AuthProvider";
+import { BsMoon, BsSun } from "react-icons/bs";
+import { GrSystem } from "react-icons/gr";
+import useThemeSwitcher from "../hooks/useThemeSwitcher";
 
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userData, logOut } = useAuth();
+  const { colorMode, changeTheme } = useThemeSwitcher();
+
+  const bgColor = useColorModeValue("gray.100", "gray.700");
+  const textColor = useColorModeValue("black", "white");
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -24,17 +42,29 @@ const Nav = () => {
         {/* Desktop Navigation */}
         <ul className="flex-1 flex justify-between items-center max-lg:hidden pl-16">
           <li className="flex gap-10">
-            <div className="font-montserrat leading-normal lg:text-lg text-slate-gray">
+            <div
+              className="font-montserrat leading-normal lg:text-lg "
+              bg={bgColor}
+              color={textColor}
+            >
               <Link to={"/products"} className="">
                 Products
               </Link>
             </div>
-            <div className="font-montserrat leading-normal lg:text-lg lg:text-slate-gray">
+            <div
+              className="font-montserrat leading-normal lg:text-lg "
+              bg={bgColor}
+              color={textColor}
+            >
               <Link to={"/about-us"} className="">
                 About Us
               </Link>
             </div>
-            <div className="font-montserrat leading-normal lg:text-lg lg:text-slate-gray">
+            <div
+              className="font-montserrat leading-normal lg:text-lg "
+              bg={bgColor}
+              color={textColor}
+            >
               <Link to={"/weblog"} className="">
                 Blogs
               </Link>
@@ -70,13 +100,67 @@ const Nav = () => {
               </>
             )}
 
-            <Divider orientation="vertical" h={"30px"} />
-            <div className="font-montserrat leading-normal lg:text-3xl relative p-1 cursor-pointer">
-              <FaCartShopping className="" />
+            <Divider
+              orientation="vertical"
+              h={"30px"}
+              // className="dark:!opacity-15"
+            />
+            <Menu>
+              <MenuButton as={Button} className="!bg-transparent !text-xl" marginRight={'-3.5'}>
+                {colorMode === "light" ? (
+                  <BsSun />
+                ) : colorMode === "dark" ? (
+                  <BsMoon />
+                ) : colorMode === "system" ? (
+                  <GrSystem />
+                ) : null}
+              </MenuButton>
+              <Box bg={bgColor} color={textColor} className="!font-montserrat">
+                <MenuList>
+                  <MenuItem
+                    icon={<BsSun />}
+                    value={"light"}
+                    // onClick={(e) => handleTheme(e)}
+                    onClick={(e) => changeTheme(e)}
+                    // className="dark:!bg-[#1E3E62]"
+                  >
+                    Light
+                  </MenuItem>
+                  <MenuItem
+                    icon={<BsMoon />}
+                    value={"dark"}
+                    // onClick={(e) => handleTheme(e)}
+                    onClick={(e) => changeTheme(e)}
+                    // className="dark:!bg-[#1E3E62]"
+                  >
+                    Dark
+                  </MenuItem>
+                  <MenuItem
+                    icon={<GrSystem />}
+                    value={"system"}
+                    // onClick={(e) => handleTheme(e)}
+                    onClick={(e) => changeTheme(e)}
+                    // className="dark:!bg-[#1E3E62]"
+                  >
+                    System
+                  </MenuItem>
+                </MenuList>
+              </Box>
+            </Menu>
+
+            <Divider
+              orientation="vertical"
+              h={"30px"}
+              className="dark:!opacity-15"
+            />
+            <Stack className="font-montserrat leading-normal lg:text-3xl relative p-1 cursor-pointer">
+              <FaCartShopping
+                className={` ${colorMode === "dark" && "text-white-400"}`}
+              />
               <span className="text-xs px-1 bg-coral-red text-white-400 rounded-full absolute top-0 right-0">
                 0
               </span>
-            </div>
+            </Stack>
           </li>
         </ul>
 

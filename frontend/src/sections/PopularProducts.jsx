@@ -40,7 +40,7 @@ const PopularProducts = () => {
 
   return (
     <section id="products" className="relative max-container max-sm:mt-12">
-      <div className="flex flex-col justify-start gap-5">
+      <div className="flex flex-col justify-start gap-3">
         <h2 data-aos="fade-right" className="text-4xl font-bold font-palanquin">
           <span className="text-coral-red">Popular</span> Products
         </h2>

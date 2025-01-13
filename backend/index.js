@@ -4,6 +4,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser');
 const Product = require('./models/Product');
 const express = require('express');
+const router = express.Router
 // require('dotenv').config();
 
 const app = express();
@@ -51,7 +52,7 @@ app.post('/products', async (req, res) => {
     }
 })
 
-//* مسیر GET برای دریافت همه محصولات
+// GET /products
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find(); // دریافت همه محصولات از MongoDB
@@ -61,9 +62,20 @@ app.get('/products', async (req, res) => {
     }
 });
 
+// GET /products/:id
+app.get('/products/:id', async (req, res) => {
 
+    try {
+        const product = await Product.findById(req.params.id)
+        if (!product)
+            return res.status(404).json({ message: 'Product Not Found' })
+
+        res.json(product)
+    } catch (error) {
+        return res.status(500).json({ message: 'Server Error', error })
+    }
+})
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-
 });

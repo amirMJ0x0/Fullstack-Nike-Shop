@@ -11,12 +11,18 @@ const productSchema = new mongoose.Schema({
     sellCount: Number,
     score: Number,
     data: String,
-    comments: Array,
+    comments: [
+        {
+            userId: String,
+            text: String,
+            rating: Number,
+        },
+    ],
     size: Array,
     stock: Number,
     relatedProducts: Array,
     tags: Array,
-    imageUrl: Array,
+    imageUrl: [String],
 });
 
 const Product = mongoose.model('Product', productSchema);
