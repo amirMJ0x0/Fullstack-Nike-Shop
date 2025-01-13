@@ -45,9 +45,7 @@ const Nav = () => {
           <li className="flex gap-10 info-text">
             <div className="font-montserrat leading-normal lg:text-lg ">
               <Link to={"/products"} className="">
-                <Text _dark={{ color: "gray.400" }}>
-                  Products
-                </Text>
+                <Text _dark={{ color: "gray.400" }}>Products</Text>
               </Link>
             </div>
             <div className="font-montserrat leading-normal lg:text-lg ">
@@ -57,9 +55,7 @@ const Nav = () => {
             </div>
             <div className="font-montserrat leading-normal lg:text-lg ">
               <Link to={"/weblog"} className="">
-                <Text _dark={{ color: "gray.400" }}>
-                  Blogs
-                </Text>
+                <Text _dark={{ color: "gray.400" }}>Blogs</Text>
               </Link>
             </div>
           </li>

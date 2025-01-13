@@ -11,6 +11,7 @@ import {
 } from "../sections";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import BackToTopBtn from "../components/share/BackToTopBtn";
 
 const HomePage = () => {
   useEffect(() => {
@@ -43,6 +44,7 @@ const HomePage = () => {
       <section className="bg-black padding-x padding-t pb-8">
         <Footer />
       </section>
+      <BackToTopBtn />
     </main>
   );
 };
