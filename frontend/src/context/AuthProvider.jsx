@@ -3,7 +3,8 @@ import { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "../../services/userServices";
-import { Alert, AlertIcon, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
+
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -24,7 +25,23 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(`${BASE_URL}/auth/register`, data);
       if (response.status === 201) {
-        navigate("/login");
+        const loginResponse = await axios.post(
+          `${BASE_URL}/auth/login`,
+          { email: data.email, password: data.password },
+          { withCredentials: true }
+        );
+        if (loginResponse.status === 200) {
+          toast({
+            title: "Registration and Login Successful",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+          });
+
+          navigate("/");
+          refetch();
+        }
       } else {
         console.log("Register error: ", response.status);
       }
@@ -58,6 +75,13 @@ const AuthProvider = ({ children }) => {
       );
       navigate("/");
       refetch();
+      toast({
+        title: "Log out Successful",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
     } catch (error) {
       console.log("Logout error:", error.message);
     }

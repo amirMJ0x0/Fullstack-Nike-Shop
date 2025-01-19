@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerValidationSchema } from "../utils/validation";
 
 const RegisterPage = () => {
-  const { registerAction } = useAuth();
+  const { registerAction, loginAction } = useAuth();
   const {
     handleSubmit,
     register,

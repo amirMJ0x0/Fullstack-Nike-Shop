@@ -9,9 +9,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
-import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const PopularProducts = () => {
@@ -32,11 +31,6 @@ const PopularProducts = () => {
   if (error) {
     return <div className="max-container">{error}</div>;
   }
-  // فیلتر کردن و مرتب‌سازی محصولات بر اساس sellCount
-  // const popularProducts = data
-  //   .filter((product) => product.sellCount > 38) // فقط محصولاتی که فروش داشته‌اند
-  //   .sort((a, b) => b.sellCount - a.sellCount) // مرتب‌سازی به صورت نزولی
-  //   .slice(0, 4); // انتخاب 10 محصول پرفروش
 
   return (
     <section id="products" className="relative max-container max-sm:mt-12">
@@ -75,7 +69,6 @@ const PopularProducts = () => {
           }}
           onBeforeInit={(swiper) => {
             swiperRef.current = swiper;
-            console.log(swiper.activeIndex);
           }}
           modules={[Pagination, Navigation]}
         >
