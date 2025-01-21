@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import CartPage from "../pages/CartPage";
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
 const ProductsListPage = lazy(() => import("../pages/ProductsListPage"));
@@ -64,6 +65,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense>
             <ProfilePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <Suspense>
+            <CartPage />
           </Suspense>
         ),
       },

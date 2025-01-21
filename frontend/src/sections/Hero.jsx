@@ -10,23 +10,22 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import { Heading } from "@chakra-ui/react";
 
 const Hero = () => {
   const [isEnded, setIsEnded] = useState(false);
 
   return (
     <section
-      className="w-full flex xl:flex-row justify-center min-h-screen  max-container "
+      className="w-full flex xl:flex-row min-h-screen max-container"
       id="home"
     >
-      <div className="relative xl:w-3/5 flex flex-col justify-start items-start  max-xl:padding-x pt-14 lg:w-1/2">
+      <div className="relative xl:w-3/5 flex flex-col max-xl:padding-l justify-start items-start pt-14 lg:w-1/2">
         <p className="text-xl font-montserrat text-coral-red">
           Our Summer Collection
         </p>
-        <h2 className="mt-10 font-palanquin text-8xl max-sm:text-[72px] max-sm:leading-[82px] font-bold">
-          <span className="xl:whitespace-nowrap  z-10 pr-10">
-            The New Arrival
+        <h2 className="mt-10 font-palanquin !text-[64px] !lg:text-[72px] xl:text-[84px] max-sm:text-[72px] max-sm:leading-[82px] font-bold">
+          <span className="xl:whitespace-nowrap z-10 pr-10">
+            The <span className="text-coral-red">New</span> Arrival
           </span>
           <br />
           <span className="text-coral-red inline-block mt-3 ">Nike</span> Shoes
@@ -62,7 +61,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="relative  flex justify-center items-center max-xl:py-14 max-lg:hidden h-[500px] w-1/2 mt-24">
+      <div className="relative flex justify-center items-center max-xl:py-14 max-lg:hidden h-[500px] w-2/5 xl:w-1/2 xl:mt-24">
         <Swiper
           spaceBetween={30}
           centeredSlides={true}

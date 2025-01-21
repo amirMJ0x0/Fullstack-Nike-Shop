@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import headerLogo from "../assets/images/header-logo.svg";
 import { useState } from "react";
-import { FaUser } from "react-icons/fa";
+import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
 import { RiCloseFill, RiMenu3Line } from "react-icons/ri";
 import {
   Box,
@@ -14,20 +14,22 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { FaCartShopping } from "react-icons/fa6";
 import { useAuth } from "../context/AuthProvider";
 import { BsMoon, BsSun } from "react-icons/bs";
-import { GrSystem } from "react-icons/gr";
+import { GrBasket, GrFavorite, GrLogout, GrSystem } from "react-icons/gr";
 import useThemeSwitcher from "../hooks/useThemeSwitcher";
 
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userData, logOut } = useAuth();
   const { colorMode, changeTheme } = useThemeSwitcher();
-
+  const navigate = useNavigate();
   const bgColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("black", "white");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -74,18 +76,39 @@ const Nav = () => {
               </>
             ) : (
               <>
-                <Link
-                  to={"/profile"}
-                  className="flex justify-center items-center gap-2 text-2xl"
-                >
-                  <span>{userData?.data?.username}</span>
-                  <FaUser />
-                </Link>
-                <button onClick={logOut}>
-                  <div className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
-                    logout
-                  </div>
-                </button>
+                <Menu isOpen={isOpen}>
+                  <MenuButton
+                    className="flex gap-2 text-2xl"
+                    onMouseEnter={onOpen}
+                    onMouseLeave={onClose}
+                  >
+                    <span>{userData?.data?.username}</span>{" "}
+                    <FaRegUserCircle className="inline-block" />
+                  </MenuButton>
+                  <Box
+                    bg={bgColor}
+                    color={textColor}
+                    className="!font-montserrat"
+                  >
+                    <MenuList onMouseEnter={onOpen} onMouseLeave={onClose}>
+                      <MenuItem
+                        icon={<FaRegUser />}
+                        onClick={() => navigate("/profile")}
+                      >
+                        View Profile
+                      </MenuItem>
+                      <MenuItem icon={<GrBasket />}>My Orders</MenuItem>
+                      <MenuItem icon={<GrFavorite />}>Wish List</MenuItem>
+                      <MenuItem
+                        icon={<GrLogout />}
+                        onClick={logOut}
+                        textColor={"red.500"}
+                      >
+                        Logout
+                      </MenuItem>
+                    </MenuList>
+                  </Box>
+                </Menu>
               </>
             )}
 
