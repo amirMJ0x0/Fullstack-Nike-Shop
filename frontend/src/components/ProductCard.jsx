@@ -7,10 +7,12 @@ import {
   Text,
   Skeleton,
   SkeletonText,
+  CardFooter,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import Aos from "aos";
+import useGetWindowWidth from "../hooks/useGetWindowWidth";
 
 const ProductCard = ({
   _id,
@@ -24,14 +26,26 @@ const ProductCard = ({
   Aos.init({
     once: true,
   });
+  const windowWidth = useGetWindowWidth();
+  const shortenHeading = () => {
+    if (windowWidth >= 768) {
+      return name.length > 24 ? name.slice(0, 24) + "..." : name
+    } else if (windowWidth < 768 && windowWidth > 375) {
+      return name.length > 19 ? name.slice(0, 19) + "..." : name
+    } else if (windowWidth <= 375) {
+      return name.length > 13 ? name.slice(0, 13) + "..." : name
+    } else {
+      return name;
+    }
+  };
   return (
     <Card
-      maxW={"-webkit-max-content"}
+      maxW={{ base: "250px", md: "270px", lg: "280px" }}
       borderRadius={"2xl"}
-      shadow="md"
+      shadow={{ base: "base", md: "md" }}
       data-aos={entryAnimation}
     >
-      <CardBody p={{ base: "1", md: 3 }}>
+      <CardBody p={{ base: "1", md: "3" }} pos={"relative"}>
         {isLoading ? (
           <>
             <Skeleton borderRadius="2xl" className="size-72"></Skeleton>
@@ -62,7 +76,7 @@ const ProductCard = ({
         ) : (
           <>
             <div
-              className={`h-40 md:size-72 bg-cover ${
+              className={`h-30 md:h-42 xl:size-64 w-full bg-cover ${
                 !isLoading && "bg-card"
               } flex justify-center items-center `}
             >
@@ -70,28 +84,34 @@ const ProductCard = ({
                 src={imageUrl[0]}
                 alt={name}
                 position="relative"
-                w={"80%"}
-                h={{ base: "120px", md: "180px" }}
-                objectFit="cover"
+                w={"100%"}
+                h={{ base: "120px", md: "160px" }}
+                objectFit="contain"
               />
             </div>
 
-            <Stack mt={{ base: "2", md: "4" }} spacing={{ base: "1", md: "3" }}>
-              <Text className="flex items-center gap-2 max-sm:text-sm">
-                <FaStar className="text-yellow-400 text-xl sm:text-2xl" /> (
+            <Stack
+              mt={{ base: "3", md: "4" }}
+              spacing={{ base: "2", md: "3" }}
+              px={1}
+              pb={{ base: 1, sm: 0 }}
+            >
+              <Text className="flex items-center gap-1 md:gap-2 max-sm:text-xs">
+                <FaStar className="text-yellow-400 text-lg sm:text-2xl" /> (
                 {score})
               </Text>
 
               <Link to={`/products/${_id}`}>
                 <Heading
-                  letterSpacing={"tight"}
-                  size={{ base: "sm", md: "md" }}
-                  // className="text-md tracking-tighter md:text-xl font-bold"
+                  letterSpacing={"tighter"}
+                  size={{ base: "xs", md: "md" }}
+                  maxW={"-moz-max-content"}
                 >
-                  {name}
+                  {shortenHeading()}
                 </Heading>
               </Link>
-
+            </Stack>
+            <CardFooter px={1} py={2}>
               <Text
                 color="coral"
                 fontSize={{ base: "md", md: "2xl" }}
@@ -99,7 +119,7 @@ const ProductCard = ({
               >
                 {price}$
               </Text>
-            </Stack>
+            </CardFooter>
           </>
         )}
       </CardBody>

@@ -3,7 +3,7 @@ import ProductCard from "../components/ProductCard";
 
 const ProductsList = ({ products, isPending, isLoading }) => {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 md:gap-5">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-1 md:gap-5">
       {products?.map((product) => {
         return isPending ? (
           <div className="flex-1" key={product._id}>

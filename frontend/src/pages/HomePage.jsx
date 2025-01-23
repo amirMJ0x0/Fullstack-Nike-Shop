@@ -29,12 +29,12 @@ const HomePage = () => {
       <section className="padding">
         <SuperQuality />
       </section>
-      <section className="padding-x py-10">
+      <section className="padding-x py-10 ">
         <Services />
       </section>
-      <section className="padding">
+      {/* <section className="padding">
         <SpecialOffer />
-      </section>
+      </section> */}
       <section className="padding bg-pale-blue">
         <CustomerReviews />
       </section>

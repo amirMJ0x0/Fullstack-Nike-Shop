@@ -1,12 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
 import headerLogo from "../assets/images/header-logo.svg";
-import { useState } from "react";
-import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
-import { RiCloseFill, RiMenu3Line } from "react-icons/ri";
+import { useEffect, useRef, useState } from "react";
+import { FaRegUser, FaRegUserCircle, FaUser } from "react-icons/fa";
+import { RiMenu3Line } from "react-icons/ri";
 import {
+  Badge,
   Box,
   Button,
   Divider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Heading,
   Menu,
   MenuButton,
   MenuItem,
@@ -18,32 +27,35 @@ import {
 } from "@chakra-ui/react";
 import { FaCartShopping } from "react-icons/fa6";
 import { useAuth } from "../context/AuthProvider";
-import { BsMoon, BsSun } from "react-icons/bs";
-import { GrBasket, GrFavorite, GrLogout, GrSystem } from "react-icons/gr";
 import useThemeSwitcher from "../hooks/useThemeSwitcher";
+import ThemeChanger from "./share/ThemeChanger";
+import ProfileContextMenu from "./share/ProfileContextMenu";
 
 const Nav = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { userData, logOut } = useAuth();
-  const { colorMode, changeTheme } = useThemeSwitcher();
+  const { userData } = useAuth();
   const navigate = useNavigate();
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
+  const { colorMode, changeTheme } = useThemeSwitcher();
   const bgColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("black", "white");
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
+  const btnRef = useRef();
   return (
     <header className="padding-x py-8 relative z-10 w-full">
       <nav className="flex justify-between items-center max-container">
         <Link to={"/"}>
-          <img src={headerLogo} alt="Logo" width={130} height={29} />
+          <img
+            src={headerLogo}
+            alt="Logo"
+            className="w-24 h-5 sm:w-32 sm:h-7 "
+          />
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="flex-1 flex justify-between items-center max-lg:hidden pl-16">
+        <ul className="flex-1 flex justify-between items-center pl-16 max-lg:hidden">
           <li className="flex gap-10 info-text">
             <div className="font-montserrat leading-normal lg:text-lg ">
               <Link to={"/products"} className="">
@@ -62,7 +74,7 @@ const Nav = () => {
             </div>
           </li>
           {/* Log in and Sign up | Profile*/}
-          <li className="info-text flex items-center gap-5 max-lg:hidden">
+          <li className="info-text flex items-center gap-5">
             {!userData.data ? (
               <>
                 <Link to={"/Login"}>
@@ -76,100 +88,29 @@ const Nav = () => {
               </>
             ) : (
               <>
-                <Menu isOpen={isOpen}>
-                  <MenuButton
-                    className="flex gap-2 text-2xl"
-                    onMouseEnter={onOpen}
-                    onMouseLeave={onClose}
-                  >
-                    <span>{userData?.data?.username}</span>{" "}
-                    <FaRegUserCircle className="inline-block" />
-                  </MenuButton>
-                  <Box
-                    bg={bgColor}
-                    color={textColor}
-                    className="!font-montserrat"
-                  >
-                    <MenuList onMouseEnter={onOpen} onMouseLeave={onClose}>
-                      <MenuItem
-                        icon={<FaRegUser />}
-                        onClick={() => navigate("/profile")}
-                      >
-                        View Profile
-                      </MenuItem>
-                      <MenuItem icon={<GrBasket />}>My Orders</MenuItem>
-                      <MenuItem icon={<GrFavorite />}>Wish List</MenuItem>
-                      <MenuItem
-                        icon={<GrLogout />}
-                        onClick={logOut}
-                        textColor={"red.500"}
-                      >
-                        Logout
-                      </MenuItem>
-                    </MenuList>
-                  </Box>
-                </Menu>
+                <ProfileContextMenu textColor={textColor} bgColor={bgColor} />
               </>
             )}
 
-            <Divider
-              orientation="vertical"
-              h={"30px"}
-              // className="dark:!opacity-15"
+            <Divider orientation="vertical" h={"30px"} />
+
+            {/* theme change btn  */}
+            <ThemeChanger
+              colorMode={colorMode}
+              changeTheme={changeTheme}
+              bgColor={bgColor}
+              textColor={textColor}
             />
-            <Menu>
-              <MenuButton
-                as={Button}
-                className="!bg-transparent !text-xl"
-                marginRight={"-3.5"}
-              >
-                {colorMode === "light" ? (
-                  <BsSun />
-                ) : colorMode === "dark" ? (
-                  <BsMoon />
-                ) : colorMode === "system" ? (
-                  <GrSystem />
-                ) : null}
-              </MenuButton>
-              <Box bg={bgColor} color={textColor} className="!font-montserrat">
-                <MenuList>
-                  <MenuItem
-                    icon={<BsSun />}
-                    value={"light"}
-                    // onClick={(e) => handleTheme(e)}
-                    onClick={(e) => changeTheme(e)}
-                    // className="dark:!bg-[#1E3E62]"
-                  >
-                    Light
-                  </MenuItem>
-                  <MenuItem
-                    icon={<BsMoon />}
-                    value={"dark"}
-                    // onClick={(e) => handleTheme(e)}
-                    onClick={(e) => changeTheme(e)}
-                    // className="dark:!bg-[#1E3E62]"
-                  >
-                    Dark
-                  </MenuItem>
-                  <MenuItem
-                    icon={<GrSystem />}
-                    value={"system"}
-                    // onClick={(e) => handleTheme(e)}
-                    onClick={(e) => changeTheme(e)}
-                    // className="dark:!bg-[#1E3E62]"
-                  >
-                    System
-                  </MenuItem>
-                </MenuList>
-              </Box>
-            </Menu>
 
             <Divider
               orientation="vertical"
               h={"30px"}
               className="dark:!opacity-15"
             />
-            <Stack className="font-montserrat leading-normal lg:text-3xl relative p-1 cursor-pointer">
+            <Stack
+              className="font-montserrat leading-normal text-2xl lg:text-3xl relative p-1 cursor-pointer"
+              onClick={() => navigate("/cart")}
+            >
               <FaCartShopping
                 className={` ${colorMode === "dark" && "text-white-400"}`}
               />
@@ -180,38 +121,92 @@ const Nav = () => {
           </li>
         </ul>
 
-        {/* Hamburger Icon */}
-        <div className="hidden max-lg:block">
-          <div onClick={toggleMenu} className="cursor-pointer text-[35px]">
-            {isMenuOpen ? <RiCloseFill /> : <RiMenu3Line />}
-          </div>
-        </div>
+        {/* Drawer Menu for Mobile devices */}
+        <div className="gap-1 md:gap-2 hidden max-lg:flex">
+          <Button
+            color="#ff6452"
+            size={{ base: "sm", md: "md" }}
+            fontSize={"xl"}
+            onClick={() => navigate("/cart")}
+          >
+            <FaCartShopping />
+            <span className="text-xs px-1 py-0 bg-coral-red text-white-400 rounded-full absolute -top-2 -right-1">
+              0
+            </span>
+            {/* <Badge className="absolute -top-1 -right-1 !rounded-md" colorScheme="orange">0</Badge> */}
+          </Button>
+          <ProfileContextMenu bgColor={bgColor} textColor={textColor} />
+          <Button
+            ref={btnRef}
+            color="#ff6452"
+            size={{ base: "sm", md: "md" }}
+            fontSize={"xl"}
+            onClick={onDrawerOpen}
+          >
+            <RiMenu3Line />
+          </Button>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-white shadow-lg p-8 lg:hidden z-20 duration-500 transition-all ease-in-out">
-            <ul className="flex flex-col items-center gap-4">
-              <li className="font-montserrat leading-normal text-lg text-slate-gray">
-                <Link to={"/products"} className="">
-                  Products
-                </Link>
-              </li>
-              <li className="font-montserrat leading-normal text-lg text-slate-gray">
-                <Link to={"/about-us"} className="">
-                  About Us
-                </Link>
-              </li>
-              <li className="mt-3 flex flex-col items-center gap-2 info-text">
-                <Link>
-                  <div className="p-3 ">Log in</div>
-                </Link>
-                <Link>
-                  <div className="text-coral-red ">Sign up</div>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        )}
+          <Drawer
+            isOpen={isDrawerOpen}
+            placement="right"
+            onClose={onDrawerClose}
+            finalFocusRef={btnRef}
+            size={"xs"}
+          >
+            <DrawerOverlay />
+            <DrawerContent overflow={"hidden"}>
+              <DrawerCloseButton color={"#ff6452"} />
+              <DrawerHeader color={"#ff6452"} fontWeight={"light"}>
+                <ThemeChanger
+                  changeTheme={changeTheme}
+                  textColor={textColor}
+                  bgColor={bgColor}
+                  isMobileMode={true}
+                />
+              </DrawerHeader>
+              <DrawerBody>
+                <ul className="flex flex-col items-center gap-4 mt-4">
+                  <li className="font-montserrat leading-normal text-lg text-slate-gray">
+                    <Link onClick={onDrawerClose} to={"/products"}>
+                      <Text _dark={{ color: "gray.300" }}>Products</Text>
+                    </Link>
+                  </li>
+                  <Divider />
+                  <li className="font-montserrat leading-normal text-lg text-slate-gray">
+                    <Link onClick={onDrawerClose} to={"/about-us"} className="">
+                      <Text _dark={{ color: "gray.300" }}>About Us</Text>
+                    </Link>
+                  </li>
+                  <Divider />
+                  <li className="font-montserrat leading-normal text-lg text-slate-gray">
+                    <Link onClick={onDrawerClose} to={"/about-us"} className="">
+                      <Text _dark={{ color: "gray.300" }}>Blogs</Text>
+                    </Link>
+                  </li>
+                </ul>
+              </DrawerBody>
+              <DrawerFooter
+                color={"#ff6452"}
+                fontSize={"xl"}
+                justifyContent={"center"}
+                gap={"3"}
+              >
+                {!userData.data && (
+                  <>
+                    <Link to={"/Login"}>
+                      <Text className="p-2 hover:opacity-65">Log in</Text>
+                    </Link>
+                    <Link to={"/Register"}>
+                      <Text className="bg-coral-red text-white-400 py-2 px-6 rounded-full hover:opacity-75 hover:transition-opacity">
+                        Sign up
+                      </Text>
+                    </Link>
+                  </>
+                )}
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        </div>
       </nav>
     </header>
   );

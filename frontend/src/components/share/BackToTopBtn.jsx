@@ -20,8 +20,8 @@ const BackToTopBtn = () => {
         <Link onClick={() => window.scrollTo({ top: "0" })} title="Back to top">
           <Box
             position="fixed"
-            bottom="40px"
-            right={["16px", "84px"]}
+            bottom={["20px","30px"]}
+            right={["14px", "64px"]}
             zIndex={1}
             bg="#FF6452"
             color="white"
@@ -31,7 +31,7 @@ const BackToTopBtn = () => {
             // data-aos-duration="1000"
             data-aos-delay="100"
             shadow={"md"}
-            fontSize={"3xl"}
+            fontSize={{base:"xl",md:"3xl"}}
           >
             <MdOutlineVerticalAlignTop />
           </Box>

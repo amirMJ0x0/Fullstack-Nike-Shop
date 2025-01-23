@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import ProductCard from "../components/ProductCard";
 import { getAllProducts } from "../../services/productServices";
-import { CgSpinner } from "react-icons/cg";
 import useSortedProducts from "../hooks/useSortedProducts";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -9,25 +8,20 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Button } from "@chakra-ui/react";
 
 const PopularProducts = () => {
-  const { data, error, isLoading, isSuccess } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ["products"],
     queryFn: getAllProducts,
   });
   const popularProducts = useSortedProducts(data, "popularity") || [];
   const swiperRef = useRef();
-
-  if (isLoading) {
-    return (
-      <div className="fixed top-1/3 left-1/2 animate-spin text-4xl text-coral-red max-container">
-        <CgSpinner />
-      </div>
-    );
-  }
+  const [isFirstSlide, setIsFirstSlide] = useState(true);
+  const [isLastSlide, setIsLastSlide] = useState(false);
   if (error) {
     return <div className="max-container">{error}</div>;
   }
@@ -46,9 +40,10 @@ const PopularProducts = () => {
           selections. Discover a world of comfort, design, and value
         </p>
       </div>
-      <div className="relative mt-16">
+      <div className="mt-16 relative">
         <Swiper
-          slidesPerView={1}
+          className="!pb-2"
+          slidesPerView={2}
           spaceBetween={10}
           pagination={{
             type: "custom",
@@ -70,6 +65,14 @@ const PopularProducts = () => {
           onBeforeInit={(swiper) => {
             swiperRef.current = swiper;
           }}
+          onActiveIndexChange={(swiper) => {
+            if (swiper.isBeginning) setIsFirstSlide(true);
+            else if (swiper.isEnd) setIsLastSlide(true);
+            else {
+              setIsFirstSlide(false);
+              setIsLastSlide(false);
+            }
+          }}
           modules={[Pagination, Navigation]}
         >
           {popularProducts?.slice(0, 6).map((product) => (
@@ -78,32 +81,39 @@ const PopularProducts = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <button
+        <Button
           onClick={() => {
             swiperRef.current?.slideNext();
-            console.log(swiperRef.current?.activeIndex);
           }}
-          // disabled={swiperRef.current?.activeIndex === 3 ? "true" : "false"}
-          className="absolute right-5 top-1/3 p-2 rounded-full disabled:opacity-50 z-40 outline-none shadow-md bg-slate-200"
+          disabled={isLastSlide}
+          pos={"absolute"}
+          right={"2"}
+          top={"33%"}
+          p={"2"}
+          rounded={"full"}
+          zIndex={"40"}
+          shadow={"md"}
+          size={{ base: "sm", md: "xl" }}
         >
-          <FaChevronRight className="text-2xl text-coral-red" />
-        </button>
-        <button
+          <FaChevronRight className="text-sm sm:text-md md:text-2xl text-coral-red" />
+        </Button>
+        <Button
+          disabled={isFirstSlide}
+          pos={"absolute"}
+          left={"2"}
+          top={"33%"}
+          p={"2"}
+          rounded={"full"}
+          zIndex={"40"}
+          shadow={"md"}
+          size={{ base: "sm", md: "xl" }}
           onClick={() => {
             swiperRef.current?.slidePrev();
-            console.log(swiperRef.current?.activeIndex);
           }}
-          className="absolute left-3 top-1/3 p-2 rounded-full z-40 outline-none shadow-md bg-slate-200"
         >
-          <FaChevronLeft className="text-2xl text-coral-red" />
-        </button>
+          <FaChevronLeft className="text-sm sm:text-md md:text-2xl text-coral-red" />
+        </Button>
       </div>
-
-      {/* <div className="mt-16 flex flex-wrap sm:gap-6 gap-14">
-        {popularProducts?.slice(0, 4).map((product) => (
-          <ProductCard key={product._id} {...product} />
-        ))}
-      </div> */}
     </section>
   );
 };
