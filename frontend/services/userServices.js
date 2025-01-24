@@ -1,11 +1,14 @@
-import axios from 'axios'
-const SERVER_URL = "http://localhost:3000";
+import axiosInstance from "./axiosInstance";
 
 // @desc Get user info
 // @route GET http://localhost:3000/auth/userInfo
 export const fetchUserInfo = async () => {
-    const res = await axios.get(`${SERVER_URL}/auth/userInfo`, {
-        withCredentials: true,
-    });
-    return res.data;
+    try {
+        const res = await axiosInstance.get(`/auth/userInfo`);
+        return res.data;
+    } catch (error) {
+        console.error("Error fetching user info:", error.response?.data || error.message);
+    }
+
+
 };

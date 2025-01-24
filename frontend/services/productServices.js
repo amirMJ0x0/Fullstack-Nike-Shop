@@ -1,18 +1,23 @@
-import axios from 'axios'
-const SERVER_URL = "http://localhost:3000";
+import axiosInstance from './axiosInstance';
 
 // @desc Get All Products
 // @route GET http://localhost:3000/products
 export const getAllProducts = async () => {
-    const url = `${SERVER_URL}/products`;
-    const response = await axios.get(url)
-    return response.data
+    try {
+        const response = await axiosInstance.get('/products')
+        return response.data
+    } catch (error) {
+        console.error("Error fetching products info:", error.response?.data || error.message);
+    }
 }
 
 // @desc Fetch Product data using productId
 // @route GET http://localhost:3000/products/:id
 export const getProduct = async (id) => {
-    const url = `${SERVER_URL}/products/${id}`;
-    const response = await axios.get(url)
-    return response.data
+    try {
+        const response = await axiosInstance.get(`/products/${id}`)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching product info:", error.response?.data || error.message);
+    }
 }

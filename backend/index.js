@@ -4,7 +4,9 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser');
 const Product = require('./models/Product');
 const express = require('express');
-const router = express.Router
+const router = express.Router()
+const cartRoutes = require("./routes/cart");
+
 // require('dotenv').config();
 
 const app = express();
@@ -12,12 +14,13 @@ const port = process.env.PORT || 3000;
 
 // تنظیمات CORS
 app.use(cors({
-    origin: 'http://localhost:5173', // آدرس فرانت‌اند
-    credentials: true // فعال کردن ارسال کوکی‌ها
+    origin: 'http://localhost:5173',
+    credentials: true
 }));
 app.use(cookieParser())
 app.use(express.json());
 app.use('/auth', authRoutes);
+app.use("/cart", cartRoutes);
 
 
 mongoose.connect('mongodb://localhost:27017/Nike', {
@@ -29,17 +32,6 @@ mongoose.connect('mongodb://localhost:27017/Nike', {
     console.error('Error connecting to MongoDB:', err);
 });
 
-// const newProduct = new Product({
-//     name: "Nike Air Max",
-//     price: 120,
-//     description: "A comfortable and stylish running shoe.",
-//     imageUrl: "/images/nike-air-max.png",
-// });
-
-// newProduct.save().then(() => console.log('Product saved!'))
-//     .catch((err) => {
-//         console.error('Error connecting to MongoDB:', err);
-//     });
 
 app.post('/products', async (req, res) => {
     const { name, price, description, imageUrl } = req.body

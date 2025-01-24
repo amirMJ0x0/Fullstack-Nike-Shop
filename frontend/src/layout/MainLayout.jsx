@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Nav from "../components/Nav";
 import AuthProvider from "../context/AuthProvider";
+import { CartProvider } from "../context/CartProvider";
 
 const MainLayout = () => {
   const location = useLocation();
@@ -9,10 +10,12 @@ const MainLayout = () => {
 
   return (
     <AuthProvider>
-      {!isAuthPage && <Nav />}
-      <div>
-        <Outlet />
-      </div>
+      <CartProvider>
+        {!isAuthPage && <Nav />}
+        <div>
+          <Outlet />
+        </div>
+      </CartProvider>
     </AuthProvider>
   );
 };

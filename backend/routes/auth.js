@@ -2,7 +2,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // مدل کاربر
+const User = require('../models/User');
 const router = express.Router();
 
 const secretKey = "ro8BS6Hiivgzy8Xuu09JDjlNLnSLldY5";
@@ -31,6 +31,7 @@ router.post('/register', async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true, // Server-side access only
             secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
             maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
         });
 
@@ -65,6 +66,7 @@ router.post('/login', async (req, res) => {
             , {
                 httpOnly: true, // دسترسی از سمت سرور فقط
                 secure: process.env.NODE_ENV === 'production', // فقط در HTTPS در حالت پروداکشن
+                sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
                 maxAge: 24 * 60 * 60 * 1000, // 1 روز اعتبار
             }
         );

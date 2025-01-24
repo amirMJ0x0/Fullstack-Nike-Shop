@@ -1,11 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import headerLogo from "../assets/images/header-logo.svg";
-import { useEffect, useRef, useState } from "react";
-import { FaRegUser, FaRegUserCircle, FaUser } from "react-icons/fa";
+import { useRef } from "react";
 import { RiMenu3Line } from "react-icons/ri";
 import {
-  Badge,
-  Box,
   Button,
   Divider,
   Drawer,
@@ -15,11 +12,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  Heading,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Stack,
   Text,
   useColorModeValue,
@@ -30,9 +22,11 @@ import { useAuth } from "../context/AuthProvider";
 import useThemeSwitcher from "../hooks/useThemeSwitcher";
 import ThemeChanger from "./share/ThemeChanger";
 import ProfileContextMenu from "./share/ProfileContextMenu";
+import { useCart } from "../context/CartProvider";
 
 const Nav = () => {
-  const { userData } = useAuth();
+  const { user } = useAuth();
+  const { totalItems } = useCart();
   const navigate = useNavigate();
   const {
     isOpen: isDrawerOpen,
@@ -75,7 +69,7 @@ const Nav = () => {
           </li>
           {/* Log in and Sign up | Profile*/}
           <li className="info-text flex items-center gap-5">
-            {!userData.data ? (
+            {!user ? (
               <>
                 <Link to={"/Login"}>
                   <Text className="p-3 hover:opacity-65">Log in</Text>
@@ -114,9 +108,11 @@ const Nav = () => {
               <FaCartShopping
                 className={` ${colorMode === "dark" && "text-white-400"}`}
               />
-              <span className="text-xs px-1 bg-coral-red text-white-400 rounded-full absolute top-0 right-0">
-                0
-              </span>
+              {totalItems > 0 && (
+                <span className="text-xs px-1 bg-coral-red text-white-400 rounded-full absolute top-0 right-0">
+                  {totalItems}
+                </span>
+              )}
             </Stack>
           </li>
         </ul>
@@ -191,7 +187,7 @@ const Nav = () => {
                 justifyContent={"center"}
                 gap={"3"}
               >
-                {!userData.data && (
+                {!user && (
                   <>
                     <Link to={"/Login"}>
                       <Text className="p-2 hover:opacity-65">Log in</Text>

@@ -2,10 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getProduct } from "../../services/productServices";
 import { useRef } from "react";
+import { useCart } from "../context/CartProvider";
 
 const ProductPage = () => {
   const { productId } = useParams();
   const productImageRef = useRef();
+  const { addToCart } = useCart();
+
   const {
     data: product,
     isLoading,
@@ -14,6 +17,11 @@ const ProductPage = () => {
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
   });
+
+  const handleAddToCart = () => {
+    addToCart(product._id, 1);
+  };
+
   const changeMainImage = (imageUrl) => {
     productImageRef.current.src = imageUrl;
   };
@@ -70,7 +78,10 @@ const ProductPage = () => {
           </div>
 
           {/* Add to Cart Button */}
-          <button className="px-6 py-3 bg-orange-500 text-white rounded hover:bg-orange-600">
+          <button
+            className="px-6 py-3 bg-orange-500 text-white rounded hover:bg-orange-600"
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </button>
         </div>

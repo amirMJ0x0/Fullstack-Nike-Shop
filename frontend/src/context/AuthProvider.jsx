@@ -1,17 +1,17 @@
-import axios from "axios";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "../../services/userServices";
 import { useToast } from "@chakra-ui/react";
+import axiosInstance from "../../services/axiosInstance";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const toast = useToast();
-  const BASE_URL = "http://localhost:3000";
 
+  // Fetching user info
   const {
     data: userData = { data: null, userStatus: "Unauthorized" },
     refetch,
@@ -21,15 +21,18 @@ const AuthProvider = ({ children }) => {
     refetchInterval: 60000,
     retry: false,
   });
+  const user = userData.userStatus === "Authorized" ? userData.data : null;
+
+  //Register Action
   const registerAction = async (data) => {
     try {
-      const response = await axios.post(`${BASE_URL}/auth/register`, data);
+      const response = await axiosInstance.post(`/auth/register`, data);
       if (response.status === 201) {
-        const loginResponse = await axios.post(
-          `${BASE_URL}/auth/login`,
-          { email: data.email, password: data.password },
-          { withCredentials: true }
-        );
+        // Auto login after registration
+        const loginResponse = await axiosInstance.post(`/auth/login`, {
+          email: data.email,
+          password: data.password,
+        });
         if (loginResponse.status === 200) {
           toast({
             title: "Registration and Login Successful",
@@ -49,32 +52,26 @@ const AuthProvider = ({ children }) => {
       console.error(error);
     }
   };
+
+  //Login Action
   const loginAction = async (data) => {
     try {
-      const res = await axios.post(`${BASE_URL}/auth/login`, data, {
-        withCredentials: true,
-      });
+      const res = await axiosInstance.post(`/auth/login`, data);
       if (res.status === 200) {
         navigate("/");
-        refetch();
-        // setUserData(res.data.data);
+        refetch(); //Fetch user info after login
       } else console.log("Login error: ", res.status);
     } catch (error) {
       console.log("Login error:", error.message);
     }
   };
 
+  //Logout Action
   const logOut = async () => {
     try {
-      await axios.post(
-        `${BASE_URL}/auth/logout`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+      await axiosInstance.post(`/auth/logout`, {});
       navigate("/");
-      refetch();
+      refetch(); //Fetch to confirm logout
       toast({
         title: "Log out Successful",
         status: "warning",
@@ -88,9 +85,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ userData, loginAction, logOut, registerAction }}
-    >
+    <AuthContext.Provider value={{ user, loginAction, logOut, registerAction }}>
       {children}
     </AuthContext.Provider>
   );

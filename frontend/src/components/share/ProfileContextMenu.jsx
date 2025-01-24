@@ -15,11 +15,11 @@ import { useAuth } from "../../context/AuthProvider";
 const ProfileContextMenu = ({ textColor, bgColor }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
-  const { userData, logOut } = useAuth();
+  const { user, logOut } = useAuth();
 
   return (
     <>
-      {userData?.data ? (
+      {user ? (
         <Menu isOpen={isOpen}>
           <MenuButton
             as={Button}
@@ -32,9 +32,9 @@ const ProfileContextMenu = ({ textColor, bgColor }) => {
             onClick={onToggle}
           >
             <span className="max-lg:hidden">
-              {userData?.data?.username.length < 6
-                ? userData?.data?.username
-                : userData?.data?.username.slice(0, 5) + ".."}
+              {user?.username.length < 6
+                ? user?.username
+                : user?.username.slice(0, 5) + ".."}
             </span>{" "}
             <FaRegUserCircle className="inline-block" />
           </MenuButton>
