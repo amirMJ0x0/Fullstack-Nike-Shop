@@ -1,6 +1,8 @@
 import { useMemo } from "react"
 
 const useFilteredProducts = (products, filters) => {
+    console.log(filters);
+
     const filteredProducts = useMemo(() => {
         if (!products) return []
 
@@ -22,6 +24,8 @@ const useFilteredProducts = (products, filters) => {
                 if (filters.price.has("Over 150$") && (price < 150)) return false
 
             }
+            if (filters.sale && filters.sale.size > 0 && !product.discount > 0)
+                return false
 
             return true;
         })
