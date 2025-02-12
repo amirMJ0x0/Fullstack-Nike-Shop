@@ -3,22 +3,19 @@ import { Link, useParams } from "react-router-dom";
 import { getProduct } from "../../services/productServices";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
+import ReactStars from "react-stars";
 import {
   Box,
   Button,
-  FormErrorMessage,
+  Heading,
   HStack,
-  Stack,
   Text,
   useRadio,
   useRadioGroup,
 } from "@chakra-ui/react";
 import CustomModal from "../components/share/Modal";
-import {
-  BiChevronLeft,
-  BiChevronRight,
-  BiSolidChevronRight,
-} from "react-icons/bi";
+import { BiSolidChevronRight } from "react-icons/bi";
+import { PiUserCircleDuotone } from "react-icons/pi";
 import Loading from "../components/share/Loading";
 
 function RadioCard(props) {
@@ -64,8 +61,6 @@ const ProductPage = () => {
       (item) => item.productId == productId
     );
     if (existingItem) setIsInCart(true);
-
-    console.log("are? ", isInCart);
   }, [cart, color]);
 
   const { getRootProps: getRootPropsSize, getRadioProps: getRadioPropsSize } =
@@ -78,7 +73,6 @@ const ProductPage = () => {
       name: "color",
       onChange: (value) => setColor(value),
     });
-  useEffect(() => console.log(size, color), [size, color]);
   const group = getRootPropsSize();
   const group2 = getRootPropsColor();
   const {
@@ -215,17 +209,25 @@ const ProductPage = () => {
           )}
         </div>
       </div>
-
       {/* Reviews Section */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold">Reviews</h2>
-        {product.comments.map((comment, idx) => (
-          <div key={idx} className="mt-4 p-4 border rounded-lg">
-            <p className="font-medium">{comment.userId}</p>
-            <p>{comment.text}</p>
-            <p className="text-sm text-gray-500">Rating: {comment.rating}/5</p>
+        <div className="grid grid-cols-2">
+          <div>
+            {product.comments.map((comment, idx) => (
+              <div key={idx} className="mt-4 p-4 border rounded-lg">
+                <span className="flex items-center gap-1">
+                  <PiUserCircleDuotone className="text-xl" />
+                  <Heading size={"sm"} className="font-montserrat">
+                    {comment.userId?.username}
+                  </Heading>
+                </span>
+                <ReactStars count={5} value={comment.rating} edit={false} />
+                <Text className="!font-palanquin">{comment.text}</Text>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

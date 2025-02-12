@@ -38,7 +38,6 @@ router.post("/add", verifyToken, async (req, res) => {
     }
 
     const existingItem = cart.items.find((item) => item.productId.toString() === productId);
-    console.log('is item in cart? ' + existingItem);
 
     if (existingItem) {
       existingItem.quantity += 1;

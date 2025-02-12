@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
     data: String,
     comments: [
         {
-            userId: String,
+            userId: {type: mongoose.Schema.Types.ObjectId , ref: "User"},
             text: String,
             rating: Number,
         },

@@ -58,7 +58,7 @@ app.get('/products', async (req, res) => {
 app.get('/products/:id', async (req, res) => {
 
     try {
-        const product = await Product.findById(req.params.id)
+        const product = await Product.findById(req.params.id).populate("comments.userId", "username");
         if (!product)
             return res.status(404).json({ message: 'Product Not Found' })
 
