@@ -10,42 +10,14 @@ import {
   Heading,
   HStack,
   Text,
-  useRadio,
   useRadioGroup,
 } from "@chakra-ui/react";
 import CustomModal from "../components/share/Modal";
 import { BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
 import Loading from "../components/share/Loading";
-
-function RadioCard(props) {
-  const { getInputProps, getRadioProps } = useRadio(props);
-
-  const input = getInputProps();
-  const checkbox = getRadioProps();
-
-  return (
-    <Box as="label">
-      <input {...input} />
-      <Box
-        {...checkbox}
-        cursor="pointer"
-        borderWidth="1px"
-        borderRadius="md"
-        boxShadow="md"
-        _checked={{
-          bg: "#FF6452",
-          color: "white",
-          borderColor: "gray.600",
-        }}
-        px={5}
-        py={3}
-      >
-        {props.children}
-      </Box>
-    </Box>
-  );
-}
+import { Helmet } from "react-helmet";
+import RadioCard from "../components/share/RadioCard";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -99,6 +71,9 @@ const ProductPage = () => {
 
   return (
     <div className="p-8">
+      <Helmet>
+        <title>Buy {product.name}</title>
+      </Helmet>
       {/* Product Details Section */}
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Image Section */}

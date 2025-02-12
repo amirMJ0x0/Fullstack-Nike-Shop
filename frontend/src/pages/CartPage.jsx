@@ -4,6 +4,7 @@ import { getProduct } from "../../services/productServices";
 import { Button, Heading, HStack, Image, Stack } from "@chakra-ui/react";
 import CartItem from "../components/CartItem";
 import Loading from "../components/share/Loading";
+import { Helmet } from "react-helmet";
 
 const CartPage = () => {
   const { cart, loading } = useCart();
@@ -65,6 +66,9 @@ const CartPage = () => {
 
   return (
     <section className="padding-x mt-10 mb-32">
+      <Helmet>
+        <title>Nike - Cart</title>
+      </Helmet>
       <Heading my={5}>Your Cart</Heading>
       <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-16">
         <div className="col-span-2">

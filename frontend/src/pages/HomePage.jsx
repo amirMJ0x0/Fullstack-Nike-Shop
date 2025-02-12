@@ -4,14 +4,13 @@ import {
   Hero,
   PopularProducts,
   Services,
-  SpecialOffer,
   Subscribe,
   SuperQuality,
-  Footer,
 } from "../sections";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import BackToTopBtn from "../components/share/BackToTopBtn";
+import { Helmet } from "react-helmet";
 
 const HomePage = () => {
   useEffect(() => {
@@ -20,6 +19,9 @@ const HomePage = () => {
 
   return (
     <main>
+      <Helmet>
+        <title>Nike - HomePage</title>
+      </Helmet>
       <section className="xl:padding-l wide:padding-r padding-b">
         <Hero />
       </section>

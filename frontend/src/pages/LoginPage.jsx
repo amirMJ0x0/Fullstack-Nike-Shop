@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "../utils/validation";
+import { Helmet } from "react-helmet";
 
 const LoginPage = () => {
   const {
@@ -37,6 +38,9 @@ const LoginPage = () => {
   };
   return (
     <Box className="flex justify-center items-center h-screen">
+      <Helmet>
+        <title>Nike - Login</title>
+      </Helmet>
       <Box
         className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative"
         _dark={{ bg: "gray.700" }}

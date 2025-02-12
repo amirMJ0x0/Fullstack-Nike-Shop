@@ -14,6 +14,8 @@ import useFilteredProducts from "../hooks/useFilteredProducts";
 import ProductsList from "../sections/ProductsList";
 import useDebounce from "../hooks/useDebounce";
 import { BsFilter } from "react-icons/bs";
+import Loading from "../components/share/Loading";
+import { Helmet } from "react-helmet";
 
 const ProductsListPage = () => {
   const [sortType, setSortType] = useState("newest");
@@ -49,13 +51,9 @@ const ProductsListPage = () => {
   };
   const debouncedHandleCheckboxChange = useDebounce(handleCheckboxChange, 300);
 
-  /* if (isLoading) {
-    return (
-      <div className="fixed top-1/3 left-1/2 animate-spin text-4xl text-coral-red max-container">
-        <CgSpinner />
-      </div>
-    );
-  } */
+  if (isLoading) {
+    return <Loading />;
+  }
   if (error) {
     return <div className="max-container">error: {error}</div>;
   }
@@ -66,6 +64,9 @@ const ProductsListPage = () => {
   let windowWidth = window.innerWidth;
   return (
     <section className="max-container max-2xl:padding-x max-sm:px-4">
+      <Helmet>
+        <title>Nike - Products</title>
+      </Helmet>
       <div className="text-gray-400 my-5 mx-4">
         <Breadcrumb>
           <BreadcrumbItem>

@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthProvider";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerValidationSchema } from "../utils/validation";
+import { Helmet } from "react-helmet";
 
 const RegisterPage = () => {
   const { registerAction, loginAction } = useAuth();
@@ -23,6 +24,9 @@ const RegisterPage = () => {
   };
   return (
     <Box className="flex justify-center items-center h-screen">
+      <Helmet>
+        <title>Nike - Register</title>
+      </Helmet>
       <Box
         className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative"
         _dark={{ bg: "gray.700" }}
