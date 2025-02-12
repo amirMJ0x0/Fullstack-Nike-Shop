@@ -91,3 +91,17 @@ export const socialMedia = [
     { src: twitter, alt: "twitter logo" },
     { src: instagram, alt: "instagram logo" },
 ];
+
+export const colors = [
+    { name: "Blue", className: "blue.500" },
+    { name: "Red", className: "red.500" },
+    { name: "Black", className: "black" },
+    { name: "White", className: "white" },
+    { name: "Orange", className: "orange.500" },
+    { name: "Gray", className: "gray.500" },
+    { name: "Silver", className: "slate.500" },
+    { name: "Green", className: "green.500" },
+    { name: "Yellow", className: "yellow.500" },
+    { name: "Cyan", className: "cyan.500" },
+    { name: "Pink", className: "pink.500" },
+]

@@ -126,9 +126,11 @@ const Nav = () => {
             onClick={() => navigate("/cart")}
           >
             <FaCartShopping />
-            <span className="text-xs px-1 py-0 bg-coral-red text-white-400 rounded-full absolute -top-2 -right-1">
-              0
-            </span>
+            {totalItems && (
+              <span className="text-xs px-1 py-0 bg-coral-red text-white-400 rounded-full absolute -top-2 -right-1">
+                {totalItems}
+              </span>
+            )}
             {/* <Badge className="absolute -top-1 -right-1 !rounded-md" colorScheme="orange">0</Badge> */}
           </Button>
           <ProfileContextMenu bgColor={bgColor} textColor={textColor} />

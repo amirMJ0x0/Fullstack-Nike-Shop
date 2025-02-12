@@ -1,14 +1,86 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProduct } from "../../services/productServices";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
+import {
+  Box,
+  Button,
+  FormErrorMessage,
+  HStack,
+  Stack,
+  Text,
+  useRadio,
+  useRadioGroup,
+} from "@chakra-ui/react";
+import CustomModal from "../components/share/Modal";
+import {
+  BiChevronLeft,
+  BiChevronRight,
+  BiSolidChevronRight,
+} from "react-icons/bi";
+import Loading from "../components/share/Loading";
+
+function RadioCard(props) {
+  const { getInputProps, getRadioProps } = useRadio(props);
+
+  const input = getInputProps();
+  const checkbox = getRadioProps();
+
+  return (
+    <Box as="label">
+      <input {...input} />
+      <Box
+        {...checkbox}
+        cursor="pointer"
+        borderWidth="1px"
+        borderRadius="md"
+        boxShadow="md"
+        _checked={{
+          bg: "#FF6452",
+          color: "white",
+          borderColor: "gray.600",
+        }}
+        px={5}
+        py={3}
+      >
+        {props.children}
+      </Box>
+    </Box>
+  );
+}
 
 const ProductPage = () => {
   const { productId } = useParams();
   const productImageRef = useRef();
   const { addToCart } = useCart();
+  const [size, setSize] = useState(null);
+  const [color, setColor] = useState(null);
+  const [isError, setIsError] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
+  const { cart, removeFromCart } = useCart();
+  useEffect(() => {
+    const existingItem = cart?.items.find(
+      (item) => item.productId == productId
+    );
+    if (existingItem) setIsInCart(true);
 
+    console.log("are? ", isInCart);
+  }, [cart, color]);
+
+  const { getRootProps: getRootPropsSize, getRadioProps: getRadioPropsSize } =
+    useRadioGroup({
+      name: "size",
+      onChange: (value) => setSize(value),
+    });
+  const { getRootProps: getRootPropsColor, getRadioProps: getRadioPropsColor } =
+    useRadioGroup({
+      name: "color",
+      onChange: (value) => setColor(value),
+    });
+  useEffect(() => console.log(size, color), [size, color]);
+  const group = getRootPropsSize();
+  const group2 = getRootPropsColor();
   const {
     data: product,
     isLoading,
@@ -17,15 +89,18 @@ const ProductPage = () => {
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
   });
-
   const handleAddToCart = () => {
-    addToCart(product._id, 1);
+    if (size && color) {
+      addToCart(product._id, 1, color, size);
+    } else {
+      setIsError(true);
+    }
   };
 
   const changeMainImage = (imageUrl) => {
     productImageRef.current.src = imageUrl;
   };
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loading />;
   if (error) return <p>Error loading product details.</p>;
 
   return (
@@ -43,7 +118,7 @@ const ProductPage = () => {
             />
           </div>
 
-          <div className="flex-row mt-4 gap-2">
+          <div className="flex mt-4 gap-4">
             {product.imageUrl.map((img, idx) => (
               <img
                 key={idx}
@@ -65,25 +140,79 @@ const ProductPage = () => {
           {/* Size Selection */}
           <div>
             <p className="font-medium">Size:</p>
-            <div className="flex gap-2 mt-2">
-              {product.size.map((s, idx) => (
-                <button
-                  key={idx}
-                  className="px-4 py-2 border rounded hover:bg-orange-100"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
+            {/* <div className="flex gap-2 mt-2"> */}
+            <HStack {...group}>
+              {product.size.map((value) => {
+                const radio = getRadioPropsSize({ value });
+                return (
+                  <RadioCard key={value} {...radio}>
+                    {value}
+                  </RadioCard>
+                );
+              })}
+            </HStack>
+            {/* </div> */}
+          </div>
+          <CustomModal>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint
+              reiciendis, ipsa eius unde earum quaerat exercitationem optio et
+              nobis delectus magnam accusamus, dolorum, temporibus nam veritatis
+              voluptatibus! Tempora, soluta corrupti.
+            </p>
+            <button>test</button>
+          </CustomModal>
+          {/* Color Selection */}
+          <div>
+            <p className="font-medium">Colors:</p>
+            {/* <div className="flex gap-2 mt-2"> */}
+            <HStack {...group2}>
+              {product.color.map((value) => {
+                const radio = getRadioPropsColor({ value });
+                return (
+                  <RadioCard key={value} {...radio}>
+                    {value}
+                  </RadioCard>
+                );
+              })}
+            </HStack>
+            {isError && (
+              <Text color="red.500" py={3}>
+                Please select color and size!
+              </Text>
+            )}
+
+            {/* </div> */}
           </div>
 
           {/* Add to Cart Button */}
-          <button
-            className="px-6 py-3 bg-orange-500 text-white rounded hover:bg-orange-600"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </button>
+          {isInCart ? (
+            <Box className="flex gap-3 !mt-8">
+              <Link to={"/cart"}>
+                <Button size={"lg"} rightIcon={<BiSolidChevronRight />}>
+                  Show in Cart
+                </Button>
+              </Link>
+              <Button
+                size={"lg"}
+                colorScheme="red"
+                onClick={() => {
+                  removeFromCart(productId);
+                  setIsInCart(false);
+                }}
+              >
+                Remove
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              size={"lg"}
+              className="!mt-8 !text-coral-red"
+              onClick={handleAddToCart}
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
       </div>
 

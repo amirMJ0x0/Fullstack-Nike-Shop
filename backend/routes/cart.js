@@ -22,7 +22,7 @@ router.get("/", verifyToken, async (req, res) => {
 
 // add or update a product in cart
 router.post("/add", verifyToken, async (req, res) => {
-  const { productId, quantity } = req.body;
+  const { productId, quantity, color, size } = req.body;
 
   try {
     const product = await Product.findById(productId);
@@ -38,12 +38,12 @@ router.post("/add", verifyToken, async (req, res) => {
     }
 
     const existingItem = cart.items.find((item) => item.productId.toString() === productId);
+    console.log('is item in cart? ' + existingItem);
+
     if (existingItem) {
-      // اگر محصول قبلاً در کارت وجود دارد، فقط تعداد را به‌روزرسانی کنید
-      existingItem.quantity += quantity;
+      existingItem.quantity += 1;
     } else {
-      // اگر محصول جدید است، آن را به کارت اضافه کنید
-      cart.items.push({ productId, quantity });
+      cart.items.push({ productId, quantity, color, size });
     }
 
     await cart.save();
@@ -76,6 +76,38 @@ router.delete("/remove", verifyToken, async (req, res) => {
   }
 });
 
+router.post("/reduce", verifyToken, async (req, res) => {
+  const { productId, color, size } = req.body;
+  try {
+    const userId = req.user.id;
+    let cart = await Cart.findOne({ userId });
+
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    const itemIndex = cart.items.findIndex(
+      (item) =>
+        item.productId.toString() === productId &&
+        item.color === color &&
+        item.size === size
+    );
+
+    if (itemIndex === -1) return res.status(404).json({ message: "Item not found in cart" });
+
+    if (cart.items[itemIndex].quantity > 1) {
+      cart.items[itemIndex].quantity -= 1;
+    } else {
+      cart.items.splice(itemIndex, 1);
+    }
+
+    await cart.save();
+    res.status(200).json({ message: "Quantity reduced", cart });
+  } catch (error) {
+    console.error("Error reducing quantity:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 router.post("/merge", verifyToken, async (req, res) => {
   const { items } = req.body;
   const userId = req.user.id;
@@ -99,7 +131,7 @@ router.post("/merge", verifyToken, async (req, res) => {
     });
 
     await cart.save();
-    res.status(200).json({ cart });
+    res.status(200).json({ message: "Cart updated", cart });
   } catch (error) {
     console.error("Error merging cart:", error.message);
     res.status(500).json({ message: "Server error" });

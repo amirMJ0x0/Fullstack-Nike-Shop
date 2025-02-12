@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "../../services/productServices";
-import { CgSpinner } from "react-icons/cg";
 import {
   Breadcrumb,
   BreadcrumbItem,

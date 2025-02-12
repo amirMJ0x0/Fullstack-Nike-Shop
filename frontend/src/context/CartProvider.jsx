@@ -5,6 +5,7 @@ import {
   addProductToLocalCart,
   clearCartFromLocalStorage,
   getCartFromLocalStorage,
+  removeProductFromLocalCart,
 } from "../utils/cartHelpers";
 
 const CartContext = createContext();
@@ -56,16 +57,23 @@ export const CartProvider = ({ children }) => {
   };
 
   //add item to cart
-  const addToCart = async (productId, quantity) => {
+  const addToCart = async (productId, quantity = 1, color, size) => {
     try {
       if (user) {
         const response = await axiosInstance.post("/cart/add", {
           productId,
           quantity,
+          color,
+          size,
         });
         setCart(response.data.cart);
       } else {
-        const updatedCart = addProductToLocalCart(productId, quantity);
+        const updatedCart = addProductToLocalCart(
+          productId,
+          quantity,
+          color,
+          size
+        );
         setCart(updatedCart);
       }
     } catch (error) {
@@ -91,12 +99,32 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const reduceQuantity = async (productId, color, size) => {
+    try {
+      await axiosInstance.post("/cart/reduce", {
+        productId,
+        color,
+        size,
+      });
+      fetchCart();
+    } catch (error) {
+      console.error("Error reducing quantity:", error);
+    }
+  };
+
   useEffect(() => {
     fetchCart();
   }, [user]);
   return (
     <CartContext.Provider
-      value={{ loading, cart, addToCart, removeFromCart, totalItems }}
+      value={{
+        loading,
+        cart,
+        addToCart,
+        removeFromCart,
+        reduceQuantity,
+        totalItems,
+      }}
     >
       {children}
     </CartContext.Provider>

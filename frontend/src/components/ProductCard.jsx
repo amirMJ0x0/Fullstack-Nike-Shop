@@ -22,18 +22,21 @@ const ProductCard = ({
   score,
   isLoading,
   entryAnimation = "",
+  discount,
 }) => {
   Aos.init({
     once: true,
   });
+
   const windowWidth = useGetWindowWidth();
+  const priceWithDiscount = price - price * (discount / 100);
   const shortenHeading = () => {
     if (windowWidth >= 768) {
-      return name.length > 24 ? name.slice(0, 24) + "..." : name
+      return name.length > 24 ? name.slice(0, 24) + "..." : name;
     } else if (windowWidth < 768 && windowWidth > 375) {
-      return name.length > 19 ? name.slice(0, 19) + "..." : name
+      return name.length > 19 ? name.slice(0, 19) + "..." : name;
     } else if (windowWidth <= 375) {
-      return name.length > 13 ? name.slice(0, 13) + "..." : name
+      return name.length > 13 ? name.slice(0, 13) + "..." : name;
     } else {
       return name;
     }
@@ -41,7 +44,7 @@ const ProductCard = ({
   return (
     <Card
       maxW={{ base: "250px", md: "270px", lg: "280px" }}
-      borderRadius={"2xl"}
+      borderRadius={"xl"}
       shadow={{ base: "base", md: "md" }}
       data-aos={entryAnimation}
     >
@@ -78,16 +81,18 @@ const ProductCard = ({
             <div
               className={`h-30 md:h-42 xl:size-64 w-full bg-cover ${
                 !isLoading && "bg-card"
-              } flex justify-center items-center `}
+              } flex justify-center items-center relative`}
             >
               <Image
                 src={imageUrl[0]}
                 alt={name}
-                position="relative"
                 w={"100%"}
                 h={{ base: "120px", md: "160px" }}
                 objectFit="contain"
               />
+              <span className="text-white-400 bg-red-500 rounded-lg px-1 max-md:text-xs text-sm absolute top-2 right-2">
+                {discount > 0 && `${discount}%`}
+              </span>
             </div>
 
             <Stack
@@ -111,11 +116,26 @@ const ProductCard = ({
                 </Heading>
               </Link>
             </Stack>
-            <CardFooter px={1} py={2}>
+            <CardFooter px={1} py={2} gap={2} alignItems={'center'}>
+              {discount > 0 && (
+                <Text
+                  color="coral"
+                  fontSize={{ base: "md", md: "2xl" }}
+                  fontWeight="semibold"
+                >
+                  {priceWithDiscount}$
+                </Text>
+              )}
               <Text
-                color="coral"
-                fontSize={{ base: "md", md: "2xl" }}
-                fontWeight="semibold"
+                color={discount > 0 ? "gray.400" : "coral"}
+                fontSize={
+                  discount > 0
+                    ? { base: "xs", md: "md" }
+                    : { base: "md", md: "2xl" }
+                }
+                opacity={discount > 0 ? "0.7" : "1"}
+                fontWeight={discount > 0 ? "light" : "semibold"}
+                textDecoration={discount > 0 ? "line-through" : "none"}
               >
                 {price}$
               </Text>
