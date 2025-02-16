@@ -58,7 +58,7 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await axiosInstance.post(`/auth/login`, data);
       if (res.status === 200) {
-        navigate("/");
+        navigate(-1);
         refetch(); //Fetch user info after login
       } else console.log("Login error: ", res.status);
     } catch (error) {

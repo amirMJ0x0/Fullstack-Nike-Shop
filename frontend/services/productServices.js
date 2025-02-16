@@ -21,3 +21,14 @@ export const getProduct = async (id) => {
         console.error("Error fetching product info:", error.response?.data || error.message);
     }
 }
+
+// @desc Fetch Product data using productId
+// @route GET http://localhost:3000/products/:id
+export const postComment = async (commentData, productId) => {
+    try {
+        const response = await axiosInstance.post(`/products/${productId}/comments`, commentData)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching product info:", error.response?.data || error.message);
+    }
+}

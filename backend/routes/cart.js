@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
-const { verifyToken } = require("../middleware/authMiddleware");
+const { verifyToken } = require("../middlewares/authMiddleware");
 
 // get cart data
 router.get("/", verifyToken, async (req, res) => {

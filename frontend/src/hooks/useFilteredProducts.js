@@ -1,7 +1,6 @@
 import { useMemo } from "react"
 
 const useFilteredProducts = (products, filters) => {
-    console.log(filters);
 
     const filteredProducts = useMemo(() => {
         if (!products) return []

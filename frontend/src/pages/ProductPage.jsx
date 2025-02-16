@@ -10,24 +10,44 @@ import {
   Heading,
   HStack,
   Text,
+  useDisclosure,
   useRadioGroup,
 } from "@chakra-ui/react";
 import CustomModal from "../components/share/Modal";
-import { BiSolidChevronRight } from "react-icons/bi";
+import { BiPlus, BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
 import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet";
 import RadioCard from "../components/share/RadioCard";
+import CommentModal from "../components/commentModal";
+import { useAuth } from "../context/AuthProvider";
+import moment from "moment";
 
 const ProductPage = () => {
   const { productId } = useParams();
-  const productImageRef = useRef();
-  const { addToCart } = useCart();
   const [size, setSize] = useState(null);
   const [color, setColor] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
+  const {
+    isOpen: isModalOpen,
+    onClose: onModalClose,
+    onOpen: onModalOpen,
+  } = useDisclosure();
+  const { addToCart } = useCart();
   const { cart, removeFromCart } = useCart();
+  const { user } = useAuth();
+  const productImageRef = useRef();
+
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getProduct(productId),
+  });
+
   useEffect(() => {
     const existingItem = cart?.items.find(
       (item) => item.productId == productId
@@ -47,14 +67,7 @@ const ProductPage = () => {
     });
   const group = getRootPropsSize();
   const group2 = getRootPropsColor();
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["product", productId],
-    queryFn: () => getProduct(productId),
-  });
+
   const handleAddToCart = () => {
     if (size && color) {
       addToCart(product._id, 1, color, size);
@@ -134,7 +147,6 @@ const ProductPage = () => {
           {/* Color Selection */}
           <div>
             <p className="font-medium">Colors:</p>
-            {/* <div className="flex gap-2 mt-2"> */}
             <HStack {...group2}>
               {product.color.map((value) => {
                 const radio = getRadioPropsColor({ value });
@@ -150,8 +162,6 @@ const ProductPage = () => {
                 Please select color and size!
               </Text>
             )}
-
-            {/* </div> */}
           </div>
 
           {/* Add to Cart Button */}
@@ -187,20 +197,76 @@ const ProductPage = () => {
       {/* Reviews Section */}
       <div className="mt-12">
         <h2 className="text-xl font-semibold">Reviews</h2>
-        <div className="grid grid-cols-2">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="max-md:order-2">
             {product.comments.map((comment, idx) => (
               <div key={idx} className="mt-4 p-4 border rounded-lg">
                 <span className="flex items-center gap-1">
                   <PiUserCircleDuotone className="text-xl" />
                   <Heading size={"sm"} className="font-montserrat">
-                    {comment.userId?.username}
+                    {comment.userId?.username || "Unknown user"}
                   </Heading>
+                  <Text fontSize={"sm"} opacity={"0.5"} ml={5}>
+                    {moment
+                      .utc(comment.date)
+                      .local()
+                      .startOf("seconds")
+                      .fromNow()}
+                  </Text>
                 </span>
                 <ReactStars count={5} value={comment.rating} edit={false} />
-                <Text className="!font-palanquin">{comment.text}</Text>
+                <Text className="!font-palanquin" opacity={"0.8"}>
+                  {comment.text}
+                </Text>
               </div>
             ))}
+          </div>
+          <div className="max-md:order-1 mt-4">
+            <Box p={2}>
+              <Box>
+                <div className="flex items-baseline gap-4">
+                  <Heading size={"2xl"} color={"coral"}>
+                    {product.averageRating.toFixed(1)}
+                  </Heading>
+                  <Text fontFamily={"monospace"} color={"slategray"}>
+                    {product.commentsCount} reviews
+                  </Text>
+                </div>
+                <ReactStars
+                  count={5}
+                  size={22}
+                  edit={false}
+                  value={product.averageRating}
+                />
+              </Box>
+              <Box mt={4}>
+                {user ? (
+                  <>
+                    <Button
+                      fontWeight={"bold"}
+                      color={"coral"}
+                      onClick={onModalOpen}
+                    >
+                      Leave a Review <BiPlus />
+                    </Button>
+                  </>
+                ) : (
+                  <div className="text-red-900">
+                    <span>You must </span>
+                    <Link to={"/Login"} className="underline font-bold italic">
+                      login
+                    </Link>
+                    <span> to leave a review</span>
+                  </div>
+                )}
+
+                <CommentModal
+                  isOpen={isModalOpen}
+                  onClose={onModalClose}
+                  productData={product}
+                />
+              </Box>
+            </Box>
           </div>
         </div>
       </div>

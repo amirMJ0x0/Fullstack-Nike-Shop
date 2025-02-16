@@ -9,16 +9,15 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { createPortal } from "react-dom";
 
-const CustomModal = ({ title, children }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+const CustomModal = ({ title, children, isOpen }) => {
+  const { onClose } = useDisclosure();
+  
   <Modal
     blockScrollOnMount={false}
-    isOpen={true}
+    isOpen={isOpen}
     onClose={onClose}
-    className="size-80 bg-dark text-white-400 rounded-md z-50"
+    className="!size-80 !bg-dark !text-white-400 !rounded-md !z-50"
   >
     <ModalOverlay />
     <ModalContent>
