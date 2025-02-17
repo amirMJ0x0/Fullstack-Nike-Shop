@@ -57,7 +57,9 @@ const CartPage = () => {
     0
   );
   const totalDiscount = products.reduce(
-    (acc, item) => acc + (item.productId.discount || 0) * item.quantity,
+    (acc, item) =>
+      acc +
+      ((item.productId.price * item.productId.discount) / 100) * item.quantity,
     0
   );
   const taxAmount = 2;
