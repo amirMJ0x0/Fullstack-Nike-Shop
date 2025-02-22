@@ -1,4 +1,3 @@
-import { Skeleton, SkeletonText } from "@chakra-ui/react";
 import ProductCard from "../components/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "../../services/productServices";
@@ -14,11 +13,9 @@ const ProductsList = () => {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
-      {products?.map((product) => {
-        return (
-          <ProductCard {...product} key={product._id} isLoading={isLoading} />
-        );
-      })}
+      {products?.map((product) => (
+        <ProductCard {...product} key={product._id} isLoading={isLoading} />
+      ))}
     </div>
   );
 };

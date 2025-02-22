@@ -53,7 +53,7 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const { gender, size, color, price, sale } = req.query;
+        const { gender, size, color, price, sale, sort } = req.query;
 
         let filter = {};
 
@@ -79,8 +79,30 @@ const getAllProducts = async (req, res) => {
             }
         }
 
+        let sortOptions = {};
+        switch (sort) {
+            case "popularity":
+                sortOptions.sellCount = -1;
+                break;
+            case "lowPrice":
+                sortOptions.price = 1;
+                break;
+            case "highPrice":
+                sortOptions.price = -1;
+                break;
+            case "views":
+                sortOptions.viewCount = -1;
+                break;
+            case "newest":
+                sortOptions.date = -1;
+                break;
+            case "mostRelevant":
+                sortOptions = {}
+            default:
+                sortOptions = {};
+        }
 
-        const products = await Product.find(filter);
+        const products = await Product.find(filter).sort(sortOptions)
         res.json(products);
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch products" });

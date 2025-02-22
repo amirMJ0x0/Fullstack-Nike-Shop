@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllProducts } from "../../services/productServices";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,43 +6,33 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import useSortedProducts from "../hooks/useSortedProducts";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import SidebarFilterProducts from "../sections/SidebarFilterProducts";
-import useFilteredProducts from "../hooks/useFilteredProducts";
 import ProductsList from "../sections/ProductsList";
 import useDebounce from "../hooks/useDebounce";
 import { BsFilter } from "react-icons/bs";
-import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet";
 import FilterProductsDrawer from "../components/FilterProductsDrawer";
 import { useSearchParams } from "react-router-dom";
 
 const ProductsListPage = () => {
-  // const [sortType, setSortType] = useState("newest");
-  // useEffect(() => {}, [sortType]);
-
   const [searchParams, setSearchParams] = useSearchParams();
-  const filters = {
-    size: searchParams.getAll("size") || [],
-    color: searchParams.getAll("color") || [],
-    gender: searchParams.getAll("gender") ? [searchParams.get("gender")] : [],
-    price: searchParams.getAll("price") || [],
-    sale: searchParams.get("sale") ? true : false,
-  };
-
-  
-
-  // const sortedProducts = useSortedProducts(products, sortType) || [];
-  // const filteredProducts = useFilteredProducts(sortedProducts, filters) || [];
-
+  const initialSort = searchParams.get("sort") || "mostRelevant";
+  const [sortType, setSortType] = useState(initialSort);
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
   } = useDisclosure();
   const filterDrawerBtnRef = useRef();
-  // const [isPending, startTransition] = useTransition();
+
+  const filters = {
+    size: searchParams.getAll("size") || [],
+    color: searchParams.getAll("color") || [],
+    gender: searchParams.getAll("gender") || [],
+    price: searchParams.getAll("price") || [],
+    sale: searchParams.get("sale") ? true : false,
+  };
 
   const handleFilterChange = (filterType, value) => {
     const newParams = new URLSearchParams(searchParams);
@@ -56,18 +44,6 @@ const ProductsListPage = () => {
         newParams.set("sale", "true");
       }
     } else {
-      // let existingValues = newParams.getAll(filterType);
-
-      // if (existingValues.includes(value)) {
-      //   existingValues = existingValues.filter((v) => v !== value);
-      // } else {
-      //   existingValues.push(value);
-      // }
-
-      // newParams.delete(filterType);
-
-      // existingValues.forEach((v) => newParams.append(filterType, v));
-
       let existingValues = newParams.getAll(filterType);
       newParams.delete(filterType);
 
@@ -80,21 +56,20 @@ const ProductsListPage = () => {
       existingValues.forEach((v) => newParams.append(filterType, v));
     }
 
-    setSearchParams(newParams);
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const onSelectSortType = (e) => {
+    const selectedSort = e.target.value;
+    setSortType(selectedSort);
+
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("sort", selectedSort);
+    setSearchParams(newParams, { replace: true });
   };
 
   const debouncedHandleCheckboxChange = useDebounce(handleFilterChange, 300);
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
-  // if (error) {
-  //   return <div className="max-container">error: {error}</div>;
-  // }
-
-  // const onSelectSortType = (e) => {
-  //   setSortType(e.target.value);
-  // };
   let windowWidth = window.innerWidth;
   return (
     <section className="max-container max-2xl:padding-x max-sm:px-4">
@@ -113,7 +88,6 @@ const ProductsListPage = () => {
         </Breadcrumb>
       </div>
       <div className="my-7 mx-4">Ad & Banner</div>
-      {/* <Divider orientation="horizontal" /> */}
 
       <div className="flex justify-between items-center max-md:mx-2 max-container ">
         {/* Filter Products Section (Mobile Devices)  */}
@@ -140,7 +114,7 @@ const ProductsListPage = () => {
         </div>
 
         {/* Sort Products Section  */}
-        {/* <div className="flex items-center">
+        <div className="flex items-center">
           <p className="info-text !text-sm tracking-tight md:tracking-normal md:text-lg max-sm:hidden">
             Sort By: &nbsp;
           </p>
@@ -153,13 +127,14 @@ const ProductsListPage = () => {
             value={sortType}
             onChange={(e) => onSelectSortType(e)}
           >
+            <option value="mostRelevant">Most relevant</option>
             <option value="newest">Newest</option>
             <option value="lowPrice">Price: Low To High</option>
             <option value="highPrice">Price: High To Low</option>
             <option value="views">Most Viewed</option>
             <option value="popularity">Best Seller</option>
           </Select>
-        </div> */}
+        </div>
       </div>
       <section className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-4">
         {/* Filter Products Section (Desktop Devices)  */}
@@ -172,8 +147,7 @@ const ProductsListPage = () => {
         <div className="grid !w-full col-span-3 h-screen lg:justify-end">
           {/* Products Section */}
 
-          <ProductsList
-          />
+          <ProductsList />
         </div>
       </section>
     </section>
