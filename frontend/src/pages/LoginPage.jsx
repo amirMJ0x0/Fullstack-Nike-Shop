@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "../utils/validation";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const LoginPage = () => {
   const {

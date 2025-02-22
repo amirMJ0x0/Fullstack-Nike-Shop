@@ -10,7 +10,7 @@ import {
 import Aos from "aos";
 import "aos/dist/aos.css";
 import BackToTopBtn from "../components/share/BackToTopBtn";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const HomePage = () => {
   useEffect(() => {

@@ -4,7 +4,7 @@ import { getProduct } from "../../services/productServices";
 import { Button, Heading, HStack, Image, Stack } from "@chakra-ui/react";
 import CartItem from "../components/CartItem";
 import Loading from "../components/share/Loading";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const CartPage = () => {
   const { cart, loading } = useCart();

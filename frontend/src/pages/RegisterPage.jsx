@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthProvider";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerValidationSchema } from "../utils/validation";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const RegisterPage = () => {
   const { registerAction, loginAction } = useAuth();

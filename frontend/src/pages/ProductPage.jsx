@@ -17,7 +17,7 @@ import CustomModal from "../components/share/Modal";
 import { BiPlus, BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
 import Loading from "../components/share/Loading";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import RadioCard from "../components/share/RadioCard";
 import CommentModal from "../components/commentModal";
 import { useAuth } from "../context/AuthProvider";

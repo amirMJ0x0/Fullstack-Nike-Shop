@@ -11,7 +11,7 @@ import SidebarFilterProducts from "../sections/SidebarFilterProducts";
 import ProductsList from "../sections/ProductsList";
 import useDebounce from "../hooks/useDebounce";
 import { BsFilter } from "react-icons/bs";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import FilterProductsDrawer from "../components/FilterProductsDrawer";
 import { useSearchParams } from "react-router-dom";
 
