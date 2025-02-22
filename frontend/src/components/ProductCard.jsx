@@ -20,9 +20,9 @@ const ProductCard = ({
   name,
   price,
   score,
-  isLoading,
   entryAnimation = "",
   discount,
+  isLoading,
 }) => {
   Aos.init({
     once: true,
@@ -44,6 +44,7 @@ const ProductCard = ({
   return (
     <Card
       maxW={{ base: "250px", md: "270px", lg: "280px" }}
+      maxH={"max-content"}
       borderRadius={"xl"}
       shadow={{ base: "base", md: "md" }}
       data-aos={entryAnimation}
@@ -51,30 +52,37 @@ const ProductCard = ({
       <CardBody p={{ base: "1", md: "3" }} pos={"relative"}>
         {isLoading ? (
           <>
-            <Skeleton borderRadius="2xl" className="size-72"></Skeleton>
+            <Skeleton borderRadius="2xl" className="size-64"></Skeleton>
 
-            <SkeletonText
-              mt="4"
-              noOfLines={1}
-              spacing="4"
-              skeletonHeight="4"
-              width={"5rem"}
-            />
+            <Stack
+              mt={{ base: "3", md: "4" }}
+              spacing={{ base: "2", md: "3" }}
+              px={1}
+              pb={{ base: 1, sm: 0 }}
+            >
+              <SkeletonText
+                mt="4"
+                noOfLines={1}
+                spacing="4"
+                skeletonHeight="4"
+                width={"5rem"}
+              />
 
-            <SkeletonText
-              mt="1"
-              noOfLines={1}
-              spacing="4"
-              skeletonHeight="4"
-              width={"80%"}
-            />
-            <SkeletonText
-              mt="5"
-              noOfLines={1}
-              spacing="4"
-              skeletonHeight="3"
-              width={"4rem"}
-            />
+              <SkeletonText
+                mt="1"
+                noOfLines={1}
+                spacing="4"
+                skeletonHeight="4"
+                width={"80%"}
+              />
+              <SkeletonText
+                mt="5"
+                noOfLines={1}
+                spacing="4"
+                skeletonHeight="3"
+                width={"4rem"}
+              />
+            </Stack>
           </>
         ) : (
           <>
@@ -116,7 +124,7 @@ const ProductCard = ({
                 </Heading>
               </Link>
             </Stack>
-            <CardFooter px={1} py={2} gap={2} alignItems={'center'}>
+            <CardFooter px={1} py={2} gap={2} alignItems={"center"}>
               {discount > 0 && (
                 <Text
                   color="coral"
