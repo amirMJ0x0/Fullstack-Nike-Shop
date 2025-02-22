@@ -126,7 +126,7 @@ const Nav = () => {
             onClick={() => navigate("/cart")}
           >
             <FaCartShopping />
-            {totalItems && (
+            {totalItems > 0 && (
               <span className="text-xs px-1 py-0 bg-coral-red text-white-400 rounded-full absolute -top-2 -right-1">
                 {totalItems}
               </span>

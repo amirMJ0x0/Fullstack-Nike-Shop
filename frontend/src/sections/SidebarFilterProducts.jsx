@@ -10,13 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { productFilters } from "../constants";
 
-const SidebarFilterProducts = ({ filters, handleCheckboxChange }) => {
+const SidebarFilterProducts = ({ filters, handleFilterChange }) => {
   return (
     <aside className="col-span-1 h-screen mt-3">
       {/* Filter  */}
       <Accordion allowToggle>
-        {productFilters.map((filter) => (
-          <AccordionItem key={filter.label} p={2}>
+        {productFilters.map((item) => (
+          <AccordionItem key={item.label} p={2}>
             <h2>
               <AccordionButton>
                 <Box
@@ -25,12 +25,11 @@ const SidebarFilterProducts = ({ filters, handleCheckboxChange }) => {
                   textAlign="left"
                   fontFamily={"palanquin"}
                   fontWeight={"bold"}
-                  fontSize={"xl"}
+                  fontSize={{ base: "lg", md: "xl" }}
                 >
-                  {filter.label}{" "}
-                  {filters[filter.filterType] &&
-                  filters[filter.filterType].size > 0
-                    ? `(${filters[filter.filterType].size})`
+                  {item.label}{" "}
+                  {filters[item.filterType] && filters[item.filterType].size > 0
+                    ? `(${filters[item.filterType].size})`
                     : ""}
                 </Box>
                 <AccordionIcon />
@@ -40,25 +39,33 @@ const SidebarFilterProducts = ({ filters, handleCheckboxChange }) => {
               <Stack
                 spacing={0}
                 p={3}
-                direction={`${filter.options.length < 5 ? "column" : "row"}`}
+                direction={`${
+                  Object.keys(item.options).length < 5 ? "column" : "row"
+                }`}
                 className="info-text"
                 flexWrap={"wrap"}
               >
-                {filter.options.map((option) => (
-                  <Checkbox
-                    p={1}
-                    mx={2}
-                    colorScheme="orange"
-                    value={option}
-                    key={option}
-                    // isChecked={filters[filter.filterType]?.has(option)}
-                    onChange={() =>
-                      handleCheckboxChange(filter.filterType, option)
-                    }
-                  >
-                    {option}
-                  </Checkbox>
-                ))}
+                {item.options.map((option, index) => {
+                  return (
+                    <Checkbox
+                      p={1}
+                      mx={2}
+                      colorScheme="orange"
+                      value={option.value}
+                      key={index}
+                      isChecked={
+                        Array.isArray(filters[item.filterType])
+                          ? filters[item.filterType].includes(option.value)
+                          : filters[item.filterType] === option.value
+                      }
+                      onChange={() =>
+                        handleFilterChange(item.filterType, option.value)
+                      }
+                    >
+                      {option.label}
+                    </Checkbox>
+                  );
+                })}
               </Stack>
             </AccordionPanel>
           </AccordionItem>

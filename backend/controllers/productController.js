@@ -53,7 +53,34 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        const { gender, size, color, price, sale } = req.query;
+
+        let filter = {};
+
+        if (gender) filter.gender = { $in: gender };
+        if (size) filter.size = { $in: size };
+        if (color) filter.color = { $in: color };
+        if (sale) filter.discount = { $gt: 0 };
+
+        if (price) {
+
+            const priceRanges = {
+                "0-25": { $gte: 0, $lte: 25 },
+                "25-50": { $gte: 25, $lte: 50 },
+                "50-100": { $gte: 50, $lte: 100 },
+                "100-150": { $gte: 100, $lte: 150 },
+                "over-150": { $gte: 150 },
+            };
+
+            const priceArray = Array.isArray(price) ? price : [price];
+            const priceFilters = priceArray.map((p) => priceRanges[p]).filter(Boolean);
+            if (priceFilters.length > 0) {
+                filter.$or = priceFilters.map((range) => ({ price: range }));
+            }
+        }
+
+
+        const products = await Product.find(filter);
         res.json(products);
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch products" });

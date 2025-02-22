@@ -6,9 +6,10 @@ import {
   BreadcrumbLink,
   Button,
   Select,
+  useDisclosure,
 } from "@chakra-ui/react";
 import useSortedProducts from "../hooks/useSortedProducts";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import SidebarFilterProducts from "../sections/SidebarFilterProducts";
 import useFilteredProducts from "../hooks/useFilteredProducts";
 import ProductsList from "../sections/ProductsList";
@@ -16,51 +17,84 @@ import useDebounce from "../hooks/useDebounce";
 import { BsFilter } from "react-icons/bs";
 import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet";
+import FilterProductsDrawer from "../components/FilterProductsDrawer";
+import { useSearchParams } from "react-router-dom";
 
 const ProductsListPage = () => {
-  const [sortType, setSortType] = useState("newest");
-  useEffect(() => {}, [sortType]);
+  // const [sortType, setSortType] = useState("newest");
+  // useEffect(() => {}, [sortType]);
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: getAllProducts,
-  });
-  const [filters, setFilters] = useState({});
-  const sortedProducts = useSortedProducts(data, sortType) || [];
-  const filteredProducts = useFilteredProducts(sortedProducts, filters) || [];
-
-  const [isPending, startTransition] = useTransition();
-  const handleCheckboxChange = (filterType, value) => {
-    startTransition(() => {
-      setFilters((prevFilters) => {
-        const newFilters = { ...prevFilters };
-        if (!newFilters[filterType]) newFilters[filterType] = new Set();
-
-        const updatedSet = new Set(newFilters[filterType]);
-        if (updatedSet.has(value)) {
-          updatedSet.delete(value);
-        } else {
-          updatedSet.add(value);
-        }
-
-        newFilters[filterType] = updatedSet;
-
-        return newFilters;
-      });
-    });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filters = {
+    size: searchParams.getAll("size") || [],
+    color: searchParams.getAll("color") || [],
+    gender: searchParams.getAll("gender") ? [searchParams.get("gender")] : [],
+    price: searchParams.getAll("price") || [],
+    sale: searchParams.get("sale") ? true : false,
   };
-  const debouncedHandleCheckboxChange = useDebounce(handleCheckboxChange, 300);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-  if (error) {
-    return <div className="max-container">error: {error}</div>;
-  }
+  
 
-  const onSelectSortType = (e) => {
-    setSortType(e.target.value);
+  // const sortedProducts = useSortedProducts(products, sortType) || [];
+  // const filteredProducts = useFilteredProducts(sortedProducts, filters) || [];
+
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
+  const filterDrawerBtnRef = useRef();
+  // const [isPending, startTransition] = useTransition();
+
+  const handleFilterChange = (filterType, value) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (filterType === "sale") {
+      if (newParams.get("sale") === "true") {
+        newParams.delete("sale");
+      } else {
+        newParams.set("sale", "true");
+      }
+    } else {
+      // let existingValues = newParams.getAll(filterType);
+
+      // if (existingValues.includes(value)) {
+      //   existingValues = existingValues.filter((v) => v !== value);
+      // } else {
+      //   existingValues.push(value);
+      // }
+
+      // newParams.delete(filterType);
+
+      // existingValues.forEach((v) => newParams.append(filterType, v));
+
+      let existingValues = newParams.getAll(filterType);
+      newParams.delete(filterType);
+
+      if (existingValues.includes(value)) {
+        existingValues = existingValues.filter((v) => v !== value);
+      } else {
+        newParams.append(filterType, value);
+      }
+
+      existingValues.forEach((v) => newParams.append(filterType, v));
+    }
+
+    setSearchParams(newParams);
   };
+
+  const debouncedHandleCheckboxChange = useDebounce(handleFilterChange, 300);
+
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
+  // if (error) {
+  //   return <div className="max-container">error: {error}</div>;
+  // }
+
+  // const onSelectSortType = (e) => {
+  //   setSortType(e.target.value);
+  // };
   let windowWidth = window.innerWidth;
   return (
     <section className="max-container max-2xl:padding-x max-sm:px-4">
@@ -85,16 +119,28 @@ const ProductsListPage = () => {
         {/* Filter Products Section (Mobile Devices)  */}
         <div className="">
           <Button
+            ref={filterDrawerBtnRef}
+            onClick={onDrawerOpen}
             colorScheme="orange"
             variant="outline"
             className="md:!hidden flex gap-1"
           >
             <span>Filters</span> <BsFilter />
           </Button>
+          <FilterProductsDrawer
+            btnRef={filterDrawerBtnRef}
+            onClose={onDrawerClose}
+            isOpen={isDrawerOpen}
+          >
+            <SidebarFilterProducts
+              filters={filters}
+              handleFilterChange={debouncedHandleCheckboxChange}
+            />
+          </FilterProductsDrawer>
         </div>
 
         {/* Sort Products Section  */}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <p className="info-text !text-sm tracking-tight md:tracking-normal md:text-lg max-sm:hidden">
             Sort By: &nbsp;
           </p>
@@ -113,23 +159,20 @@ const ProductsListPage = () => {
             <option value="views">Most Viewed</option>
             <option value="popularity">Best Seller</option>
           </Select>
-        </div>
+        </div> */}
       </div>
       <section className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-4">
         {/* Filter Products Section (Desktop Devices)  */}
         <div className="max-lg:hidden col-span-1">
           <SidebarFilterProducts
             filters={filters}
-            handleCheckboxChange={debouncedHandleCheckboxChange}
+            handleFilterChange={debouncedHandleCheckboxChange}
           />
         </div>
-        <div className="grid w-full col-span-3 h-screen justify-end">
+        <div className="grid !w-full col-span-3 h-screen lg:justify-end">
           {/* Products Section */}
 
           <ProductsList
-            products={filteredProducts}
-            isPending={isPending}
-            isLoading={isLoading}
           />
         </div>
       </section>

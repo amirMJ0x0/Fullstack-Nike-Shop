@@ -1,38 +1,21 @@
 import { Skeleton, SkeletonText } from "@chakra-ui/react";
 import ProductCard from "../components/ProductCard";
+import { useQuery } from "@tanstack/react-query";
+import { getAllProducts } from "../../services/productServices";
+import { useSearchParams } from "react-router-dom";
 
-const ProductsList = ({ products, isPending, isLoading }) => {
+const ProductsList = () => {
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products", queryString],
+    queryFn: () => getAllProducts(queryString),
+  });
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-1 md:gap-5">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
       {products?.map((product) => {
-        return isPending ? (
-          <div className="flex-1" key={product._id}>
-            <Skeleton borderRadius="2xl" className="size-72"></Skeleton>
-
-            <SkeletonText
-              mt="4"
-              noOfLines={1}
-              spacing="4"
-              skeletonHeight="4"
-              width={"5rem"}
-            />
-
-            <SkeletonText
-              mt="1"
-              noOfLines={1}
-              spacing="4"
-              skeletonHeight="4"
-              width={"10rem"}
-            />
-            <SkeletonText
-              mt="5"
-              noOfLines={1}
-              spacing="4"
-              skeletonHeight="3"
-              width={"4rem"}
-            />
-          </div>
-        ) : (
+        return (
           <ProductCard {...product} key={product._id} isLoading={isLoading} />
         );
       })}

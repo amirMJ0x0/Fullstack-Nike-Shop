@@ -2,9 +2,9 @@ import axiosInstance from './axiosInstance';
 
 // @desc Get All Products
 // @route GET http://localhost:3000/products
-export const getAllProducts = async () => {
+export const getAllProducts = async (queryString) => {
     try {
-        const response = await axiosInstance.get('/products')
+        const response = await axiosInstance.get(`/products?${queryString}`)
         return response.data
     } catch (error) {
         console.error("Error fetching products info:", error.response?.data || error.message);

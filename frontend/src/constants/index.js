@@ -7,13 +7,57 @@ export const navLinks = [
     { href: "/about-us", label: "About Us" },
 ];
 
+// export const productFilters = [
+//     { label: "Gender", filterType: "gender", options: ["Men", "Women", "Unisex"], values: ["Men", "Women", "Unisex"] },
+//     { label: "Size", filterType: "size", options: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"], values: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"] },
+//     { label: "Color", filterType: "color", options: ["Red", "Blue", "Green", "Black", "White"], values: ["Red", "Blue", "Green", "Black", "White"] },
+//     { label: "Shop by Price", filterType: "price", options: ["0$ - 25$", "25$ - 50$", "50$ - 100$", "100$ - 150$", "Over 150$"], values: ["0-25", "25-50", "50-100", "100-150", "over-150"] },
+//     { label: "Sale", filterType: "sale", options: ["Sale"], values: ["true"] },
+// ]
 export const productFilters = [
-    { label: "Gender", filterType: "gender", options: ["Men", "Female", "Unisex"] },
-    { label: "Size", filterType: "size", options: ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"] },
-    { label: "Color", filterType: "color", options: ["Red", "Blue", "Green", "Black", "White"] },
-    { label: "Shop by Price", filterType: "price", options: ["0$ - 25$", "25$ - 50$", "50$ - 100$", "100$ - 150$", "Over 150$"] },
-    { label: "Sale", filterType: "sale", options: ["Sale"] },
-]
+    {
+        label: "Gender",
+        filterType: "gender",
+        options: [
+            { label: "Men", value: "Men" },
+            { label: "Women", value: "Women" },
+            { label: "Unisex", value: "Unisex" },
+        ],
+    },
+    {
+        label: "Size",
+        filterType: "size",
+        options: [...Array(11)].map((_, i) => ({
+            label: (35 + i).toString(),
+            value: (35 + i).toString(),
+        })),
+    },
+    {
+        label: "Color",
+        filterType: "color",
+        options: ["Red", "Blue", "Green", "Black", "White"].map((color) => ({
+            label: color,
+            value: color,
+        })),
+    },
+    {
+        label: "Shop by Price",
+        filterType: "price",
+        options: [
+            { label: "0$ - 25$", value: "0-25" },
+            { label: "25$ - 50$", value: "25-50" },
+            { label: "50$ - 100$", value: "50-100" },
+            { label: "100$ - 150$", value: "100-150" },
+            { label: "Over 150$", value: "over-150" },
+        ],
+    },
+    {
+        label: "Sale",
+        filterType: "sale",
+        options: [{ label: "Sale", value: true }], // Boolean instead of string
+    },
+];
+
 export const statistics = [
     { num: 1000, value: '1k+', label: 'Brands' },
     { num: 500, value: '500+', label: 'Shops' },
