@@ -53,7 +53,7 @@ const ProductsList = ({ setShowNotFoundLogo }) => {
           <Text m={2} color={"coral"} opacity={0.7} ref={resultRef}>
             Results: {totalItems || 0}
           </Text>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 xl:gap-5">
             {products?.map((product) => (
               <ProductCard
                 {...product}

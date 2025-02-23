@@ -32,7 +32,7 @@ const ProductCard = ({
   const priceWithDiscount = price - price * (discount / 100);
   const shortenHeading = () => {
     if (windowWidth >= 768) {
-      return name.length > 24 ? name.slice(0, 24) + "..." : name;
+      return name.length > 24 ? name.slice(0, 22) + "..." : name;
     } else if (windowWidth < 768 && windowWidth > 375) {
       return name.length > 19 ? name.slice(0, 19) + "..." : name;
     } else if (windowWidth <= 375) {
@@ -49,7 +49,7 @@ const ProductCard = ({
       shadow={{ base: "base", md: "md" }}
       data-aos={entryAnimation}
     >
-      <CardBody p={{ base: "1", md: "3" }} pos={"relative"}>
+      <CardBody p={{ base: "1", md: "2" }} pos={"relative"}>
         {isLoading ? (
           <>
             <Skeleton borderRadius="2xl" className="size-64"></Skeleton>
@@ -117,7 +117,7 @@ const ProductCard = ({
               <Link to={`/products/${_id}`}>
                 <Heading
                   letterSpacing={"tighter"}
-                  size={{ base: "xs", md: "md" }}
+                  size={{ base: "xs", md: "sm", xl: "md" }}
                   maxW={"-moz-max-content"}
                 >
                   {shortenHeading()}

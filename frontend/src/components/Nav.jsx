@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import headerLogo from "../assets/images/header-logo.svg";
 import { useRef } from "react";
 import { RiMenu3Line } from "react-icons/ri";
@@ -12,7 +12,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  Stack,
   Text,
   useColorModeValue,
   useDisclosure,
@@ -27,7 +26,6 @@ import { useCart } from "../context/CartProvider";
 const Nav = () => {
   const { user } = useAuth();
   const { totalItems } = useCart();
-  const navigate = useNavigate();
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -49,33 +47,33 @@ const Nav = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="flex-1 flex justify-between items-center pl-16 max-lg:hidden">
+        <ul className="flex-1 flex justify-between items-center pl-16 max-lg:hidden text-md xl:text-lg">
           <li className="flex gap-10 info-text">
-            <div className="font-montserrat leading-normal lg:text-lg ">
+            <div className="font-montserrat leading-normal">
               <Link to={"/products"} className="">
                 <Text _dark={{ color: "gray.400" }}>Products</Text>
               </Link>
             </div>
-            <div className="font-montserrat leading-normal lg:text-lg ">
+            <div className="font-montserrat leading-normal">
               <Link to={"/about-us"} className="">
                 <Text _dark={{ color: "gray.400" }}>About Us</Text>
               </Link>
             </div>
-            <div className="font-montserrat leading-normal lg:text-lg ">
+            <div className="font-montserrat leading-normal">
               <Link to={"/weblog"} className="">
                 <Text _dark={{ color: "gray.400" }}>Blogs</Text>
               </Link>
             </div>
           </li>
           {/* Log in and Sign up | Profile*/}
-          <li className="info-text flex items-center gap-5">
+          <li className="info-text flex items-center gap-3 xl:gap-5 !text-md xl:!text-lg">
             {!user ? (
               <>
                 <Link to={"/Login"}>
                   <Text className="p-3 hover:opacity-65">Log in</Text>
                 </Link>
                 <Link to={"/Register"}>
-                  <Text className="bg-coral-red text-white-400 py-3 px-8 rounded-full hover:opacity-75 hover:transition-opacity">
+                  <Text className="bg-coral-red text-white-400 py-2 xl:py-3 px-4 xl:px-8 rounded-full hover:opacity-75 hover:transition-opacity">
                     Sign up
                   </Text>
                 </Link>
@@ -101,9 +99,9 @@ const Nav = () => {
               h={"30px"}
               className="dark:!opacity-15"
             />
-            <Stack
+            <Link
               className="font-montserrat leading-normal text-2xl lg:text-3xl relative p-1 cursor-pointer"
-              onClick={() => navigate("/cart")}
+              to={"/cart"}
             >
               <FaCartShopping
                 className={` ${colorMode === "dark" && "text-white-400"}`}
@@ -113,7 +111,7 @@ const Nav = () => {
                   {totalItems}
                 </span>
               )}
-            </Stack>
+            </Link>
           </li>
         </ul>
 
