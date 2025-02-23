@@ -55,6 +55,9 @@ const getAllProducts = async (req, res) => {
     try {
         const { gender, size, color, price, sale, sort } = req.query;
 
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 6
+        const skip = (page - 1) * limit
         let filter = {};
 
         if (gender) filter.gender = { $in: gender };
@@ -102,8 +105,14 @@ const getAllProducts = async (req, res) => {
                 sortOptions = {};
         }
 
-        const products = await Product.find(filter).sort(sortOptions)
-        res.json(products);
+        const products = await Product.find(filter).sort(sortOptions).skip(skip).limit(limit)
+
+        const totalProductsWithoutPagination = await Product.find(filter).sort(sortOptions).countDocuments()
+        const totalProducts = await Product.find(filter).countDocuments();
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        res.json({ products, totalPages, currentPage: page, totalItems: totalProductsWithoutPagination });
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch products" });
     }

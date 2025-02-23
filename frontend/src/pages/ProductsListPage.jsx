@@ -4,6 +4,7 @@ import {
   BreadcrumbLink,
   Button,
   Select,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
@@ -19,6 +20,7 @@ const ProductsListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialSort = searchParams.get("sort") || "mostRelevant";
   const [sortType, setSortType] = useState(initialSort);
+  const [showNotFoundLogo, setShowNotFoundLogo] = useState();
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -89,17 +91,18 @@ const ProductsListPage = () => {
       </div>
       <div className="my-7 mx-4">Ad & Banner</div>
 
-      <div className="flex justify-between items-center max-md:mx-2 max-container ">
+      <div className="flex justify-between items-center max-md:mx-2 max-container max-sm:gap-2">
         {/* Filter Products Section (Mobile Devices)  */}
         <div className="">
           <Button
             ref={filterDrawerBtnRef}
             onClick={onDrawerOpen}
-            colorScheme="orange"
+            colorScheme="gray"
             variant="outline"
-            className="md:!hidden flex gap-1"
+            className="lg:!hidden"
+            rightIcon={<BsFilter />}
           >
-            <span>Filters</span> <BsFilter />
+            Filters
           </Button>
           <FilterProductsDrawer
             btnRef={filterDrawerBtnRef}
@@ -122,7 +125,7 @@ const ProductsListPage = () => {
             colorScheme="orange"
             variant={"filled"}
             size={"md"}
-            w={windowWidth > 768 ? "13rem" : "8rem"}
+            w={{ base: "10rem", md: "13rem" }}
             className="text-sm"
             value={sortType}
             onChange={(e) => onSelectSortType(e)}
@@ -144,10 +147,13 @@ const ProductsListPage = () => {
             handleFilterChange={debouncedHandleCheckboxChange}
           />
         </div>
-        <div className="grid !w-full col-span-3 h-screen lg:justify-end">
+        <div
+          className={`grid !w-full col-span-3 ${
+            showNotFoundLogo ? "lg:justify-center" : "lg:justify-end"
+          }`}
+        >
           {/* Products Section */}
-
-          <ProductsList />
+          <ProductsList setShowNotFoundLogo={setShowNotFoundLogo} />
         </div>
       </section>
     </section>
