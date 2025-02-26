@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import ProductCard from "../components/ProductCard";
 import { getAllProducts } from "../../services/productServices";
-import useSortedProducts from "../hooks/useSortedProducts";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -16,14 +15,16 @@ import { Button } from "@chakra-ui/react";
 const PopularProducts = () => {
   const { data, error } = useQuery({
     queryKey: ["products"],
-    queryFn: getAllProducts,
+    queryFn: () => getAllProducts("sort=popularity"),
   });
-  const popularProducts = useSortedProducts(data, "popularity") || [];
+  const { products: popularProducts } = data || {};
+
   const swiperRef = useRef();
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
+
   if (error) {
-    return <div className="max-container">{error}</div>;
+    return <div className="max-container">{error.message}</div>;
   }
 
   return (
@@ -75,7 +76,7 @@ const PopularProducts = () => {
           }}
           modules={[Pagination, Navigation]}
         >
-          {popularProducts?.slice(0, 6).map((product) => (
+          {popularProducts?.map((product) => (
             <SwiperSlide key={product._id}>
               <ProductCard {...product} entryAnimation="fade-down" />
             </SwiperSlide>
