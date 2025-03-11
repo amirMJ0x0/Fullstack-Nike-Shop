@@ -53,7 +53,7 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const { gender, size, color, price, sale, sort } = req.query;
+        const { gender, size, color, price, sale, sort, search } = req.query;
 
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 6
@@ -64,7 +64,7 @@ const getAllProducts = async (req, res) => {
         if (size) filter.size = { $in: size };
         if (color) filter.color = { $in: color };
         if (sale) filter.discount = { $gt: 0 };
-
+        if (search) filter.name = { $regex: search.trim(), $options: 'i' };
         if (price) {
 
             const priceRanges = {
@@ -83,27 +83,30 @@ const getAllProducts = async (req, res) => {
         }
 
         let sortOptions = {};
-        switch (sort) {
-            case "popularity":
-                sortOptions.sellCount = -1;
-                break;
-            case "lowPrice":
-                sortOptions.price = 1;
-                break;
-            case "highPrice":
-                sortOptions.price = -1;
-                break;
-            case "views":
-                sortOptions.viewCount = -1;
-                break;
-            case "newest":
-                sortOptions.date = -1;
-                break;
-            case "mostRelevant":
-                sortOptions = {}
-            default:
-                sortOptions = {};
+        if (sort && sort !== "mostRelevant") {
+            switch (sort) {
+                case "popularity":
+                    sortOptions.sellCount = -1;
+                    break;
+                case "lowPrice":
+                    sortOptions.price = 1;
+                    break;
+                case "highPrice":
+                    sortOptions.price = -1;
+                    break;
+                case "views":
+                    sortOptions.viewCount = -1;
+                    break;
+                case "newest":
+                    sortOptions.date = -1;
+                    break;
+                default:
+                    sortOptions = {}; // No sorting applied
+            }
         }
+
+
+
 
         const products = await Product.find(filter).sort(sortOptions).skip(skip).limit(limit)
 
@@ -118,6 +121,27 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+
+
+const searchProducts = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        if (!query) {
+            return res.status(400).json({ message: "Search query is required" });
+        }
+
+        const products = await Product.find(
+            { name: { $regex: query.trim(), $options: "i" } },
+            "name imageUrl _id"
+        ).limit(5);
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+
 const getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id).populate("comments.userId", "username");
@@ -128,5 +152,5 @@ const getProductById = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getAllProducts, getProductById, addComment };
+module.exports = { createProduct, getAllProducts, searchProducts, getProductById, addComment };
 

@@ -11,6 +11,17 @@ export const getAllProducts = async (queryString) => {
     }
 }
 
+// @desc Get All Products according to the search term
+// @route GET http://localhost:3000/products/search
+export const getProductsBySearchTerm = async (searchTerm) => {
+    try {
+        const response = await axiosInstance.get(`/products/search?query=${searchTerm}`)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching search results:", error);
+    }
+}
+
 // @desc Fetch Product data using productId
 // @route GET http://localhost:3000/products/:id
 export const getProduct = async (id) => {

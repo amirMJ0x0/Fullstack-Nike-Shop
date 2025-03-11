@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import headerLogo from "../assets/images/header-logo.svg";
-import { useRef } from "react";
-import { RiMenu3Line } from "react-icons/ri";
+import { useRef, useState } from "react";
+import { RiMenu3Line, RiSearch2Line } from "react-icons/ri";
 import {
   Button,
   Divider,
@@ -12,18 +12,23 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  Input,
+  InputGroup,
+  InputRightElement,
   Text,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaRegUser, FaUser } from "react-icons/fa6";
 import { useAuth } from "../context/AuthProvider";
 import useThemeSwitcher from "../hooks/useThemeSwitcher";
 import ThemeChanger from "./share/ThemeChanger";
 import ProfileContextMenu from "./share/ProfileContextMenu";
 import { useCart } from "../context/CartProvider";
-
+import { BsSearch } from "react-icons/bs";
+import SearchModal from "./searchModal";
 const Nav = () => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { user } = useAuth();
   const { totalItems } = useCart();
   const {
@@ -35,6 +40,13 @@ const Nav = () => {
   const bgColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("black", "white");
   const btnRef = useRef();
+
+  const onOpenSearch = () => {
+    setIsSearchOpen(true);
+  };
+  const onCloseSearch = () => {
+    setIsSearchOpen(false);
+  };
   return (
     <header className="padding-x py-8 relative z-10 w-full">
       <nav className="flex justify-between items-center max-container">
@@ -47,8 +59,8 @@ const Nav = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="flex-1 flex justify-between items-center pl-16 max-lg:hidden text-md xl:text-lg">
-          <li className="flex gap-10 info-text">
+        <ul className="flex-1 flex justify-between items-center pl-12 max-lg:hidden text-md xl:text-lg">
+          <li className="flex gap-8 info-text">
             <div className="font-montserrat leading-normal">
               <Link to={"/products"} className="">
                 <Text _dark={{ color: "gray.400" }}>Products</Text>
@@ -66,16 +78,18 @@ const Nav = () => {
             </div>
           </li>
           {/* Log in and Sign up | Profile*/}
-          <li className="info-text flex items-center gap-3 xl:gap-5 !text-md xl:!text-lg">
+          <li className="info-text flex items-center gap-3 lg:gap-5 !text-md xl:!text-lg">
             {!user ? (
               <>
-                <Link to={"/Login"}>
-                  <Text className="p-3 hover:opacity-65">Log in</Text>
-                </Link>
-                <Link to={"/Register"}>
-                  <Text className="bg-coral-red text-white-400 py-2 xl:py-3 px-4 xl:px-8 rounded-full hover:opacity-75 hover:transition-opacity">
-                    Sign up
-                  </Text>
+                <Link
+                  to={"/Login"}
+                  className={`"text-xl pr-3"
+                ${
+                  colorMode === "dark" ? "!text-[#ffffffa3]" : "!text-slate-600"
+                }
+              `}
+                >
+                  <FaRegUser />
                 </Link>
               </>
             ) : (
@@ -84,6 +98,21 @@ const Nav = () => {
               </>
             )}
 
+            <Divider orientation="vertical" h={"30px"} />
+            <Button
+              onClick={onOpenSearch}
+              aria-label="Search"
+              variant={"ghost"}
+              className={
+                colorMode === "dark" ? "!text-[#ffffffa3]" : "!text-slate-600"
+              }
+              _hover={{ bg: "transparent" }}
+              padding={0}
+              color={"whiteAlpha.700"}
+            >
+              <RiSearch2Line className="text-2xl" />
+            </Button>
+            <SearchModal isOpen={isSearchOpen} onClose={onCloseSearch} />
             <Divider orientation="vertical" h={"30px"} />
 
             {/* theme change btn  */}
@@ -104,7 +133,9 @@ const Nav = () => {
               to={"/cart"}
             >
               <FaCartShopping
-                className={` ${colorMode === "dark" && "text-white-400"}`}
+                className={` ${
+                  colorMode === "dark" && "text-[#ffffffa3]"
+                } text-2xl`}
               />
               {totalItems > 0 && (
                 <span className="text-xs px-1 bg-coral-red text-white-400 rounded-full absolute top-0 right-0">
@@ -138,6 +169,7 @@ const Nav = () => {
             size={{ base: "sm", md: "md" }}
             fontSize={"xl"}
             onClick={onDrawerOpen}
+            className="!outline-none !ring-0"
           >
             <RiMenu3Line />
           </Button>
@@ -161,6 +193,18 @@ const Nav = () => {
                 />
               </DrawerHeader>
               <DrawerBody>
+                <InputGroup>
+                  <Input
+                    focusBorderColor="coral"
+                    onFocus={() => {
+                      onOpenSearch();
+                      onDrawerClose();
+                    }}
+                  />
+                  <InputRightElement>
+                    <RiSearch2Line className="text-lg" />
+                  </InputRightElement>
+                </InputGroup>
                 <ul className="flex flex-col items-center gap-4 mt-4">
                   <li className="font-montserrat leading-normal text-lg text-slate-gray">
                     <Link onClick={onDrawerClose} to={"/products"}>

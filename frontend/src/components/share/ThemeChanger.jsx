@@ -28,8 +28,12 @@ const ThemeChanger = ({
         <Menu>
           <MenuButton
             as={Button}
-            className="!bg-transparent !text-xl"
-            marginRight={"-3.5"}
+            className={`!bg-transparent !text-xl ${
+              colorMode === "dark" ? "!text-[#ffffffa3]" : "!text-slate-600"
+            }`}
+            marginRight={"-7"}
+            marginLeft={"-2"}
+            variant={"ghost"}
           >
             {colorMode === "light" ? (
               <BsSun />

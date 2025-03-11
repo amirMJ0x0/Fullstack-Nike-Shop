@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "../../services/productServices";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import Pagination from "../components/ui/pagination";
+import Pagination from "../components/ui/Pagination";
 import { Image, Text } from "@chakra-ui/react";
 const ProductsList = ({ setShowNotFoundLogo }) => {
   const [searchParams, setSearchParams] = useSearchParams();
