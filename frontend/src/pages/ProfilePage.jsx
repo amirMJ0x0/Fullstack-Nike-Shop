@@ -9,11 +9,6 @@ const ProfilePage = () => {
       <Helmet>
         <title>Nike - Profile</title>
       </Helmet>
-      <CustomToast
-        title="Sign Up"
-        message="Dear User , You successfully logged in! Welcome"
-        type="success"
-      />
     </div>
   );
 };

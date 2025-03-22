@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
           toast({
             title: "Registration and Login Successful",
             status: "success",
-            duration: 5000,
+            duration: 3000,
             isClosable: true,
             position: "top-right",
           });

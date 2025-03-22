@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router()
 const cartRoutes = require("./routes/cart");
 const productRoutes = require("./routes/productRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // require('dotenv').config();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use("/cart", cartRoutes);
 app.use("/products", productRoutes);
+app.use("/users", userRoutes)
 
 
 mongoose.connect('mongodb://localhost:27017/Nike', {

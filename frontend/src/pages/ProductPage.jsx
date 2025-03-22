@@ -16,12 +16,14 @@ import {
 import CustomModal from "../components/share/Modal";
 import { BiPlus, BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet-async";
 import RadioCard from "../components/share/RadioCard";
 import CommentModal from "../components/commentModal";
 import { useAuth } from "../context/AuthProvider";
 import moment from "moment";
+import SaveProduct from "../components/SaveProduct";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -91,7 +93,10 @@ const ProductPage = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Image Section */}
         <div className="flex-1">
-          <div className="border ">
+          <div className="relative border flex justify-center items-center lg:h-[385px]">
+            <div className="absolute top-5 left-5">
+              <SaveProduct productId={productId} />
+            </div>
             <img
               src={product.imageUrl[0]}
               alt={product.name}
@@ -163,35 +168,36 @@ const ProductPage = () => {
               </Text>
             )}
           </div>
-
-          {/* Add to Cart Button */}
-          {isInCart ? (
-            <Box className="flex gap-3 !mt-8">
-              <Link to={"/cart"}>
-                <Button size={"lg"} rightIcon={<BiSolidChevronRight />}>
-                  Show in Cart
+          <HStack className="!flex !items-end">
+            {/* Add to Cart Button */}
+            {isInCart ? (
+              <Box className="flex gap-3 !mt-8">
+                <Link to={"/cart"}>
+                  <Button size={"lg"} rightIcon={<BiSolidChevronRight />}>
+                    Show in Cart
+                  </Button>
+                </Link>
+                <Button
+                  size={"lg"}
+                  colorScheme="red"
+                  onClick={() => {
+                    removeFromCart(productId);
+                    setIsInCart(false);
+                  }}
+                >
+                  Remove
                 </Button>
-              </Link>
+              </Box>
+            ) : (
               <Button
                 size={"lg"}
-                colorScheme="red"
-                onClick={() => {
-                  removeFromCart(productId);
-                  setIsInCart(false);
-                }}
+                className="!mt-8 !text-coral-red"
+                onClick={handleAddToCart}
               >
-                Remove
+                Add to Cart
               </Button>
-            </Box>
-          ) : (
-            <Button
-              size={"lg"}
-              className="!mt-8 !text-coral-red"
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </Button>
-          )}
+            )}
+          </HStack>
         </div>
       </div>
       {/* Reviews Section */}
