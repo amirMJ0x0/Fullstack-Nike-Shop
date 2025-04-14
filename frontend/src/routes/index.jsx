@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import CartPage from "../pages/CartPage";
+
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
 const ProductsListPage = lazy(() => import("../pages/ProductsListPage"));
@@ -8,7 +8,13 @@ const HomePage = lazy(() => import("../pages/HomePage"));
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+const AccountInfo = lazy(() => import("../components/AccountInfo"));
+const Orders = lazy(() => import("../components/Orders"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const CartPage = lazy(() => import("../pages/CartPage"));
+const MyComments = lazy(() => import("../components/MyComments"));
+const MyFavorites = lazy(() => import("../components/MyFavorites"));
+const PrivateRoute = lazy(() => import("../components/share/PrivateRoute"));
 
 export const router = createBrowserRouter([
   {
@@ -45,7 +51,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/Login",
+        path: "/login",
         element: (
           <Suspense>
             <LoginPage />
@@ -53,7 +59,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/Register",
+        path: "/register",
         element: (
           <Suspense>
             <RegisterPage />
@@ -61,15 +67,60 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/Profile",
+        path: "/profile",
         element: (
           <Suspense>
-            <ProfilePage />
+            <PrivateRoute />
           </Suspense>
         ),
+
+        children: [
+          {
+            path: "",
+            element: (
+              <Suspense>
+                <ProfilePage />
+              </Suspense>
+            ),
+            children: [
+              {
+                path: "account-info",
+                element: (
+                  <Suspense>
+                    <AccountInfo />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "orders",
+                element: (
+                  <Suspense>
+                    <Orders />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "my-favorites",
+                element: (
+                  <Suspense>
+                    <MyFavorites />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "my-comments",
+                element: (
+                  <Suspense>
+                    <MyComments />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+        ],
       },
       {
-        path: "/cart",
+        path: "/Cart",
         element: (
           <Suspense>
             <CartPage />
