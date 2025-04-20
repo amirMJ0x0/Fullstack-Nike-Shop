@@ -8,6 +8,7 @@ const router = express.Router()
 const cartRoutes = require("./routes/cart");
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
+const commentRoutes = require('./routes/commentRoutes');
 
 // require('dotenv').config();
 
@@ -21,10 +22,11 @@ app.use(cors({
 }));
 app.use(cookieParser())
 app.use(express.json());
-app.use('/auth', authRoutes);
-app.use("/cart", cartRoutes);
-app.use("/products", productRoutes);
-app.use("/users", userRoutes)
+app.use('/api/auth', authRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes)
+app.use('/api/comments', commentRoutes);
 
 
 mongoose.connect('mongodb://localhost:27017/Nike', {

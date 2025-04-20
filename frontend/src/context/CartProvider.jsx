@@ -22,7 +22,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       if (user) {
-        const response = await axiosInstance.get("/cart");
+        const response = await axiosInstance.get("/api/cart");
         const localCart = getCartFromLocalStorage();
 
         if (localCart?.items?.length) {
@@ -46,7 +46,7 @@ export const CartProvider = ({ children }) => {
   // Merge local cart with server cart
   const mergeLocalCartWithServer = async (localCart) => {
     try {
-      const response = await axiosInstance.post("/cart/merge", {
+      const response = await axiosInstance.post("/api/cart/merge", {
         items: localCart.items,
       });
       return response.data.cart;
@@ -60,7 +60,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (productId, quantity = 1, color, size) => {
     try {
       if (user) {
-        const response = await axiosInstance.post("/cart/add", {
+        const response = await axiosInstance.post("api/cart/add", {
           productId,
           quantity,
           color,
@@ -85,7 +85,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (productId) => {
     try {
       if (user) {
-        const response = await axiosInstance.delete("/cart/remove", {
+        const response = await axiosInstance.delete("/api/remove", {
           data: { productId },
         });
         console.log(response.data);
@@ -101,7 +101,7 @@ export const CartProvider = ({ children }) => {
 
   const reduceQuantity = async (productId, color, size) => {
     try {
-      await axiosInstance.post("/cart/reduce", {
+      await axiosInstance.post("/api/cart/reduce", {
         productId,
         color,
         size,

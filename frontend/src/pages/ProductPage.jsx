@@ -23,6 +23,7 @@ import CommentModal from "../components/commentModal";
 import { useAuth } from "../context/AuthProvider";
 import moment from "moment";
 import SaveProduct from "../components/SaveProduct";
+import { getCommentsByProductId } from "../../services/commentServices";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -47,6 +48,11 @@ const ProductPage = () => {
   } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
+  });
+
+  const { data: comments } = useQuery({
+    queryKey: ["comments", productId],
+    queryFn: () => getCommentsByProductId(productId),
   });
 
   useEffect(() => {
@@ -204,12 +210,12 @@ const ProductPage = () => {
         <h2 className="text-xl font-semibold">Reviews</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="max-md:order-2">
-            {product.comments.map((comment, idx) => (
+            {comments?.map((comment, idx) => (
               <div key={idx} className="mt-4 p-4 border rounded-lg">
                 <span className="flex items-center gap-1">
                   <PiUserCircleDuotone className="text-xl" />
                   <Heading size={"sm"} className="font-montserrat">
-                    {comment.userId?.username || "Unknown user"}
+                    {comment.user?.username || "Unknown user"}
                   </Heading>
                   <Text fontSize={"sm"} opacity={"0.5"} ml={5}>
                     {moment

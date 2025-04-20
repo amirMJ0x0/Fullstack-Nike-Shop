@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { commentSchema } = require('./Comment');
 
 const productSchema = new mongoose.Schema({
     name: String,
@@ -17,7 +16,6 @@ const productSchema = new mongoose.Schema({
     relatedProducts: Array,
     tags: Array,
     imageUrl: [String],
-    comments: [commentSchema],
     averageRating: { type: Number, default: 0 },
     commentsCount: { type: Number, default: 0 },
 });

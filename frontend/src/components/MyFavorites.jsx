@@ -14,7 +14,7 @@ const MyFavorites = () => {
   };
   return (
     <div>
-      <Heading size={"lg"}>My Favorites</Heading>
+      <Heading size={"lg"} p={2}>My Favorites</Heading>
       {data?.favorites.length > 0 && (
         <List mt={2}>
           {data?.favorites.map((product) => (
@@ -35,7 +35,7 @@ const MyFavorites = () => {
                 borderRadius="md"
                 mr={2}
               />
-              <Heading fontSize="sm">{product.name}</Heading>
+              <Heading fontSize="sm" color={'coral'}>{product.name}</Heading>
             </ListItem>
           ))}
         </List>

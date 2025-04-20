@@ -8,18 +8,18 @@ const router = express.Router();
 const secretKey = "ro8BS6Hiivgzy8Xuu09JDjlNLnSLldY5";
 
 
-// مسیر ثبت‌نام
+// * register route
 router.post('/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // چک کردن اینکه آیا ایمیل یا نام‌کاربری قبلاً ثبت شده‌اند
+        // check if the username or email is signed in before
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             return res.status(400).json({ message: 'Username or email already in use' });
         }
 
-        // هش کردن پسورد
+        // hashing password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new User({ username, email, password: hashedPassword });
@@ -45,7 +45,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// مسیر ورود
+//* login route
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -64,10 +64,10 @@ router.post('/login', async (req, res) => {
 
         res.cookie('token', token
             , {
-                httpOnly: true, // دسترسی از سمت سرور فقط
-                secure: process.env.NODE_ENV === 'production', // فقط در HTTPS در حالت پروداکشن
+                httpOnly: true, //Access only from the server side
+                secure: process.env.NODE_ENV === 'production', //Only https in productivity mode
                 sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-                maxAge: 24 * 60 * 60 * 1000, // 1 روز اعتبار
+                maxAge: 24 * 60 * 60 * 1000, // 1 day expire
             }
         );
         res.json({ data: { id: user._id, username: user.username, email: user.email }, statusCode: 200 });
@@ -85,7 +85,7 @@ router.get("/userInfo", async (req, res) => {
             return res.json({ message: 'Unauthorized', statusCode: 401 });
         }
         const decoded = jwt.verify(token, secretKey);
-        const user = await User.findById(decoded.id).select("-password"); // پیدا کردن کاربر با استفاده از id در توکن
+        const user = await User.findById(decoded.id).select("-password"); // finding user using id (from token)
         if (!user) return res.status(404).json({ message: "User not found" });
         res.json({ data: user, userStatus: "Authorized" });
 
@@ -97,7 +97,7 @@ router.get("/userInfo", async (req, res) => {
     }
 });
 
-
+//* logout route
 router.post('/logout', (req, res) => {
     res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
     res.status(200).json({ message: 'Logged out successfully', statusCode: 200 });

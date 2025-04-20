@@ -19,7 +19,6 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import CustomModal from "./share/Modal";
 
 const CommentModal = ({ productData, onClose, isOpen }) => {
   const [text, setText] = useState("");
@@ -29,7 +28,7 @@ const CommentModal = ({ productData, onClose, isOpen }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!user) return alert("لطفاً ابتدا وارد شوید!");
+    if (!user) return alert("لطفاً ابتدا وارد شوید!"); // #todo: add cool alert not this
 
     mutate(
       { text, rating },
@@ -78,6 +77,7 @@ const CommentModal = ({ productData, onClose, isOpen }) => {
               onChange={(e) => setText(e.target.value)}
               placeholder="Write down your review ..."
               className="border p-2 w-full"
+              isRequired
             />
 
             <Button

@@ -1,44 +1,5 @@
 const Product = require("../models/Product");
 
-// Add Comment to product
-const addComment = async (req, res) => {
-    try {
-        const { productId } = req.params;
-        const { text, rating } = req.body;
-        const userId = req.user.id;
-
-        if (!text || !rating) {
-            return res.status(400).json({ message: "Text and Rating are Required!" });
-        }
-
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).json({ message: "Product was not found!" });
-        }
-
-        //create new comment
-        const newComment = {
-            userId,
-            text,
-            rating,
-            date: new Date(),
-        };
-
-        // adding to comments array
-        product.comments.push(newComment);
-
-        // updating total rating and average rating
-        const totalRatings = product.comments.reduce((sum, c) => sum + c.rating, 0);
-        product.averageRating = totalRatings / product.comments.length;
-        product.commentsCount = product.comments.length;
-
-        await product.save();
-
-        res.status(201).json({ message: "The comment successfully saved", comment: newComment });
-    } catch (error) {
-        res.status(500).json({ message: "Something went wrong!", error: error.message });
-    }
-};
 
 const createProduct = async (req, res) => {
     const { name, price, description, imageUrl } = req.body;
@@ -144,7 +105,7 @@ const searchProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id).populate("comments.userId", "username");
+        const product = await Product.findById(req.params.id)
         if (!product) return res.status(404).json({ message: "Product Not Found" });
         res.json(product);
     } catch (error) {
@@ -152,5 +113,5 @@ const getProductById = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getAllProducts, searchProducts, getProductById, addComment };
+module.exports = { createProduct, getAllProducts, searchProducts, getProductById };
 
