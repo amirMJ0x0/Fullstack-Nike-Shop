@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import Aos from "aos";
 import useGetWindowWidth from "../hooks/useGetWindowWidth";
+import { memo } from "react";
 
 const ProductCard = ({
   _id,
@@ -155,4 +156,4 @@ const ProductCard = ({
   );
 };
 
-export default ProductCard;
+export default memo(ProductCard);

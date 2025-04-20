@@ -26,7 +26,7 @@ import ThemeChanger from "./share/ThemeChanger";
 import ProfileContextMenu from "./share/ProfileContextMenu";
 import { useCart } from "../context/CartProvider";
 import { BsSearch } from "react-icons/bs";
-import SearchModal from "./searchModal";
+import SearchModal from "./SearchModal";
 const Nav = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { user } = useAuth();
@@ -82,7 +82,7 @@ const Nav = () => {
             {!user ? (
               <>
                 <Link
-                  to={"/Login"}
+                  to={"/login"}
                   className={`"text-xl pr-3"
                 ${
                   colorMode === "dark" ? "!text-[#ffffffa3]" : "!text-slate-600"
@@ -233,10 +233,10 @@ const Nav = () => {
               >
                 {!user && (
                   <>
-                    <Link to={"/Login"}>
+                    <Link to={"/login"}>
                       <Text className="p-2 hover:opacity-65">Log in</Text>
                     </Link>
-                    <Link to={"/Register"}>
+                    <Link to={"/register"}>
                       <Text className="bg-coral-red text-white-400 py-2 px-6 rounded-full hover:opacity-75 hover:transition-opacity">
                         Sign up
                       </Text>

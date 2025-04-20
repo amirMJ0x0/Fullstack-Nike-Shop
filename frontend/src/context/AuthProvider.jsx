@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
   const {
     data: userData = { data: null, userStatus: "Unauthorized" },
     refetch,
+    isLoading,
   } = useQuery({
     queryKey: ["userInfo"],
     queryFn: fetchUserInfo,
@@ -85,7 +86,9 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginAction, logOut, registerAction }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, loginAction, logOut, registerAction }}
+    >
       {children}
     </AuthContext.Provider>
   );

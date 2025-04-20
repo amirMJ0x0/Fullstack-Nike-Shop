@@ -23,10 +23,8 @@ const LoginPage = () => {
   } = useForm({
     resolver: yupResolver(loginValidationSchema),
   });
-  const [data, setData] = useState();
   const { loginAction } = useAuth();
   const onSubmit = (data) => {
-    setData(data);
     if (data.email !== "" && data.password !== "") {
       loginAction(data);
 
@@ -117,7 +115,7 @@ const LoginPage = () => {
           >
             Don't have an account?{" "}
             <Link
-              to={"/Register"}
+              to={"/register"}
               className="text-coral-red font-semibold underline"
             >
               Sign up now

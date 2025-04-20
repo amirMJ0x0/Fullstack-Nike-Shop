@@ -16,7 +16,6 @@ import {
 import CustomModal from "../components/share/Modal";
 import { BiPlus, BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet-async";
 import RadioCard from "../components/share/RadioCard";
@@ -259,7 +258,7 @@ const ProductPage = () => {
                 ) : (
                   <div className="text-red-900">
                     <span>You must </span>
-                    <Link to={"/Login"} className="underline font-bold italic">
+                    <Link to={"/login"} className="underline font-bold italic">
                       login
                     </Link>
                     <span> to leave a review</span>

@@ -85,7 +85,7 @@ router.get("/userInfo", async (req, res) => {
             return res.json({ message: 'Unauthorized', statusCode: 401 });
         }
         const decoded = jwt.verify(token, secretKey);
-        const user = await User.findById(decoded.id); // پیدا کردن کاربر با استفاده از id در توکن
+        const user = await User.findById(decoded.id).select("-password"); // پیدا کردن کاربر با استفاده از id در توکن
         if (!user) return res.status(404).json({ message: "User not found" });
         res.json({ data: user, userStatus: "Authorized" });
 

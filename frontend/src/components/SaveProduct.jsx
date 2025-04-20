@@ -16,8 +16,8 @@ const SaveProduct = ({ productId = "" }) => {
   useEffect(() => {
     const fetchSavedProducts = async () => {
       try {
-        const savedProducts = await getSavedProducts();
-        setIsSaved(savedProducts.some((product) => product._id === productId));
+        const { favorites } = await getSavedProducts();
+        setIsSaved(favorites.some((product) => product._id === productId));
       } catch (error) {
         console.error("Error fetching saved products:", error);
       }
@@ -43,7 +43,7 @@ const SaveProduct = ({ productId = "" }) => {
         position: "top-left",
         variant: "subtle",
       });
-      navigate("/Login");
+      navigate("/login");
     }
   };
   return (

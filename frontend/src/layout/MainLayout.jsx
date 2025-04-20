@@ -7,7 +7,7 @@ import { Footer } from "../sections";
 const MainLayout = () => {
   const location = useLocation();
   const isAuthPage =
-    location.pathname === "/Login" || location.pathname === "/Register";
+    location.pathname === "/login" || location.pathname === "/register";
 
   return (
     <AuthProvider>

@@ -126,7 +126,7 @@ const RegisterPage = () => {
           >
             Already Have account?{" "}
             <Link
-              to={"/Login"}
+              to={"/login"}
               className="text-coral-red font-semibold underline"
             >
               Login
