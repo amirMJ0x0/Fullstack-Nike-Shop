@@ -1,8 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
+import withSuspense from "../hoc/WithSuspense";
 
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
+const AboutUs = lazy(() => import("../pages/AboutUs"));
 const ProductsListPage = lazy(() => import("../pages/ProductsListPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
 const LoginPage = lazy(() => import("../pages/LoginPage"));
@@ -16,112 +18,79 @@ const MyComments = lazy(() => import("../components/MyComments"));
 const MyFavorites = lazy(() => import("../components/MyFavorites"));
 const PrivateRoute = lazy(() => import("../components/share/PrivateRoute"));
 
+const HomePageSuspended = withSuspense(HomePage);
+const NotFoundPageSuspended = withSuspense(NotFoundPage);
+const MainLayoutSuspended = withSuspense(MainLayout);
+const ProductsListPageSuspended = withSuspense(ProductsListPage);
+const ProductPageSuspended = withSuspense(ProductPage);
+const LoginPageSuspended = withSuspense(LoginPage);
+const RegisterPageSuspended = withSuspense(RegisterPage);
+const ProfilePageSuspended = withSuspense(ProfilePage);
+const AccountInfoSuspended = withSuspense(AccountInfo);
+const OrdersSuspended = withSuspense(Orders);
+const MyFavoritesSuspended = withSuspense(MyFavorites);
+const MyCommentsSuspended = withSuspense(MyComments);
+const CartPageSuspended = withSuspense(CartPage);
+const PrivateRouteSuspended = withSuspense(PrivateRoute);
+const AboutUsSuspended = withSuspense(AboutUs);
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Suspense>
-        <MainLayout />
-      </Suspense>
-    ),
-    errorElement: <NotFoundPage />,
+    element: <MainLayoutSuspended />,
+    errorElement: <NotFoundPageSuspended />,
     children: [
       {
         path: "/",
-        element: (
-          <Suspense>
-            <HomePage />
-          </Suspense>
-        ),
+        element: <HomePageSuspended />,
       },
       {
         path: "/not-found",
-        element: (
-          <Suspense>
-            <NotFoundPage />
-          </Suspense>
-        ),
+        element: <NotFoundPageSuspended />,
+      },
+      {
+        path: "/about-us",
+        element: <AboutUsSuspended />,
       },
       {
         path: "/products",
-        element: (
-          <Suspense>
-            <ProductsListPage />
-          </Suspense>
-        ),
+        element: <ProductsListPageSuspended />,
       },
       {
         path: "/products/:productId",
-        element: (
-          <Suspense>
-            <ProductPage />
-          </Suspense>
-        ),
+        element: <ProductPageSuspended />,
       },
       {
         path: "/login",
-        element: (
-          <Suspense>
-            <LoginPage />
-          </Suspense>
-        ),
+        element: <LoginPageSuspended />,
       },
       {
         path: "/register",
-        element: (
-          <Suspense>
-            <RegisterPage />
-          </Suspense>
-        ),
+        element: <RegisterPageSuspended />,
       },
       {
         path: "/profile",
-        element: (
-          <Suspense>
-            <PrivateRoute />
-          </Suspense>
-        ),
-
+        element: <PrivateRouteSuspended />,
         children: [
           {
             path: "",
-            element: (
-              <Suspense>
-                <ProfilePage />
-              </Suspense>
-            ),
+            element: <ProfilePageSuspended />,
             children: [
               {
                 path: "account-info",
-                element: (
-                  <Suspense>
-                    <AccountInfo />
-                  </Suspense>
-                ),
+                element: <AccountInfoSuspended />,
               },
               {
                 path: "orders",
-                element: (
-                  <Suspense>
-                    <Orders />
-                  </Suspense>
-                ),
+                element: <OrdersSuspended />,
               },
               {
                 path: "my-favorites",
-                element: (
-                  <Suspense>
-                    <MyFavorites />
-                  </Suspense>
-                ),
+                element: <MyFavoritesSuspended />,
               },
               {
                 path: "my-comments",
-                element: (
-                  <Suspense>
-                    <MyComments />
-                  </Suspense>
-                ),
+                element: <MyCommentsSuspended />,
               },
             ],
           },
@@ -129,11 +98,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/Cart",
-        element: (
-          <Suspense>
-            <CartPage />
-          </Suspense>
-        ),
+        element: <CartPageSuspended />,
       },
     ],
   },
