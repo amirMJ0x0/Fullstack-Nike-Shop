@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -14,17 +14,23 @@ import { BiSolidStar } from "react-icons/bi";
 import moment from "moment";
 import { deleteComment, getMyComments } from "../../services/commentServices";
 import { FiEdit3, FiTrash, FiTrash2 } from "react-icons/fi";
+import useModal from "../hooks/useModal";
+import CustomModal from "./share/CustomModal";
+import { useState } from "react";
+import useEditComment from "../hooks/useEditComment";
+import CommentModal from "./commentModal";
 
 const MyComments = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [isEditOpen, setEditOpen] = useState(false); //Handle Edit Modal using state
+  const [selectedComment, setSelectedComment] = useState(null);
+  const { mutate, isPending } = useEditComment();
 
   const { data: myComments } = useQuery({
     queryKey: ["my-comments"],
     queryFn: getMyComments,
   });
-
-  console.log(myComments);
 
   const handleSelectProduct = (productId) => {
     navigate(`/products/${productId}`);
@@ -36,15 +42,53 @@ const MyComments = () => {
     try {
       await deleteComment(commentId);
       queryClient.invalidateQueries(["my-comments"]);
+      deleteModal.close();
     } catch (error) {
       console.error("Error deleting comment:", error);
     }
   };
+  const deleteModal = useModal();
 
   return (
     <div>
+      <CustomModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.close}
+        onConfirm={() => deleteCommentHandler(selectedComment._id)}
+        title="Delete Review"
+        confirmText="Yes, delete it"
+      >
+        Are you sure you want to delete this comment? This action cannot be
+        undone!
+      </CustomModal>
+
+      {selectedComment && (
+        <CommentModal
+          isOpen={isEditOpen}
+          isLoading={isPending}
+          onClose={() => setEditOpen(false)}
+          productData={selectedComment.productId}
+          mode="edit"
+          initialData={{
+            text: selectedComment.text,
+            rating: selectedComment.rating,
+          }}
+          onSubmit={({ text, rating }) => {
+            mutate(
+              { commentId: selectedComment._id, text, rating },
+              {
+                onSuccess: () => {
+                  setEditOpen(false);
+                  setSelectedComment(null);
+                },
+              }
+            );
+          }}
+        />
+      )}
+
       <Heading size={"lg"} p={2}>
-        My Comments
+        My Reviews
       </Heading>
       {myComments?.length > 0 && (
         <List mt={2} spacing={2}>
@@ -53,9 +97,10 @@ const MyComments = () => {
               key={index}
               py={2}
               px={5}
-              bgColor={"gray.700"}
+              bgColor={"gray.100"}
+              _dark={{ bgColor: "gray.700" }}
               borderRadius={"5px"}
-              _hover={{ cursor: "pointer" }}
+              _hover={{ opacity: 0.8 }}
               display="flex-column"
               alignItems="center"
             >
@@ -68,6 +113,7 @@ const MyComments = () => {
                     mr={2}
                   />
                   <Heading
+                    _hover={{ cursor: "pointer" }}
                     fontSize="md"
                     color={"coral"}
                     className="!font-montserrat"
@@ -81,6 +127,10 @@ const MyComments = () => {
                     variant={"ghost"}
                     _hover={{ color: "coral" }}
                     fontSize={"lg"}
+                    onClick={() => {
+                      setSelectedComment(comment);
+                      setEditOpen(true);
+                    }}
                   >
                     <FiEdit3 />
                   </Button>
@@ -89,7 +139,10 @@ const MyComments = () => {
                     _hover={{ color: "coral" }}
                     color={"red"}
                     fontSize={"lg"}
-                    onClick={() => deleteCommentHandler(comment._id)}
+                    onClick={() => {
+                      setSelectedComment(comment);
+                      deleteModal.open();
+                    }}
                   >
                     <FiTrash2 />
                   </Button>
@@ -99,7 +152,8 @@ const MyComments = () => {
                 <BiSolidStar color="gold" size={"16px"} />{" "}
                 <Text
                   fontSize={"sm"}
-                  color={"gray.300"}
+                  color={"gray.700"}
+                  _dark={{ color: "gray.300" }}
                   className="font-palanquin"
                 >
                   {comment.rating} Stars
@@ -114,7 +168,7 @@ const MyComments = () => {
                 </Text>
               </div>
               <div className="mt-3">
-                <Text>{comment.text}</Text>
+                <Text fontWeight={"semibold"}>{comment.text}</Text>
               </div>
             </ListItem>
           ))}

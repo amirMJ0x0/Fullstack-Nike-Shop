@@ -3,7 +3,8 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { getProduct } from "../../services/productServices";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
-import ReactStars from "react-stars";
+import useAddComment from "../hooks/useAddComment";
+import ReactStars from "react-rating-stars-component";
 import {
   Box,
   Button,
@@ -13,7 +14,6 @@ import {
   useDisclosure,
   useRadioGroup,
 } from "@chakra-ui/react";
-import CustomModal from "../components/share/Modal";
 import { BiPlus, BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
 import Loading from "../components/share/Loading";
@@ -55,6 +55,7 @@ const ProductPage = () => {
     queryKey: ["comments", productId],
     queryFn: () => getCommentsByProductId(productId),
   });
+  const { mutate, isLoading: isAddingComment } = useAddComment(product?._id);
 
   useEffect(() => {
     const existingItem = cart?.items.find(
@@ -147,15 +148,7 @@ const ProductPage = () => {
             </HStack>
             {/* </div> */}
           </div>
-          <CustomModal>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint
-              reiciendis, ipsa eius unde earum quaerat exercitationem optio et
-              nobis delectus magnam accusamus, dolorum, temporibus nam veritatis
-              voluptatibus! Tempora, soluta corrupti.
-            </p>
-            <button>test</button>
-          </CustomModal>
+
           {/* Color Selection */}
           <div>
             <p className="font-medium">Colors:</p>
@@ -277,6 +270,18 @@ const ProductPage = () => {
                   isOpen={isModalOpen}
                   onClose={onModalClose}
                   productData={product}
+                  isLoading={isAddingComment}
+                  onSubmit={({ text, rating }) => {
+                    mutate(
+                      { text, rating },
+                      {
+                        onSuccess: () => {
+                          setText("");
+                          onClose();
+                        },
+                      }
+                    );
+                  }}
                 />
               </Box>
             </Box>

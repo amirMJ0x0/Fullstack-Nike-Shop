@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import useAddComment from "../hooks/useAddComment";
-import { useAuth } from "../context/AuthProvider";
-import ReactStars from "react-stars";
+import React, { useEffect, useState } from "react";
+import ReactStars from "react-rating-stars-component";
 import {
   Box,
   Button,
@@ -12,40 +10,42 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
   Textarea,
-  useDisclosure,
 } from "@chakra-ui/react";
 
-const CommentModal = ({ productData, onClose, isOpen }) => {
-  const [text, setText] = useState("");
-  const [rating, setRating] = useState(5);
-  const { mutate, isLoading } = useAddComment(productData._id);
-  const { user } = useAuth();
+const CommentModal = ({
+  productData,
+  onClose,
+  isOpen,
+  mode = "add",
+  initialData = {},
+  onSubmit,
+  isLoading,
+}) => {
+  const [text, setText] = useState(initialData.text || "");
+  const [rating, setRating] = useState(initialData.rating || 5);
+
+  useEffect(() => {
+    if (isOpen) {
+      setText(initialData.text || "");
+      setRating(initialData.rating || 5);
+    }
+  }, [initialData, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!user) return alert("لطفاً ابتدا وارد شوید!"); // #todo: add cool alert not this
-
-    mutate(
-      { text, rating },
-      {
-        onSuccess: () => {
-          setText("");
-          onClose();
-        },
-      }
-    );
+    onSubmit({ text, rating });
   };
 
   return (
     <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Leave Your Review</ModalHeader>
+        <ModalHeader>
+          {mode === "edit" ? "Edit Your Review" : "Leave Your Review"}
+        </ModalHeader>
         <ModalCloseButton color={"coral"} />
         <ModalBody>
           <Flex
@@ -70,7 +70,7 @@ const CommentModal = ({ productData, onClose, isOpen }) => {
               value={rating}
               onChange={setRating}
               size={40}
-              color2={"#ffd700"}
+              activeColor="#ffd700"
             />
             <Textarea
               value={text}
@@ -86,7 +86,13 @@ const CommentModal = ({ productData, onClose, isOpen }) => {
               disabled={isLoading}
               isLoading={isLoading}
             >
-              {isLoading ? "Sending..." : "Send Review"}
+              {isLoading
+                ? mode === "edit"
+                  ? "Updating..."
+                  : "Sending..."
+                : mode === "edit"
+                ? "Update Review"
+                : "Send Review"}
             </Button>
           </form>
         </ModalBody>

@@ -26,7 +26,7 @@ const ProfileContextMenu = ({ textColor, bgColor }) => {
             color="#ff6452"
             size={{ base: "sm", md: "md" }}
             fontSize={"xl"}
-            className="flex gap-2 text-2xl"
+            className="flex gap-2 text-2xl !ring-0"
             onMouseEnter={onOpen}
             onMouseLeave={onClose}
             onClick={onToggle}

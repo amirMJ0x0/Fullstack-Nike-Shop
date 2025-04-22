@@ -43,9 +43,9 @@ export const deleteComment = async (commentId) => {
     }
 }
 
-export const updateComment = async (productId, commentId, updatedData) => {
+export const updateComment = async (commentId, updatedData) => {
     try {
-        const response = await axiosInstance.put(`${BASE_URL}/${productId}/${commentId}`, updatedData);
+        const response = await axiosInstance.patch(`${BASE_URL}/edit/${commentId}`, updatedData);
         return response.data;
     } catch (error) {
         console.error('Error updating comment:', error);

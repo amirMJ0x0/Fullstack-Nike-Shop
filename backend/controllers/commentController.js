@@ -43,7 +43,6 @@ const getCommentsByUserId = async (req, res) => {
         const comments = await Comment.find({ userId })
             .populate('productId', 'name imageUrl')
             .sort({ date: -1 });
-        console.log(comments);
 
 
         res.status(200).json(comments);
@@ -134,10 +133,6 @@ const editComment = async (req, res) => {
             return res.status(404).json({ message: "Comment not found" });
         }
 
-        // Check if the user is authorized to edit the comment
-        if (comment.userId.toString() !== userId.toString()) {
-            return res.status(403).json({ message: "You are not authorized to edit this comment" });
-        }
 
         // Update the comment
         comment.text = text || comment.text;
