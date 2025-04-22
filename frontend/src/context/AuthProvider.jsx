@@ -27,10 +27,10 @@ const AuthProvider = ({ children }) => {
   //Register Action
   const registerAction = async (data) => {
     try {
-      const response = await axiosInstance.post(`/auth/register`, data);
+      const response = await axiosInstance.post(`/api/auth/register`, data);
       if (response.status === 201) {
         // Auto login after registration
-        const loginResponse = await axiosInstance.post(`/auth/login`, {
+        const loginResponse = await axiosInstance.post(`/api/auth/login`, {
           email: data.email,
           password: data.password,
         });
@@ -57,7 +57,7 @@ const AuthProvider = ({ children }) => {
   //Login Action
   const loginAction = async (data) => {
     try {
-      const res = await axiosInstance.post(`/auth/login`, data);
+      const res = await axiosInstance.post(`/api/auth/login`, data);
       if (res.status === 200) {
         navigate(-1);
         refetch(); //Fetch user info after login
@@ -70,7 +70,7 @@ const AuthProvider = ({ children }) => {
   //Logout Action
   const logOut = async () => {
     try {
-      await axiosInstance.post(`/auth/logout`, {});
+      await axiosInstance.post(`/api/auth/logout`, {});
       navigate("/");
       refetch(); //Fetch to confirm logout
       toast({

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { getProduct } from "../../services/productServices";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
@@ -48,6 +48,7 @@ const ProductPage = () => {
   } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
+    retry: false,
   });
 
   const { data: comments } = useQuery({
@@ -87,7 +88,8 @@ const ProductPage = () => {
     productImageRef.current.src = imageUrl;
   };
   if (isLoading) return <Loading />;
-  if (error) return <p>Error loading product details.</p>;
+  if (error) return <Navigate to="/not-found" />;
+  if (!product) return <Navigate to="/not-found" />;
 
   return (
     <div className="p-8">

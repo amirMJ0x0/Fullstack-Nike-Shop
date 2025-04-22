@@ -45,15 +45,3 @@ export const getUserProfile = async () => {
     }
 };
 
-
-// @desc getUserComments
-// @route GET http://localhost:3000/users/comments
-export const getUserComments = async () => {
-    try {
-        const res = await axiosInstance.get(`/api/users/comments`);
-        return res.data;
-    } catch (error) {
-        console.error("error fetching saved products:", error.response?.data || error.message);
-    }
-};
-

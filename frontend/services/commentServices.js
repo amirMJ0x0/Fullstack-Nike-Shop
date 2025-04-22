@@ -13,6 +13,15 @@ export const getCommentsByProductId = async (productId) => {
         throw error;
     }
 }
+export const getMyComments = async () => {
+    try {
+        const response = await axiosInstance.get(`${BASE_URL}/my`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        throw error;
+    }
+}
 
 export const postComment = async (productId, commentData) => {
     try {
@@ -24,9 +33,9 @@ export const postComment = async (productId, commentData) => {
     }
 }
 
-const deleteComment = async (productId, commentId) => {
+export const deleteComment = async (commentId) => {
     try {
-        const response = await axios.delete(`${BASE_URL}/${productId}/${commentId}`);
+        const response = await axiosInstance.delete(`${BASE_URL}/remove/${commentId}`);
         return response.data;
     } catch (error) {
         console.error('Error deleting comment:', error);
@@ -34,9 +43,9 @@ const deleteComment = async (productId, commentId) => {
     }
 }
 
-const updateComment = async (productId, commentId, updatedData) => {
+export const updateComment = async (productId, commentId, updatedData) => {
     try {
-        const response = await axios.put(`${BASE_URL}/${productId}/${commentId}`, updatedData);
+        const response = await axiosInstance.put(`${BASE_URL}/${productId}/${commentId}`, updatedData);
         return response.data;
     } catch (error) {
         console.error('Error updating comment:', error);

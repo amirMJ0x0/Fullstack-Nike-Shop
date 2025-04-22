@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
 const MainLayout = lazy(() => import("../layout/MainLayout"));
@@ -31,6 +31,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense>
             <HomePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/not-found",
+        element: (
+          <Suspense>
+            <NotFoundPage />
           </Suspense>
         ),
       },

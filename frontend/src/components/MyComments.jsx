@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getUserComments } from "../../services/userServices";
 import {
+  Box,
+  Button,
   Divider,
   Heading,
   Image,
@@ -9,28 +10,45 @@ import {
   ListItem,
   Text,
 } from "@chakra-ui/react";
-import { BiSolidStar, BiStar, BiStoreAlt } from "react-icons/bi";
+import { BiSolidStar } from "react-icons/bi";
 import moment from "moment";
+import { deleteComment, getMyComments } from "../../services/commentServices";
+import { FiEdit3, FiTrash, FiTrash2 } from "react-icons/fi";
 
 const MyComments = () => {
   const navigate = useNavigate();
-  const { data } = useQuery({
-    queryKey: ["comments"],
-    queryFn: getUserComments,
+  const queryClient = useQueryClient();
+
+  const { data: myComments } = useQuery({
+    queryKey: ["my-comments"],
+    queryFn: getMyComments,
   });
 
-  console.log(data);
+  console.log(myComments);
 
   const handleSelectProduct = (productId) => {
     navigate(`/products/${productId}`);
     window.scrollTo(0, 700);
   };
+
+  //use useMutation hook for deleting comment
+  const deleteCommentHandler = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      queryClient.invalidateQueries(["my-comments"]);
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
+
   return (
     <div>
-      <Heading size={"lg"} p={2}>My Comments</Heading>
-      {data?.length > 0 && (
+      <Heading size={"lg"} p={2}>
+        My Comments
+      </Heading>
+      {myComments?.length > 0 && (
         <List mt={2} spacing={2}>
-          {data?.map((comment, index) => (
+          {myComments?.map((comment, index) => (
             <ListItem
               key={index}
               py={2}
@@ -40,22 +58,42 @@ const MyComments = () => {
               _hover={{ cursor: "pointer" }}
               display="flex-column"
               alignItems="center"
-              onClick={() => handleSelectProduct(comment.productId)}
             >
-              <div className="flex items-center">
-                <Image
-                  src={comment.productImage}
-                  boxSize="40px"
-                  borderRadius="md"
-                  mr={2}
-                />
-                <Heading
-                  fontSize="md"
-                  color={"coral"}
-                  className="!font-montserrat"
-                >
-                  {comment.productName}
-                </Heading>
+              <div className="flex items-center justify-between">
+                <Box display="flex" alignItems="center">
+                  <Image
+                    src={comment.productId.imageUrl}
+                    boxSize="40px"
+                    borderRadius="md"
+                    mr={2}
+                  />
+                  <Heading
+                    fontSize="md"
+                    color={"coral"}
+                    className="!font-montserrat"
+                    onClick={() => handleSelectProduct(comment.productId._id)}
+                  >
+                    {comment.productId.name}
+                  </Heading>
+                </Box>
+                <Box display="flex" gap={1}>
+                  <Button
+                    variant={"ghost"}
+                    _hover={{ color: "coral" }}
+                    fontSize={"lg"}
+                  >
+                    <FiEdit3 />
+                  </Button>
+                  <Button
+                    variant={"ghost"}
+                    _hover={{ color: "coral" }}
+                    color={"red"}
+                    fontSize={"lg"}
+                    onClick={() => deleteCommentHandler(comment._id)}
+                  >
+                    <FiTrash2 />
+                  </Button>
+                </Box>
               </div>
               <div className="flex items-center gap-2">
                 <BiSolidStar color="gold" size={"16px"} />{" "}

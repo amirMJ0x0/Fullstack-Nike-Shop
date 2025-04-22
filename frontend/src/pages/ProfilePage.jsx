@@ -1,9 +1,14 @@
-import { Divider } from "@chakra-ui/react";
+import { Divider, Heading } from "@chakra-ui/react";
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const ProfilePage = () => {
+  const { user } = useAuth();
+  const location = useLocation();
+  const isProfilePage =
+    location.pathname === "/profile" || location.pathname === "/Profile";
   return (
     <>
       <Helmet>
@@ -28,9 +33,15 @@ const ProfilePage = () => {
           </ul>
         </aside>
 
-        <Divider orientation="vertical" h={'auto'}/>
-        <main className="flex-1 p-4">
-          <Outlet />
+        <Divider orientation="vertical" h={"auto"} />
+        <main className="flex-1 p-4 ml-4">
+          {isProfilePage ? (
+            <Heading size={"lg"} mx={"auto"}>
+              Welcome {user.username}
+            </Heading>
+          ) : (
+            <Outlet />
+          )}
         </main>
       </div>
     </>

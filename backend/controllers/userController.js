@@ -99,41 +99,41 @@ const getUserFavorites = async (req, res) => {
 // };
 // controllers/userController.js
 
-const getUserComments = async (req, res) => {
-    try {
-        const userId = req.user.id;
+// const getUserComments = async (req, res) => {
+//     try {
+//         const userId = req.user.id;
 
-        //finding all products that have comments from the user
-        const products = await Product.find(
-            { "comments.userId": userId },
-            { name: 1, imageUrl: 1, comments: 1 }
-        );
+//         //finding all products that have comments from the user
+//         const products = await Product.find(
+//             { "comments.userId": userId },
+//             { name: 1, imageUrl: 1, comments: 1 }
+//         );
 
-        const userComments = [];
+//         const userComments = [];
 
-        products.forEach(product => {
-            product.comments.forEach(comment => {
-                if (comment.userId.toString() === userId.toString()) {
-                    userComments.push({
-                        productId: product._id,
-                        productName: product.name,
-                        productImage: product.imageUrl[0],
-                        text: comment.text,
-                        rating: comment.rating,
-                        date: comment.date
-                    });
-                }
-            });
-        });
-        
-        userComments.sort((a, b) => new Date(b.date) - new Date(a.date));
+//         products.forEach(product => {
+//             product.comments.forEach(comment => {
+//                 if (comment.userId.toString() === userId.toString()) {
+//                     userComments.push({
+//                         productId: product._id,
+//                         productName: product.name,
+//                         productImage: product.imageUrl[0],
+//                         text: comment.text,
+//                         rating: comment.rating,
+//                         date: comment.date
+//                     });
+//                 }
+//             });
+//         });
 
-        res.json(userComments);
+//         userComments.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error getting user's comments" });
-    }
-};
+//         res.json(userComments);
 
-module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUserProfile, getUserFavorites, getUserComments };
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: "Error getting user's comments" });
+//     }
+// };
+
+module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUserProfile, getUserFavorites };

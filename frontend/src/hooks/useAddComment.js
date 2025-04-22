@@ -9,7 +9,6 @@ const useAddComment = (productId) => {
     return useMutation({
         mutationFn: async ({ text, rating }) => await postComment(productId, { text, rating }),
         onSuccess: (res) => {
-            console.log("✅ comment posted:", res);
             queryClient.invalidateQueries({ queryKey: ['comments', productId] })
             queryClient.setQueryData(['product', productId], (oldData) => {
                 if (!oldData) return oldData;
