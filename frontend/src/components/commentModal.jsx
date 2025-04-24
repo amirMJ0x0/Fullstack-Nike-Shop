@@ -40,13 +40,18 @@ const CommentModal = ({
   };
 
   return (
-    <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+    <Modal
+      blockScrollOnMount={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      size={{ base: "sm", md: "md" }}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
           {mode === "edit" ? "Edit Your Review" : "Leave Your Review"}
         </ModalHeader>
-        <ModalCloseButton color={"coral"} />
+        <ModalCloseButton color={"coral"} className="!ring-0" />
         <ModalBody>
           <Flex
             gap={4}

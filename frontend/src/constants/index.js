@@ -1,5 +1,7 @@
 import { facebook, instagram, shieldTick, support, truckFast, twitter } from "../assets/icons";
 import { bigShoe1, bigShoe2, bigShoe3, customer1, customer2, shoe4, shoe5, shoe6, shoe7, thumbnailShoe1, thumbnailShoe2, thumbnailShoe3 } from "../assets/images";
+import { BiUser, BiHeart, BiComment } from "react-icons/bi";
+import { RiShoppingCart2Line } from "react-icons/ri";
 
 export const navLinks = [
     { href: "/", label: "Home" },
@@ -149,3 +151,27 @@ export const colors = [
     { name: "Cyan", className: "cyan.500" },
     { name: "Pink", className: "pink.500" },
 ]
+
+
+export const profileLinks = [
+    {
+        to: "account-info",
+        label: "Account Info",
+        icon: BiUser,
+    },
+    {
+        to: "orders",
+        label: "My Orders",
+        icon: RiShoppingCart2Line,
+    },
+    {
+        to: "my-favorites",
+        label: "My Favorites",
+        icon: BiHeart,
+    },
+    {
+        to: "my-comments",
+        label: "My Reviews",
+        icon: BiComment,
+    },
+];

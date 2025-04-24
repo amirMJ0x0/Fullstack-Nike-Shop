@@ -96,7 +96,7 @@ const MyComments = () => {
             <ListItem
               key={index}
               py={2}
-              px={5}
+              px={{ base: 4, md: 5 }}
               bgColor={"gray.100"}
               _dark={{ bgColor: "gray.700" }}
               borderRadius={"5px"}
@@ -105,7 +105,7 @@ const MyComments = () => {
               alignItems="center"
             >
               <div className="flex items-center justify-between">
-                <Box display="flex" alignItems="center">
+                <Box display="flex" alignItems="center" mr={{ base: 2, md: 0 }}>
                   <Image
                     src={comment.productId.imageUrl}
                     boxSize="40px"
@@ -114,7 +114,7 @@ const MyComments = () => {
                   />
                   <Heading
                     _hover={{ cursor: "pointer" }}
-                    fontSize="md"
+                    fontSize={{ base: "md", md: "lg" }}
                     color={"coral"}
                     className="!font-montserrat"
                     onClick={() => handleSelectProduct(comment.productId._id)}
@@ -122,11 +122,15 @@ const MyComments = () => {
                     {comment.productId.name}
                   </Heading>
                 </Box>
-                <Box display="flex" gap={1}>
+                <Box
+                  display="flex"
+                  gap={{ base: 0, md: 1 }}
+                  ml={{ base: 1, md: 0 }}
+                >
                   <Button
                     variant={"ghost"}
                     _hover={{ color: "coral" }}
-                    fontSize={"lg"}
+                    fontSize={{ base: "md", md: "lg" }}
                     onClick={() => {
                       setSelectedComment(comment);
                       setEditOpen(true);
@@ -138,7 +142,8 @@ const MyComments = () => {
                     variant={"ghost"}
                     _hover={{ color: "coral" }}
                     color={"red"}
-                    fontSize={"lg"}
+                    fontSize={{ base: "md", md: "lg" }}
+                    p={{ base: 1, md: 2 }}
                     onClick={() => {
                       setSelectedComment(comment);
                       deleteModal.open();
@@ -168,7 +173,7 @@ const MyComments = () => {
                 </Text>
               </div>
               <div className="mt-3">
-                <Text fontWeight={"semibold"}>{comment.text}</Text>
+                <Text fontWeight={{ md: "semibold" }}>{comment.text}</Text>
               </div>
             </ListItem>
           ))}

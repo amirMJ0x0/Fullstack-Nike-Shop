@@ -22,7 +22,8 @@ const MyFavorites = () => {
               key={product._id}
               py={2}
               px={5}
-              bgColor={"gray.700"}
+              bgColor={"gray.200"}
+              _dark={"gray.700"}
               borderRadius={"5px"}
               _hover={{ cursor: "pointer" }}
               display="flex"
