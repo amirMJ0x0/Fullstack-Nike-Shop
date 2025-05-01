@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthProvider";
 import {
@@ -66,7 +65,6 @@ const LoginPage = () => {
 
         <form
           onSubmit={handleSubmit((data) => {
-            console.log(errors);
             onSubmit(data);
           })}
           className="flex flex-col gap-5 mt-10 "

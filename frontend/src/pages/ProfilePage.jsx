@@ -28,13 +28,13 @@ const ProfilePage = () => {
               return (
                 <li key={to} className="max-sm-center space-y-1">
                   <Icon
-                    className={`md:hidden text-lg ${
+                    className={`md:hidden text-lg transition-colors duration-300 ${
                       isActive ? "text-coral-red text-xl" : ""
                     }`}
                   />
                   <Link
                     to={to}
-                    className={`max-sm:col-center ${
+                    className={`max-sm:col-center transition-colors duration-300 ${
                       isActive ? "text-coral-red" : ""
                     }`}
                   >

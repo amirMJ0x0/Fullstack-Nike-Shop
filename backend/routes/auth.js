@@ -1,11 +1,16 @@
-// routes/auth.js
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
 
-const secretKey = "ro8BS6Hiivgzy8Xuu09JDjlNLnSLldY5";
+const secretKey = process.env.JWT_SECRET
+if (!secretKey) {
+    console.error('⚠️ JWT_SECRET is not set in environment variables!');
+    process.exit(1);
+}
 
 
 // * register route
