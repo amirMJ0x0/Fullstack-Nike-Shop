@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  getSavedProducts,
-  toggleSaveProduct,
-} from "../../services/userServices";
+import { getSavedProducts, toggleSaveProduct } from "../services/userServices";
 import { Button, useToast } from "@chakra-ui/react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAuth } from "../context/AuthProvider";

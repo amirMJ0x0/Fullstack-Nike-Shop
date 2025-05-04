@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postComment } from "../../services/commentServices";
+import { postComment } from "../services/commentServices";
 
 
 

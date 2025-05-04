@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { getProduct } from "../../services/productServices";
+import { getProduct } from "../services/productServices";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
 import useAddComment from "../hooks/useAddComment";
@@ -23,7 +23,7 @@ import CommentModal from "../components/commentModal";
 import { useAuth } from "../context/AuthProvider";
 import moment from "moment";
 import SaveProduct from "../components/SaveProduct";
-import { getCommentsByProductId } from "../../services/commentServices";
+import { getCommentsByProductId } from "../services/commentServices";
 
 const ProductPage = () => {
   const { productId } = useParams();

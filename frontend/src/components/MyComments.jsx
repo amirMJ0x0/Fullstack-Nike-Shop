@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { BiSolidStar } from "react-icons/bi";
 import moment from "moment";
-import { deleteComment, getMyComments } from "../../services/commentServices";
+import { deleteComment, getMyComments } from "../services/commentServices";
 import { FiEdit3, FiTrash, FiTrash2 } from "react-icons/fi";
 import useModal from "../hooks/useModal";
 import CustomModal from "./share/CustomModal";

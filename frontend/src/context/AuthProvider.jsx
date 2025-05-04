@@ -1,17 +1,25 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchUserInfo } from "../../services/userServices";
+import { fetchUserInfo } from "../services/userServices";
 import { useToast } from "@chakra-ui/react";
-import api from "../../services/api";
+import api from "../services/api";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const toast = useToast();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetching user info
+  // Fetching user info with memoization
   const {
     data: userData = { data: null, userStatus: "Unauthorized" },
     refetch,
@@ -21,58 +29,82 @@ const AuthProvider = ({ children }) => {
     queryFn: fetchUserInfo,
     refetchInterval: 60000,
     retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
-  const user = userData.userStatus === "Authorized" ? userData.data : null;
 
-  //Register Action
-  const registerAction = async (data) => {
+  // Memoize user data
+  const user = useMemo(
+    () => (userData.userStatus === "Authorized" ? userData.data : null),
+    [userData]
+  );
+
+  // Handle token refresh
+  const handleTokenRefresh = useCallback(async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
     try {
-      const response = await api.post(`/auth/register`, data);
-      if (response.status === 201) {
-        // Auto login after registration
-        const loginResponse = await api.post(`/auth/login`, {
-          email: data.email,
-          password: data.password,
-        });
-        if (loginResponse.status === 200) {
-          toast({
-            title: "Registration and Login Successful",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-            position: "top-right",
-          });
-
-          navigate("/");
-          refetch();
-        }
-      } else {
-        console.log("Register error: ", response.status);
+      await api.post("/auth/refresh");
+      await refetch();
+    } catch (error) {
+      if (error.response?.status === 401) {
+        navigate("/login");
       }
-    } catch (error) {
-      console.error(error);
+    } finally {
+      setIsRefreshing(false);
     }
-  };
+  }, [isRefreshing, refetch, navigate]);
 
-  //Login Action
-  const loginAction = async (data) => {
-    try {
-      const res = await api.post(`/auth/login`, data);
-      if (res.status === 200) {
-        navigate(-1);
-        refetch(); //Fetch user info after login
-      } else console.log("Login error: ", res.status);
-    } catch (error) {
-      console.log("Login error:", error.message);
-    }
-  };
+  // Register Action with memoization
+  const registerAction = useCallback(
+    async (data) => {
+      try {
+        const response = await api.post(`/auth/register`, data);
+        if (response.status === 201) {
+          const loginResponse = await api.post(`/auth/login`, {
+            email: data.email,
+            password: data.password,
+          });
+          if (loginResponse.status === 200) {
+            toast({
+              title: "Registration and Login Successful",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top-right",
+            });
+            navigate("/");
+            await refetch();
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [navigate, refetch, toast]
+  );
 
-  //Logout Action
-  const logOut = async () => {
+  // Login Action with memoization
+  const loginAction = useCallback(
+    async (data) => {
+      try {
+        const res = await api.post(`/auth/login`, data);
+        if (res.status === 200) {
+          navigate(-1);
+          await refetch();
+        }
+      } catch (error) {
+        console.log("Login error:", error.message);
+      }
+    },
+    [navigate, refetch]
+  );
+
+  // Logout Action with memoization
+  const logOut = useCallback(async () => {
     try {
       await api.post(`/auth/logout`, {});
       navigate("/");
-      refetch(); //Fetch to confirm logout
+      await refetch();
       toast({
         title: "Log out Successful",
         status: "warning",
@@ -83,14 +115,32 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log("Logout error:", error.message);
     }
-  };
+  }, [navigate, refetch, toast]);
+
+  // Memoize context value
+  const contextValue = useMemo(
+    () => ({
+      user,
+      isLoading,
+      isRefreshing,
+      loginAction,
+      logOut,
+      registerAction,
+      handleTokenRefresh,
+    }),
+    [
+      user,
+      isLoading,
+      isRefreshing,
+      loginAction,
+      logOut,
+      registerAction,
+      handleTokenRefresh,
+    ]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{ user, isLoading, loginAction, logOut, registerAction }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
