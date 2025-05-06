@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getProductsBySearchTerm } from "../../services/productServices";
+import { getProductsBySearchTerm } from "../services/productServices";
 import useDebounce from "../hooks/useDebounce";
 import {
   Image,

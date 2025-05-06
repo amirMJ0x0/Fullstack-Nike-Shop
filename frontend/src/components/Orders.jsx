@@ -1,5 +1,11 @@
+import TestComponent from "./TestComponent";
+
 const Orders = () => {
-  return <div>Orders</div>;
+  return (
+    <div>
+      <TestComponent />
+    </div>
+  );
 };
 
 export default Orders;

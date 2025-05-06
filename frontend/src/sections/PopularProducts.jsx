@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import ProductCard from "../components/ProductCard";
-import { getAllProducts } from "../../services/productServices";
+import { getAllProducts } from "../services/productServices";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";

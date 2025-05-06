@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartProvider";
-import { getProduct } from "../../services/productServices";
+import { getProduct } from "../services/productServices";
 import { Button, Heading, HStack, Image, Stack } from "@chakra-ui/react";
 import CartItem from "../components/CartItem";
 import Loading from "../components/share/Loading";

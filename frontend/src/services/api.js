@@ -5,6 +5,20 @@ const api = axios.create({
     withCredentials: true
 });
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach(prom => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
 // Add a request interceptor
 api.interceptors.request.use(
     (config) => {
@@ -21,22 +35,35 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // If the error is 401 and we haven't tried to refresh the token yet
         if (error.response?.status === 401 && !originalRequest._retry) {
+            if (isRefreshing) {
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject });
+                })
+                    .then(token => {
+                        originalRequest.headers['Authorization'] = 'Bearer ' + token;
+                        return api(originalRequest);
+                    })
+                    .catch(err => Promise.reject(err));
+            }
+
             originalRequest._retry = true;
+            isRefreshing = true;
 
             try {
-                // Try to refresh the token
-                await api.post('/auth/refresh');
+                const response = await api.post('/auth/refresh');
+                const { accessToken } = response.data;
 
-                // Retry the original request
+                processQueue(null, accessToken);
                 return api(originalRequest);
             } catch (refreshError) {
-                // If refresh token is invalid, redirect to login
+                processQueue(refreshError, null);
                 if (refreshError.response?.status === 401) {
                     window.location.href = '/login';
                 }
                 return Promise.reject(refreshError);
+            } finally {
+                isRefreshing = false;
             }
         }
 

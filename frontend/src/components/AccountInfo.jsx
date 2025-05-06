@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserProfile } from "../../services/userServices";
+import { getUserProfile } from "../services/userServices";
 import { Button, HStack, Stack, Text } from "@chakra-ui/react";
 import { FiEdit3 } from "react-icons/fi";
 

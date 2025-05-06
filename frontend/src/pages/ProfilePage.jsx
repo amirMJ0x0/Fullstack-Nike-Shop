@@ -11,7 +11,6 @@ const ProfilePage = () => {
   const { user } = useAuth();
   const location = useLocation();
   const pathname = location.pathname;
-  console.log(pathname.split("/")[2]);
 
   const isProfilePage = pathname === "/profile" || pathname === "/Profile";
   return (

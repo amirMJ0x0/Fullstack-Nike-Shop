@@ -7,27 +7,51 @@ import {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchUserInfo } from "../services/userServices";
 import { useToast } from "@chakra-ui/react";
 import api from "../services/api";
+import tabService from "../services/tabService";
 
 const AuthContext = createContext();
+const authChannel = new BroadcastChannel("auth");
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isActiveTab, setIsActiveTab] = useState(tabService.isTabActive());
+  const [lastRefreshTime, setLastRefreshTime] = useState(0);
+
+  // Listen for tab activity changes
+  useEffect(() => {
+    const cleanup = tabService.addListener(setIsActiveTab);
+    return cleanup;
+  }, []);
+
+  // Listen for auth state changes from other tabs
+  useEffect(() => {
+    const handleAuthMessage = (event) => {
+      if (event.data.type === "AUTH_STATE_CHANGED") {
+        queryClient.invalidateQueries(["userInfo"]);
+      }
+    };
+
+    authChannel.addEventListener("message", handleAuthMessage);
+    return () => {
+      authChannel.removeEventListener("message", handleAuthMessage);
+    };
+  }, [queryClient]);
 
   // Fetching user info with memoization
   const {
     data: userData = { data: null, userStatus: "Unauthorized" },
-    refetch,
     isLoading,
   } = useQuery({
     queryKey: ["userInfo"],
     queryFn: fetchUserInfo,
-    refetchInterval: 60000,
+    refetchInterval: isActiveTab ? 60000 : false, // Only refetch when tab is active
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -40,11 +64,16 @@ const AuthProvider = ({ children }) => {
 
   // Handle token refresh
   const handleTokenRefresh = useCallback(async () => {
-    if (isRefreshing) return;
+    const now = Date.now();
+    // Prevent multiple refresh attempts within 30 seconds
+    if (isRefreshing || !isActiveTab || now - lastRefreshTime < 30000) return;
+    
     setIsRefreshing(true);
+    setLastRefreshTime(now);
+    
     try {
       await api.post("/auth/refresh");
-      await refetch();
+      queryClient.invalidateQueries(["userInfo"]);
     } catch (error) {
       if (error.response?.status === 401) {
         navigate("/login");
@@ -52,7 +81,14 @@ const AuthProvider = ({ children }) => {
     } finally {
       setIsRefreshing(false);
     }
-  }, [isRefreshing, refetch, navigate]);
+  }, [isRefreshing, navigate, isActiveTab, lastRefreshTime, queryClient]);
+
+  // Auto refresh token when tab becomes active
+  useEffect(() => {
+    if (isActiveTab && user) {
+      handleTokenRefresh();
+    }
+  }, [isActiveTab, user, handleTokenRefresh]);
 
   // Register Action with memoization
   const registerAction = useCallback(
@@ -73,14 +109,15 @@ const AuthProvider = ({ children }) => {
               position: "top-right",
             });
             navigate("/");
-            await refetch();
+            // Notify other tabs
+            authChannel.postMessage({ type: "AUTH_STATE_CHANGED" });
           }
         }
       } catch (error) {
         console.error(error);
       }
     },
-    [navigate, refetch, toast]
+    [navigate, toast]
   );
 
   // Login Action with memoization
@@ -89,22 +126,30 @@ const AuthProvider = ({ children }) => {
       try {
         const res = await api.post(`/auth/login`, data);
         if (res.status === 200) {
+          // Clear all queries and refetch user data
+          await queryClient.clear();
+          await queryClient.invalidateQueries(["userInfo"]);
           navigate(-1);
-          await refetch();
+          // Notify other tabs
+          authChannel.postMessage({ type: "AUTH_STATE_CHANGED" });
         }
       } catch (error) {
         console.log("Login error:", error.message);
       }
     },
-    [navigate, refetch]
+    [navigate, queryClient]
   );
 
   // Logout Action with memoization
   const logOut = useCallback(async () => {
     try {
       await api.post(`/auth/logout`, {});
+      // Clear all queries and cache
+      await queryClient.clear();
+      await queryClient.invalidateQueries(["userInfo"]);
       navigate("/");
-      await refetch();
+      // Notify other tabs
+      authChannel.postMessage({ type: "AUTH_STATE_CHANGED" });
       toast({
         title: "Log out Successful",
         status: "warning",
@@ -115,7 +160,7 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log("Logout error:", error.message);
     }
-  }, [navigate, refetch, toast]);
+  }, [navigate, toast, queryClient]);
 
   // Memoize context value
   const contextValue = useMemo(
@@ -123,6 +168,7 @@ const AuthProvider = ({ children }) => {
       user,
       isLoading,
       isRefreshing,
+      isActiveTab,
       loginAction,
       logOut,
       registerAction,
@@ -132,6 +178,7 @@ const AuthProvider = ({ children }) => {
       user,
       isLoading,
       isRefreshing,
+      isActiveTab,
       loginAction,
       logOut,
       registerAction,
