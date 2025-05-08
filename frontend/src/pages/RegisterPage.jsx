@@ -6,9 +6,10 @@ import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerValidationSchema } from "../utils/validation";
 import { Helmet } from "react-helmet-async";
+import PasswordInput from "../components/share/PasswordInput";
 
 const RegisterPage = () => {
-  const { registerAction, loginAction } = useAuth();
+  const { registerAction } = useAuth();
   const {
     handleSubmit,
     register,
@@ -86,26 +87,19 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <Input
-              type="password"
-              variant={"flushed"}
-              placeholder="password"
-              {...register("password")}
-              focusBorderColor="#ff6452"
-            />
+            <PasswordInput register={register} />
             {errors.password?.message && (
               <small className="text-red-600">{errors.password?.message}</small>
             )}
           </div>
 
           <div>
-            <Input
-              type="password"
-              variant={"flushed"}
-              placeholder="confirm password"
-              {...register("confirmPassword")}
-              focusBorderColor="#ff6452"
+            <PasswordInput
+              register={register}
+              purpose={"confirmPassword"}
+              placeholder="Confirm Password"
             />
+
             {errors.confirmPassword?.message && (
               <small className="text-red-600">
                 {errors.confirmPassword?.message}

@@ -4,6 +4,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Otp = require("../models/Otp");
+const { generateTokens } = require("../utils/generateTokens");
+const { generateOtp } = require("../utils/generateOtp");
+const { sendVerificationEmail } = require("../utils/email");
+const { finalizeAuth } = require("../utils/finalizeAuth");
+const { body } = require('express-validator');
 const router = express.Router();
 
 const secretKey = process.env.JWT_SECRET;
@@ -14,58 +20,54 @@ if (!secretKey || !refreshSecretKey) {
     process.exit(1);
 }
 
-// Helper function to generate tokens
-const generateTokens = (userId) => {
-    const accessToken = jwt.sign({ id: userId }, secretKey, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ id: userId }, refreshSecretKey, { expiresIn: '7d' });
-    return { accessToken, refreshToken };
-};
 
 // * register route
-router.post('/register', async (req, res) => {
+router.post('/register', [
+    body('name').isLength({ min: 3 }).withMessage('Name must be at least 3 characters long'),
+    body('email').isEmail().withMessage('Please enter a valid email'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+], async (req, res) => {
     try {
         const { username, email, password } = req.body;
-
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             return res.status(400).json({ message: 'Username or email already in use' });
         }
-
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, email, password: hashedPassword });
         await newUser.save();
 
-        const { accessToken, refreshToken } = generateTokens(newUser._id);
 
-        // Update user with refresh token
-        newUser.refreshToken = refreshToken;
-        await newUser.save();
-
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-            maxAge: 15 * 60 * 1000, // 15 minutes
+        const otp = generateOtp()
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+        await Otp.create({
+            email,
+            otp,
+            purpose: 'email-verification',
+            expiresAt
         });
+        await sendVerificationEmail(email, otp);
 
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        });
-
-        res.status(201).json({
-            message: 'User registered and logged in successfully',
-            data: { id: newUser._id, username: newUser.username, email: newUser.email }
-        });
+        return res.status(201).json({
+            success: true,
+            message: "Registration successful. Please verify your email to continue.",
+            data: {
+                userId: newUser._id,
+                email,
+                expiresAt
+            }
+        }
+        );
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 });
 
 //* login route
-router.post('/login', async (req, res) => {
+router.post('/login', [
+    body('email').isEmail().withMessage('Please enter a valid email'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+], async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -78,34 +80,96 @@ router.post('/login', async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
+        if (!user.isVerified) {
+            const otp = generateOtp()
+            const expiresAt = new Date(Date.now() + 5 * 60 * 1000)
 
-        const { accessToken, refreshToken } = generateTokens(user._id);
+            await Otp.deleteMany({ email, purpose: 'email-verification' });
+            await Otp.create({
+                email,
+                otp,
+                purpose: 'email-verification',
+                expiresAt,
+            });
 
-        // Update user with refresh token
-        user.refreshToken = refreshToken;
-        await user.save();
+            await sendVerificationEmail(email, otp);
 
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-            maxAge: 15 * 60 * 1000, // 15 minutes
-        });
+            return res.status(403).json({ message: 'Please verify your email before logging in.', expiresAt });
+        }
 
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        });
+        finalizeAuth(res, user) // generate tokens
 
-        res.json({ data: { id: user._id, username: user.username, email: user.email }, statusCode: 200 });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
+//* verify-email route
+router.post('/verify-email', async (req, res) => {
+    const { email, otpToken } = req.body
+    try {
+        const purpose = "email-verification"
+        console.log("Payload received:", { email, otpToken });
+        const otpRecord = await Otp.findOne({ email, otp: otpToken, purpose });
+
+        if (!otpRecord) return res.status(400).json({ message: "Invalid OTP or purpose" })
+        if (otpRecord?.otp !== otpToken) {
+            console.log("OTP mismatch:", { expected: otpRecord.otp, received: otpToken });
+            return res.status(400).json("Invalid OTP")
+        }
+        if (otpRecord?.expiresAt < Date.now()) {
+            console.log("OTP expired:", { expiresAt: otpRecord.expiresAt, now: Date.now() });
+            return res.status(410).json('OTP has expired.');
+        }
+
+
+        await Otp.deleteMany({ email, purpose });
+
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+
+        user.isVerified = true;
+        await user.save();
+
+
+        await finalizeAuth(res, user) // generate tokens
+
+    } catch (error) {
+        console.error('Verify email error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+})
+//* resend-verification route
+router.post('/resend-verification', async (req, res) => {
+    const { email } = req.body
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        if (user.isVerified) return res.status(400).json({ message: 'Already verified.' });
+
+        await Otp.deleteMany({ email, purpose: 'email-verification' });
+
+        const otp = generateOtp()
+        const expiresAt = Date.now() + 5 * 60 * 1000
+        await Otp.create({
+            email,
+            otp,
+            purpose: 'email-verification',
+            expiresAt
+        });
+        await sendVerificationEmail(email, otp);
+
+        res.status(200).json({ message: 'OTP resent. Check your inbox.', expiresAt });
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+})
 //* refresh token route
 router.post('/refresh', async (req, res) => {
     try {

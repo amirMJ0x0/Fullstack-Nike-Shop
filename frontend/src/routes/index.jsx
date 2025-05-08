@@ -9,6 +9,7 @@ const ProductsListPage = lazy(() => import("../pages/ProductsListPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+const VerifyEmail = lazy(() => import("../pages/VerfiyEmail"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const AccountInfo = lazy(() => import("../components/AccountInfo"));
 const Orders = lazy(() => import("../components/Orders"));
@@ -25,6 +26,7 @@ const ProductsListPageSuspended = withSuspense(ProductsListPage);
 const ProductPageSuspended = withSuspense(ProductPage);
 const LoginPageSuspended = withSuspense(LoginPage);
 const RegisterPageSuspended = withSuspense(RegisterPage);
+const VerifyEmailSuspended = withSuspense(VerifyEmail);
 const ProfilePageSuspended = withSuspense(ProfilePage);
 const AccountInfoSuspended = withSuspense(AccountInfo);
 const OrdersSuspended = withSuspense(Orders);
@@ -67,6 +69,10 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         element: <RegisterPageSuspended />,
+      },
+      {
+        path: "/verify-email",
+        element: <VerifyEmailSuspended />,
       },
       {
         path: "/profile",

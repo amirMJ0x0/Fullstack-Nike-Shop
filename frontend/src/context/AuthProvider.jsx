@@ -67,10 +67,10 @@ const AuthProvider = ({ children }) => {
     const now = Date.now();
     // Prevent multiple refresh attempts within 30 seconds
     if (isRefreshing || !isActiveTab || now - lastRefreshTime < 30000) return;
-    
+
     setIsRefreshing(true);
     setLastRefreshTime(now);
-    
+
     try {
       await api.post("/auth/refresh");
       queryClient.invalidateQueries(["userInfo"]);
@@ -96,25 +96,27 @@ const AuthProvider = ({ children }) => {
       try {
         const response = await api.post(`/auth/register`, data);
         if (response.status === 201) {
-          const loginResponse = await api.post(`/auth/login`, {
-            email: data.email,
-            password: data.password,
+          sessionStorage.setItem("temp-password", data.password);
+          sessionStorage.setItem("expiresAt", response.data.data.expiresAt);
+
+          toast({
+            title: "Registration Successful. Please verify your email.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
           });
-          if (loginResponse.status === 200) {
-            toast({
-              title: "Registration and Login Successful",
-              status: "success",
-              duration: 3000,
-              isClosable: true,
-              position: "top-right",
-            });
-            navigate("/");
-            // Notify other tabs
-            authChannel.postMessage({ type: "AUTH_STATE_CHANGED" });
-          }
+          navigate(`/verify-email?email=${encodeURIComponent(data.email)}`);
         }
       } catch (error) {
         console.error(error);
+        toast({
+          title: error.response?.data?.message || "Registration failed",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
       }
     },
     [navigate, toast]
@@ -127,17 +129,40 @@ const AuthProvider = ({ children }) => {
         const res = await api.post(`/auth/login`, data);
         if (res.status === 200) {
           // Clear all queries and refetch user data
-          await queryClient.clear();
-          await queryClient.invalidateQueries(["userInfo"]);
-          navigate(-1);
-          // Notify other tabs
+          queryClient.clear();
+          queryClient.invalidateQueries(["userInfo"]);
+          sessionStorage.clear();
+          toast({
+            title: "Login Successful",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+          });
+
+          navigate("/");
           authChannel.postMessage({ type: "AUTH_STATE_CHANGED" });
         }
       } catch (error) {
-        console.log("Login error:", error.message);
+        if (error.response?.status === 403) {
+          const { email } = data;
+          const { expiresAt } = error.response.data;
+          sessionStorage.setItem("expiresAt", expiresAt);
+
+          navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+        } else {
+          console.error("Login error:", error);
+          toast({
+            title: error.response?.data?.message || "Login failed",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
       }
     },
-    [navigate, queryClient]
+    [navigate, queryClient, toast]
   );
 
   // Logout Action with memoization
@@ -153,7 +178,7 @@ const AuthProvider = ({ children }) => {
       toast({
         title: "Log out Successful",
         status: "warning",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
         position: "top-right",
       });

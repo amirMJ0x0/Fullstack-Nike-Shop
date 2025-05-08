@@ -5,7 +5,11 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     refreshToken: { type: String },
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }]
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 module.exports = mongoose.model('User', userSchema);

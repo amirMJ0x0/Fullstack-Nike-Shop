@@ -10,7 +10,7 @@ router.get("/", verifyToken, async (req, res) => {
     const userId = req.user.id;
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
+      cart = new Cart({ userId, items: [] });
     }
     res.status(200).json({ cart });
   } catch (error) {

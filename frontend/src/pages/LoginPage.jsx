@@ -13,6 +13,7 @@ import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "../utils/validation";
 import { Helmet } from "react-helmet-async";
+import PasswordInput from "../components/share/PasswordInput";
 
 const LoginPage = () => {
   const {
@@ -86,13 +87,7 @@ const LoginPage = () => {
           {/* password input  */}
 
           <FormControl>
-            <Input
-              type="password"
-              variant={"flushed"}
-              placeholder="password"
-              {...register("password")}
-              focusBorderColor="#ff6452"
-            />
+            <PasswordInput register={register} />
             {errors.password?.message && (
               <small className="text-red-600 ">
                 {errors.password?.message}

@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const cors = require('cors')
 const cookieParser = require('cookie-parser');
-const Product = require('./models/Product');
 const express = require('express');
-const router = express.Router()
 const cartRoutes = require("./routes/cart");
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -18,7 +16,7 @@ const port = process.env.PORT || 3000;
 
 // تنظیمات CORS
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
     credentials: true
 }));
 app.use(cookieParser())
@@ -30,7 +28,7 @@ app.use("/api/users", userRoutes)
 app.use('/api/comments', commentRoutes);
 
 
-mongoose.connect('mongodb://localhost:27017/Nike', {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
@@ -40,5 +38,5 @@ mongoose.connect('mongodb://localhost:27017/Nike', {
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on ${process.env.SERVER_URL}`);
 });
