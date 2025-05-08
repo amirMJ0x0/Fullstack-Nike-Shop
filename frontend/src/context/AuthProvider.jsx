@@ -96,7 +96,6 @@ const AuthProvider = ({ children }) => {
       try {
         const response = await api.post(`/auth/register`, data);
         if (response.status === 201) {
-          sessionStorage.setItem("temp-password", data.password);
           sessionStorage.setItem("expiresAt", response.data.data.expiresAt);
 
           toast({

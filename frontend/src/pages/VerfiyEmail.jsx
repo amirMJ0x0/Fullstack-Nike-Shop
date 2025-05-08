@@ -13,14 +13,16 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useAuth } from "../context/AuthProvider";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function VerifyEmail() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "";
-  const [otpToken, setOtpToken] = useState(searchParams.get("optToken") || "");
+  const [otpToken, setOtpToken] = useState(searchParams.get("otpToken") || "");
   const toast = useToast();
   const [canResend, setCanResend] = useState(false);
-  const { loginAction } = useAuth();
   const [secondsRemaining, setSecondsRemaining] = useState(() => {
     const savedExpiresAt = sessionStorage.getItem("expiresAt");
     if (savedExpiresAt) {
@@ -72,13 +74,6 @@ export default function VerifyEmail() {
 
   const handleVerify = async () => {
     try {
-      const password = sessionStorage.getItem("temp-password");
-      if (!password) {
-        throw new Error(
-          "Password not found in session. Please login manually."
-        );
-      }
-
       const verifyResponse = await api.post("/auth/verify-email", {
         email,
         otpToken,
@@ -86,7 +81,18 @@ export default function VerifyEmail() {
 
       if (verifyResponse.status === 200) {
         sessionStorage.removeItem("expiresAt");
-        await loginAction({ email, password });
+        queryClient.invalidateQueries(["userInfo"]);
+        toast({
+          title: "Email Verified",
+          description: "Your email has been successfully verified.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+
+        navigate("/");
+        authChannel.postMessage({ type: "AUTH_STATE_CHANGED" });
       }
     } catch (error) {
       const errorMessage =
@@ -170,8 +176,6 @@ export default function VerifyEmail() {
             otp
             value={otpToken}
             onChange={(value) => {
-              console.log(value);
-
               setOtpToken(value);
             }}
             focusBorderColor={otpToken.length === 6 ? "coral" : "gray.300"}
