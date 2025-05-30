@@ -183,6 +183,14 @@ const AuthProvider = ({ children }) => {
       });
     } catch (error) {
       console.log("Logout error:", error.message);
+      toast({
+        title: "Something went wrong",
+        description: error?.message || "",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
     }
   }, [navigate, toast, queryClient]);
 

@@ -9,13 +9,9 @@ let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-    failedQueue.forEach(prom => {
-        if (error) {
-            prom.reject(error);
-        } else {
-            prom.resolve(token);
-        }
-    });
+    failedQueue.forEach(({ resolve, reject }) =>
+        error ? reject(error) : resolve(token)
+    );
     failedQueue = [];
 };
 
@@ -31,10 +27,9 @@ api.interceptors.request.use(
 
 // Add a response interceptor
 api.interceptors.response.use(
-    (response) => response,
+    (res) => res,
     async (error) => {
         const originalRequest = error.config;
-
         if (error.response?.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
@@ -51,10 +46,12 @@ api.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const response = await api.post('/auth/refresh');
-                const { accessToken } = response.data;
+                const { data } = await api.post('/auth/refresh');
+                const { accessToken } = data;
 
                 processQueue(null, accessToken);
+                
+                originalRequest.headers['Authorization'] = 'Bearer ' + accessToken;
                 return api(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError, null);

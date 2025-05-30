@@ -85,10 +85,9 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (productId) => {
     try {
       if (user) {
-        const response = await api.delete("/remove", {
+        const response = await api.delete("/cart/remove", {
           data: { productId },
         });
-        console.log(response.data);
         setCart(response.data.cart);
       } else {
         const updatedCart = removeProductFromLocalCart(productId);

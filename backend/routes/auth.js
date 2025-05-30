@@ -110,16 +110,13 @@ router.post('/verify-email', async (req, res) => {
     const { email, otpToken } = req.body
     try {
         const purpose = "email-verification"
-        console.log("Payload received:", { email, otpToken });
         const otpRecord = await Otp.findOne({ email, otp: otpToken, purpose });
 
         if (!otpRecord) return res.status(400).json({ message: "Invalid OTP or purpose" })
         if (otpRecord?.otp !== otpToken) {
-            console.log("OTP mismatch:", { expected: otpRecord.otp, received: otpToken });
             return res.status(400).json("Invalid OTP")
         }
         if (otpRecord?.expiresAt < Date.now()) {
-            console.log("OTP expired:", { expiresAt: otpRecord.expiresAt, now: Date.now() });
             return res.status(410).json('OTP has expired.');
         }
 
@@ -135,7 +132,7 @@ router.post('/verify-email', async (req, res) => {
 
 
         await finalizeAuth(res, user) // generate tokens
-
+        return;
     } catch (error) {
         console.error('Verify email error:', error);
         res.status(500).json({ message: 'Server error' });
@@ -170,6 +167,53 @@ router.post('/resend-verification', async (req, res) => {
     }
 
 })
+
+//* update email route
+router.post('/update-email', async (req, res) => {
+    const { oldEmail, newEmail } = req.body;
+    try {
+        // 1. Find the unverified user by old email
+        const user = await User.findOne({ email: oldEmail, isVerified: false });
+        console.log(oldEmail);
+        console.log(newEmail);
+
+        if (!user) {
+            return res.status(404).json({ message: "Unverified user not found." });
+        }
+
+        // 2. Check if new email is already in use
+        const emailExists = await User.findOne({ email: newEmail });
+        if (emailExists) {
+            return res.status(409).json({ message: "This email is already in use." });
+        }
+
+        // 3. Update user's email
+        user.email = newEmail;
+        await user.save();
+
+        // 4. Remove any old OTPs for this user
+        await Otp.deleteMany({ email: oldEmail, purpose: "email-verification" });
+
+        // 5. Generate new OTP and save
+        const otp = generateOtp();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+        await Otp.create({
+            email: newEmail,
+            otp,
+            purpose: "email-verification",
+            expiresAt,
+        });
+
+        // 6. Send new verification email
+        await sendVerificationEmail(newEmail, otp);
+
+        res.status(200).json({ message: "Email updated and verification sent." });
+    } catch (error) {
+        console.error("Update email error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 //* refresh token route
 router.post('/refresh', async (req, res) => {
     try {

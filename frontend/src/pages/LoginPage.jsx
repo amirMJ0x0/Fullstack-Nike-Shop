@@ -14,6 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "../utils/validation";
 import { Helmet } from "react-helmet-async";
 import PasswordInput from "../components/share/PasswordInput";
+import { useState } from "react";
 
 const LoginPage = () => {
   const {
@@ -23,12 +24,19 @@ const LoginPage = () => {
   } = useForm({
     resolver: yupResolver(loginValidationSchema),
   });
+  
+  const [loading, setLoading] = useState(false);
   const { loginAction } = useAuth();
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data.email !== "" && data.password !== "") {
-      loginAction(data);
-
-      return;
+      setLoading(true);
+      try {
+        await loginAction(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const goBack = () => {
@@ -75,7 +83,7 @@ const LoginPage = () => {
             <Input
               type="text"
               variant={"flushed"}
-              placeholder="test@gmail.com"
+              placeholder="abcd123@gmail.com"
               {...register("email")}
               focusBorderColor="#ff6452"
             />
@@ -99,6 +107,8 @@ const LoginPage = () => {
             className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90 mt-4"
             color={"white"}
             type="submit"
+            isLoading={loading}
+            disabled={loading}
           >
             <span>LOGIN</span>
           </Button>

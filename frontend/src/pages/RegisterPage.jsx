@@ -7,9 +7,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerValidationSchema } from "../utils/validation";
 import { Helmet } from "react-helmet-async";
 import PasswordInput from "../components/share/PasswordInput";
+import { useState } from "react";
 
 const RegisterPage = () => {
   const { registerAction } = useAuth();
+  const [loading, setLoading] = useState();
   const {
     handleSubmit,
     register,
@@ -17,8 +19,15 @@ const RegisterPage = () => {
   } = useForm({
     resolver: yupResolver(registerValidationSchema),
   });
-  const onSubmit = (data) => {
-    registerAction(data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      await registerAction(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
   const goBack = () => {
     history.back();
@@ -111,6 +120,8 @@ const RegisterPage = () => {
             className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90 mt-4"
             color={"white"}
             type="submit"
+            isLoading={loading}
+            disabled={loading}
           >
             <span>SIGN UP</span>
           </Button>

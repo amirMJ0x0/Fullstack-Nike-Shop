@@ -8,7 +8,7 @@ const { verifyToken } = require("../middlewares/authMiddleware");
 router.get("/", verifyToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const cart = await Cart.findOne({ userId }).populate("items.productId");
+    let cart = await Cart.findOne({ userId }).populate("items.productId");
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     }
