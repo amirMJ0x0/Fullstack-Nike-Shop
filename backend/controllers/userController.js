@@ -88,52 +88,5 @@ const getUserFavorites = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch favorites" });
     }
 };
-// const getUserComments = async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-//         const comments = await Comment.findById(userId).populate("product", "name imageUrl");
-//         res.json(comments);
-//     } catch (err) {
-//         res.status(500).json({ error: "Failed to fetch comments" });
-//     }
-// };
-// controllers/userController.js
-
-// const getUserComments = async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-
-//         //finding all products that have comments from the user
-//         const products = await Product.find(
-//             { "comments.userId": userId },
-//             { name: 1, imageUrl: 1, comments: 1 }
-//         );
-
-//         const userComments = [];
-
-//         products.forEach(product => {
-//             product.comments.forEach(comment => {
-//                 if (comment.userId.toString() === userId.toString()) {
-//                     userComments.push({
-//                         productId: product._id,
-//                         productName: product.name,
-//                         productImage: product.imageUrl[0],
-//                         text: comment.text,
-//                         rating: comment.rating,
-//                         date: comment.date
-//                     });
-//                 }
-//             });
-//         });
-
-//         userComments.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-//         res.json(userComments);
-
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: "Error getting user's comments" });
-//     }
-// };
 
 module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUserProfile, getUserFavorites };
