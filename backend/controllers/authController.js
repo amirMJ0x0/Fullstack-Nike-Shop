@@ -4,7 +4,7 @@ const User = require('../models/User');
 const Otp = require("../models/Otp");
 const { generateTokens } = require("../utils/generateTokens");
 const { generateOtp } = require("../utils/generateOtp");
-const { sendVerificationEmail } = require("../utils/email");
+const { sendVerificationEmail, sendPasswordResetEmail } = require("../utils/email");
 const { finalizeAuth } = require("../utils/finalizeAuth");
 
 const secretKey = process.env.JWT_SECRET;
@@ -258,4 +258,84 @@ const logout = async (req, res) => {
     }
 };
 
-module.exports = { register, login, verifyEmail, resendVerification, updateEmail, refresh, logout, userInfo }
+// Forgot Password
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+    try {
+        const user = await User.findOne({ email })
+        if (!user) {
+            // For security, don't reveal if email exists
+            console.log('no user');
+
+            return res.status(200).json({ message: "If this email exists, a reset code has been sent." });
+        }
+
+        // Remove old OTPs
+        await Otp.deleteMany({ email, purpose: "password-reset" })
+
+        // Generate and save new OTP
+        const otp = generateOtp()
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000)
+        await Otp.create({
+            email,
+            otp,
+            purpose: "password-reset",
+            expiresAt
+        })
+
+        //Send email
+        await sendPasswordResetEmail(email, otp);
+
+        res.status(200).json({ message: "If this email exists, a reset code has been sent." })
+
+    } catch (error) {
+        console.log("Forgot password error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+// Verify Reset OTP
+const verifyResetOtp = async (req, res) => {
+    const { email, otp } = req.body
+    try {
+        const otpRecord = await Otp.findOne({ email, otp, purpose: "password-reset" })
+        if (!otpRecord) {
+            return res.status(400).json({ message: "Invalid or expired OTP." })
+        }
+        if (otpRecord.expiresAt < Date.now()) {
+            return res.status(410).json({ message: "OTP has expired." })
+        }
+        res.status(200).json({ message: "OTP is valid." })
+    } catch (error) {
+        console.log("Verify OTP error:", error);
+        res.status(500).json({ message: "Server error" })
+    }
+}
+
+// Reset Password
+const resetPassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body
+    try {
+        const otpRecord = Otp.findOne({ email, otp, purpose: "password-reset" })
+        if (!otpRecord) {
+            return res.status(400).json({ message: "Invalid or expired OTP." })
+        }
+        if (otpRecord.expiresAt < Date.now()) {
+            return res.status(410).json({ message: "OTP has expired." })
+        }
+
+        const user = await User.findOne({ email })
+        if (!user) return res.status(404).json({ message: "User now found." })
+
+        user.password = await bcrypt.hash(newPassword, 10)
+        await user.save()
+
+        await Otp.deleteMany({ email, purpose: "password-reset" })
+
+        res.status(200).json({ message: "Password has been reset." })
+    } catch (error) {
+        console.log("Reset password error:", error);
+        res.status(500).json({ message: "Server error" })
+    }
+}
+module.exports = { register, login, verifyEmail, resendVerification, updateEmail, refresh, logout, userInfo, forgotPassword, verifyResetOtp, resetPassword }

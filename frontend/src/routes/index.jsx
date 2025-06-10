@@ -11,6 +11,7 @@ const LoginPage = lazy(() => import("../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const VerifyEmail = lazy(() => import("../pages/VerfiyEmail"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 const AccountInfo = lazy(() => import("../components/AccountInfo"));
 const Orders = lazy(() => import("../components/Orders"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
@@ -28,6 +29,7 @@ const LoginPageSuspended = withSuspense(LoginPage);
 const RegisterPageSuspended = withSuspense(RegisterPage);
 const VerifyEmailSuspended = withSuspense(VerifyEmail);
 const ProfilePageSuspended = withSuspense(ProfilePage);
+const ForgotPasswordPageSuspended = withSuspense(ForgotPasswordPage);
 const AccountInfoSuspended = withSuspense(AccountInfo);
 const OrdersSuspended = withSuspense(Orders);
 const MyFavoritesSuspended = withSuspense(MyFavorites);
@@ -73,6 +75,10 @@ export const router = createBrowserRouter([
       {
         path: "/verify-email",
         element: <VerifyEmailSuspended />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPageSuspended />,
       },
       {
         path: "/profile",

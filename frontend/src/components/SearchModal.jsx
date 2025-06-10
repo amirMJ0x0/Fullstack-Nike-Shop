@@ -47,7 +47,7 @@ const SearchModal = ({ isOpen, onClose }) => {
     }
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
+    <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "md" }}>
       <ModalOverlay />
       <ModalContent>
         <ModalBody p={4}>

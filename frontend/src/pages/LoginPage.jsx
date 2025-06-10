@@ -7,8 +7,9 @@ import {
   FormControl,
   Box,
   Text,
+  Flex,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "../utils/validation";
@@ -24,7 +25,7 @@ const LoginPage = () => {
   } = useForm({
     resolver: yupResolver(loginValidationSchema),
   });
-  
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { loginAction } = useAuth();
   const onSubmit = async (data) => {
@@ -96,15 +97,30 @@ const LoginPage = () => {
 
           <FormControl>
             <PasswordInput register={register} />
-            {errors.password?.message && (
-              <small className="text-red-600 ">
+            <Flex justifyContent={"space-between"}>
+              <small className="text-red-600 mt-3">
                 {errors.password?.message}
               </small>
-            )}
+              {/* {errors.password?.message && (
+                <small className="text-red-600 ">
+                  {errors.password?.message}
+                </small>
+              )} */}
+              <Button
+                className="font-palanquin"
+                color={"white"}
+                type="submit"
+                variant={"link"}
+                disabled={loading}
+                onClick={() => navigate("/forgot-password")}
+              >
+                <span className="font-sm p-1 font-light">Forgot Password?</span>
+              </Button>
+            </Flex>
           </FormControl>
 
           <Button
-            className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90 mt-4"
+            className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90"
             color={"white"}
             type="submit"
             isLoading={loading}
@@ -112,6 +128,7 @@ const LoginPage = () => {
           >
             <span>LOGIN</span>
           </Button>
+
           <Text
             className="text-sm text-center text-slate-gray font-montserrat tracking-tighter"
             _dark={{ color: "gray.300" }}
