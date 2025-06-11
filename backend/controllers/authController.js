@@ -153,6 +153,7 @@ const updateEmail = async (req, res) => {
             return res.status(409).json({ message: "This email is already in use." });
         }
         user.email = newEmail;
+        user.isVerified = false
         await user.save();
 
         await Otp.deleteMany({ email: oldEmail, purpose: "email-verification" });

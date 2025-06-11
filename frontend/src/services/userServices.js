@@ -12,10 +12,10 @@ export const fetchUserInfo = async () => {
 };
 
 // @desc toggleSaveProduct
-// @route GET http://localhost:3000/users/save-product
+// @route GET http://localhost:3000/user/save-product
 export const toggleSaveProduct = async (productId) => {
     try {
-        const res = await api.post(`/users/save-product`, { productId });
+        const res = await api.post(`/user/save-product`, { productId });
         return res.data;
     } catch (error) {
         console.error("error toggling saved product:", error.response?.data || error.message);
@@ -23,10 +23,10 @@ export const toggleSaveProduct = async (productId) => {
 };
 
 // @desc getSavedProducts
-// @route GET http://localhost:3000/users/saved-products
+// @route GET http://localhost:3000/user/saved-products
 export const getSavedProducts = async () => {
     try {
-        const res = await api.get(`/users/saved-products`);
+        const res = await api.get(`/user/saved-products`);
         return res.data;
     } catch (error) {
         console.error("error fetching saved products:", error.response?.data || error.message);
@@ -35,13 +35,21 @@ export const getSavedProducts = async () => {
 
 
 // @desc getUserProfile
-// @route GET http://localhost:3000/users/profile
+// @route GET http://localhost:3000/user/profile
 export const getUserProfile = async () => {
     try {
-        const res = await api.get(`/users/profile`);
+        const res = await api.get(`/user/profile`);
         return res.data;
     } catch (error) {
         console.error("error fetching saved products:", error.response?.data || error.message);
     }
+};
+
+
+// @desc EditUsername
+// @route PATCH http://localhost:3000/user/profile
+export const editUsername = async (username) => {
+
+    await api.patch("/user/profile", { username });
 };
 

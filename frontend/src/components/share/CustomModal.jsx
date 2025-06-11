@@ -37,7 +37,7 @@ const CustomModal = ({
             <Button variant="ghost" mr={3} onClick={onClose}>
               {cancelText}
             </Button>
-            <Button colorScheme="red" onClick={onConfirm}>
+            <Button bg={"coral"} onClick={onConfirm}>
               {confirmText}
             </Button>
           </ModalFooter>

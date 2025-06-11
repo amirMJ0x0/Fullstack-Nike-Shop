@@ -54,31 +54,31 @@ const getUserProfile = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch user profile" });
     }
 };
-const updateUserProfile = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const { name, email, password } = req.body;
+// const updateUserProfile = async (req, res) => {
+//     try {
+//         const userId = req.user.id;
+//         const { name, email, password } = req.body;
 
-        let user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+//         let user = await User.findById(userId);
+//         if (!user) {
+//             return res.status(404).json({ error: "User not found" });
+//         }
 
-        // آپدیت اطلاعات
-        if (name) user.name = name;
-        if (email) user.email = email;
-        if (password) {
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(password, salt);
-        }
+//         // آپدیت اطلاعات
+//         if (name) user.name = name;
+//         if (email) user.email = email;
+//         if (password) {
+//             const salt = await bcrypt.genSalt(10);
+//             user.password = await bcrypt.hash(password, salt);
+//         }
 
-        await user.save();
-        res.json({ message: "Profile updated successfully" });
+//         await user.save();
+//         res.json({ message: "Profile updated successfully" });
 
-    } catch (err) {
-        res.status(500).json({ error: "Failed to update profile" });
-    }
-};
+//     } catch (err) {
+//         res.status(500).json({ error: "Failed to update profile" });
+//     }
+// };
 const getUserFavorites = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -88,5 +88,25 @@ const getUserFavorites = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch favorites" });
     }
 };
+const updateUsername = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { username } = req.body;
+        if (!username) return res.status(400).json({ message: "Username is required." });
 
-module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUserProfile, getUserFavorites };
+        // Check if username is taken
+        const exists = await User.findOne({ username });
+        if (exists) return res.status(409).json({ message: "Username already taken." });
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found." });
+
+        user.username = username;
+        await user.save();
+
+        res.json({ message: "Username updated successfully." });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to update username." });
+    }
+};
+module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUsername, getUserFavorites };
