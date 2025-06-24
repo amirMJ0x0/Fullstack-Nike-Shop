@@ -92,7 +92,12 @@ const CartItem = memo(({ itemInfo }) => {
           <Heading size={"md"}>{itemInfo.quantity}</Heading>
           <Button
             onClick={() =>
-              addToCart(productInfo._id, itemInfo.color, itemInfo.size)
+              addToCart(
+                productInfo._id,
+                itemInfo.quantity,
+                itemInfo.color,
+                itemInfo.size
+              )
             }
             size={{ base: "sm", md: "md" }}
           >

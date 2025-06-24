@@ -11,14 +11,15 @@ export const clearCartFromLocalStorage = () => {
     localStorage.removeItem("cart");
 };
 
-export const addProductToLocalCart = (productId, quantity, color, size) => {
+export const addProductToLocalCart = (productId, quantity = 1, color, size) => {
     const cart = getCartFromLocalStorage();
     const existingItem = cart.items.find((item) => item.productId === productId);
+    console.log(existingItem?.size)
 
     if (existingItem) {
         existingItem.quantity += quantity;
-        existingItem.color = color
-        existingItem.size = size
+        // existingItem.color += color
+        // existingItem.size += size
     } else {
         cart.items.push({ productId, quantity, color, size });
     }

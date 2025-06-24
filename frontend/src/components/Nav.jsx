@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import headerLogo from "../assets/images/header-logo.svg";
 import { useRef, useState } from "react";
 import { RiMenu3Line, RiSearch2Line } from "react-icons/ri";
@@ -36,6 +36,7 @@ const Nav = () => {
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
   } = useDisclosure();
+  const navigate = useNavigate();
   const { colorMode, changeTheme } = useThemeSwitcher();
   const bgColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("black", "white");

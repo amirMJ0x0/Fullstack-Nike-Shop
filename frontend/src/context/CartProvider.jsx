@@ -68,6 +68,7 @@ export const CartProvider = ({ children }) => {
         });
         setCart(response.data.cart);
       } else {
+        console.log(quantity)
         const updatedCart = addProductToLocalCart(
           productId,
           quantity,
@@ -78,6 +79,8 @@ export const CartProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error adding to cart:", error.message);
+      console.log(error);
+      
     }
   };
 
