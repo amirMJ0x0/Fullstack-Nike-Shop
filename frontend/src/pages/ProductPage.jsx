@@ -36,8 +36,7 @@ const ProductPage = () => {
     onClose: onModalClose,
     onOpen: onModalOpen,
   } = useDisclosure();
-  const { addToCart } = useCart();
-  const { cart, removeFromCart } = useCart();
+  const { cart, removeFromCart, addToCart } = useCart();
   const { user } = useAuth();
   const productImageRef = useRef();
 
@@ -79,7 +78,7 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (size && color) {
-      addToCart(product._id, 1, color, size);
+      addToCart(product._id, color, size,1);
     } else {
       setIsError(true);
     }

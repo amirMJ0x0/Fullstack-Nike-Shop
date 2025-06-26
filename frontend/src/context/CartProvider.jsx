@@ -6,6 +6,7 @@ import {
   clearCartFromLocalStorage,
   getCartFromLocalStorage,
   removeProductFromLocalCart,
+  reduceQuantityFromLocalCart
 } from "../utils/cartHelpers";
 
 const CartContext = createContext();
@@ -57,7 +58,7 @@ export const CartProvider = ({ children }) => {
   };
 
   //add item to cart
-  const addToCart = async (productId, quantity = 1, color, size) => {
+  const addToCart = async (productId, color, size, quantity = 1) => {
     try {
       if (user) {
         const response = await api.post("/cart/add", {
@@ -68,19 +69,17 @@ export const CartProvider = ({ children }) => {
         });
         setCart(response.data.cart);
       } else {
-        console.log(quantity)
         const updatedCart = addProductToLocalCart(
           productId,
-          quantity,
           color,
-          size
+          size,
+          quantity
         );
         setCart(updatedCart);
       }
     } catch (error) {
       console.error("Error adding to cart:", error.message);
       console.log(error);
-      
     }
   };
 
@@ -103,12 +102,17 @@ export const CartProvider = ({ children }) => {
 
   const reduceQuantity = async (productId, color, size) => {
     try {
-      await api.post("/cart/reduce", {
-        productId,
-        color,
-        size,
-      });
-      fetchCart();
+      if (user) {
+        await api.post("/cart/reduce", {
+          productId,
+          color,
+          size,
+        });
+        fetchCart();
+      } else {
+        const updatedCart = reduceQuantityFromLocalCart(productId, color, size);
+        setCart(updatedCart);
+      }
     } catch (error) {
       console.error("Error reducing quantity:", error);
     }
