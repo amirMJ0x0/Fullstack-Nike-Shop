@@ -14,7 +14,9 @@ const MyFavorites = () => {
   };
   return (
     <div>
-      <Heading size={"lg"} p={2}>My Favorites</Heading>
+      <Heading size={"lg"} p={2}>
+        My Favorites
+      </Heading>
       {data?.favorites.length > 0 && (
         <List mt={2}>
           {data?.favorites.map((product) => (
@@ -22,8 +24,9 @@ const MyFavorites = () => {
               key={product._id}
               py={2}
               px={5}
+              mb={2}
               bgColor={"gray.200"}
-              _dark={"gray.700"}
+              _dark={{ bg: "gray.900" }}
               borderRadius={"5px"}
               _hover={{ cursor: "pointer" }}
               display="flex"
@@ -36,7 +39,9 @@ const MyFavorites = () => {
                 borderRadius="md"
                 mr={2}
               />
-              <Heading fontSize="sm" color={'coral'}>{product.name}</Heading>
+              <Heading fontSize="sm" color={"coral"}>
+                {product.name}
+              </Heading>
             </ListItem>
           ))}
         </List>

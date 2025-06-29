@@ -176,6 +176,12 @@ const initiateEmailChange = async (req, res) => {
             return res.status(400).json({ message: "New email and current password are required." });
         }
 
+        // Validate new email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(newEmail)) {
+            return res.status(400).json({ message: "Invalid email format." });
+        }
+
         // Check if new email is already taken
         const emailExists = await User.findOne({ email: newEmail });
         if (emailExists) {
