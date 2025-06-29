@@ -19,13 +19,12 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaCartShopping, FaRegUser, FaUser } from "react-icons/fa6";
+import { FaCartShopping, FaRegUser } from "react-icons/fa6";
 import { useAuth } from "../context/AuthProvider";
 import useThemeSwitcher from "../hooks/useThemeSwitcher";
 import ThemeChanger from "./share/ThemeChanger";
 import ProfileContextMenu from "./share/ProfileContextMenu";
 import { useCart } from "../context/CartProvider";
-import { BsSearch } from "react-icons/bs";
 import SearchModal from "./SearchModal";
 const Nav = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);

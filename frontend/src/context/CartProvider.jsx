@@ -6,7 +6,7 @@ import {
   clearCartFromLocalStorage,
   getCartFromLocalStorage,
   removeProductFromLocalCart,
-  reduceQuantityFromLocalCart
+  reduceQuantityFromLocalCart,
 } from "../utils/cartHelpers";
 
 const CartContext = createContext();

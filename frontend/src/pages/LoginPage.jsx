@@ -108,7 +108,7 @@ const LoginPage = () => {
               )} */}
               <Button
                 className="font-palanquin"
-                color={"white"}
+                colorScheme="gray"
                 type="submit"
                 variant={"link"}
                 disabled={loading}

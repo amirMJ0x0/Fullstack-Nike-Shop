@@ -47,9 +47,54 @@ export const getUserProfile = async () => {
 
 
 // @desc EditUsername
-// @route PATCH http://localhost:3000/user/profile
+// @route PATCH http://localhost:3000/user/username
 export const editUsername = async (username) => {
+    try {
+        const res = await api.patch("/user/username", { username });
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};
 
-    await api.patch("/user/profile", { username });
+// @desc Initiate Email Change (Step 1)
+// @route POST http://localhost:3000/user/initiate-email-change
+export const initiateEmailChange = async (newEmail, currentPassword) => {
+    try {
+        const res = await api.post("/user/initiate-email-change", {
+            newEmail,
+            currentPassword
+        });
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};
+
+// @desc Verify Email Change Code (Step 2)
+// @route POST http://localhost:3000/user/verify-email-change
+export const verifyEmailChange = async (verificationCode) => {
+    try {
+        const res = await api.post("/user/verify-email-change", {
+            verificationCode
+        });
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};
+
+// @desc Change Password
+// @route PATCH http://localhost:3000/user/password
+export const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const res = await api.patch("/user/password", {
+            oldPassword,
+            newPassword
+        });
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
 };
 
