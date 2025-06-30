@@ -98,3 +98,14 @@ export const changePassword = async (oldPassword, newPassword) => {
     }
 };
 
+// @desc Update user profile info (fullName, phone, address, city, postalCode, country)
+// @route PATCH http://localhost:3000/user/profile
+export const updateUserProfile = async (fields) => {
+    try {
+        const res = await api.patch("/user/profile", fields);
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};
+

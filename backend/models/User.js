@@ -9,7 +9,13 @@ const userSchema = new mongoose.Schema({
     isVerified: {
         type: Boolean,
         default: false,
-    }
+    },
+    fullName: { type: String },
+    phone: { type: String },
+    address: { type: String },
+    city: { type: String },
+    postalCode: { type: String },
+    country: { type: String },
 }, {
     timestamps: true
 });

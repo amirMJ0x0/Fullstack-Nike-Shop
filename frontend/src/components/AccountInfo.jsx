@@ -3,6 +3,7 @@ import { VStack, Divider } from "@chakra-ui/react";
 import UsernameSection from "./UsernameSection";
 import EmailSection from "./EmailSection";
 import PasswordSection from "./PasswordSection";
+import UserInfoSection from "./UserInfoSection";
 
 const AccountInfo = () => {
   const { data, refetch } = useQuery({
@@ -16,6 +17,16 @@ const AccountInfo = () => {
   return (
     <VStack align={"flex-start"} gap={4} w="full">
       <UsernameSection username={data?.username} refetch={refetch} />
+      <Divider />
+      <UserInfoSection
+        fullName={data?.fullName}
+        phone={data?.phone}
+        address={data?.address}
+        city={data?.city}
+        postalCode={data?.postalCode}
+        country={data?.country}
+        refetch={refetch}
+      />
       <Divider />
       <EmailSection
         email={data?.email}

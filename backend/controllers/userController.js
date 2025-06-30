@@ -274,4 +274,25 @@ const verifyEmailChange = async (req, res) => {
     }
 };
 
-module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUsername, getUserFavorites, updateEmail, changePassword, initiateEmailChange, verifyEmailChange };
+// Update user profile (fullName, phone, address, city, postalCode, country)
+const updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const updateFields = {};
+        const allowedFields = ["fullName", "phone", "address", "city", "postalCode", "country"];
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                updateFields[field] = req.body[field];
+            }
+        });
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ message: "No valid fields to update." });
+        }
+        const user = await User.findByIdAndUpdate(userId, updateFields, { new: true }).select("-password");
+        res.json({ message: "Profile updated successfully.", user });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to update profile." });
+    }
+};
+
+module.exports = { toggleSaveProduct, getSavedProducts, getUserProfile, updateUsername, getUserFavorites, updateEmail, changePassword, initiateEmailChange, verifyEmailChange, updateUserProfile };
