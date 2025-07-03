@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   HStack,
@@ -14,6 +14,7 @@ import {
 import { FiEdit3, FiX, FiUser } from "react-icons/fi";
 import { updateUserProfile } from "../services/userServices";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
+import { PhoneInput } from "./share/CustomPhoneInput";
 
 const UserInfoSection = ({
   fullName,
@@ -34,7 +35,18 @@ const UserInfoSection = ({
     postalCode,
     country,
   });
+  useEffect(() => {
+    setForm({
+      fullName,
+      phone,
+      address,
+      city,
+      postalCode,
+      country,
+    });
+  }, [fullName, phone, address, city, postalCode, country]);
   const [isLoading, setIsLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -115,20 +127,19 @@ const UserInfoSection = ({
               name="fullName"
               value={form.fullName || ""}
               onChange={handleChange}
-              size="sm"
+              size="md"
               focusBorderColor="coral"
             />
           </FormControl>
-          <FormControl>
+          <FormControl zIndex={1000}>
             <FormLabel fontSize="sm">Phone</FormLabel>
-            <Input
-              name="phone"
-              type="number"
-              value={form.phone || ""}
-              onChange={handleChange}
-              size="sm"
-              focusBorderColor="coral"
+            <PhoneInput
+              value={form.phone}
+              onChange={(val) => setForm((prev) => ({ ...prev, phone: val }))}
+              error={phoneError}
+              setError={setPhoneError}
             />
+            {phoneError && <Text color="red.400">{phoneError}</Text>}
           </FormControl>
           <FormControl>
             <FormLabel fontSize="sm">Address</FormLabel>
@@ -136,7 +147,7 @@ const UserInfoSection = ({
               name="address"
               value={form.address || ""}
               onChange={handleChange}
-              size="sm"
+              size="md"
               focusBorderColor="coral"
             />
           </FormControl>
@@ -177,7 +188,7 @@ const UserInfoSection = ({
               name="postalCode"
               value={form.postalCode || ""}
               onChange={handleChange}
-              size="sm"
+              size="md"
               focusBorderColor="coral"
             />
           </FormControl>

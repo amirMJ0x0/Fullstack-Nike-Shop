@@ -81,7 +81,7 @@ const PasswordSection = ({ refetch }) => {
     <VStack align={"flex-start"} gap={2} w="full">
       <HStack w="full" justify="space-between">
         <HStack>
-          <Text fontWeight="medium">Password</Text>
+          <Text fontWeight="bold">Password</Text>
           <Box color="gray.500">
             <FiShield />
           </Box>

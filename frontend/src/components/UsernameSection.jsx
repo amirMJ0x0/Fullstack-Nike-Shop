@@ -66,8 +66,8 @@ const UsernameSection = ({ username, refetch }) => {
     <VStack align={"flex-start"} gap={2} w="full">
       <HStack w="full" justify="space-between">
         <HStack>
-          <Text fontWeight="medium">
-            Username: <span className="font-bold">{username}</span>
+          <Text fontWeight="bold">
+            Username: <span className="font-normal">{username}</span>
           </Text>
           <Box color="gray.500">
             <FiUser />

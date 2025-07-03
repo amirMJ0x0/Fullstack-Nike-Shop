@@ -119,8 +119,8 @@ const EmailSection = ({ email, isVerified, refetch }) => {
     <VStack align={"flex-start"} gap={2} w="full">
       <HStack w="full" justify="space-between">
         <HStack>
-          <Text fontWeight="medium">
-            Email: <span className="font-bold">{email}</span>
+          <Text fontWeight="bold">
+            Email: <span className="font-normal">{email}</span>
           </Text>
           {isVerified ? (
             <Box color="green.500" title="Email verified">

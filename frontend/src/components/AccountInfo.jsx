@@ -13,7 +13,7 @@ const AccountInfo = () => {
       return user.getUserProfile();
     },
   });
-
+  
   return (
     <VStack align={"flex-start"} gap={4} w="full">
       <UsernameSection username={data?.username} refetch={refetch} />
@@ -26,7 +26,7 @@ const AccountInfo = () => {
         postalCode={data?.postalCode}
         country={data?.country}
         refetch={refetch}
-      />
+        />
       <Divider />
       <EmailSection
         email={data?.email}
