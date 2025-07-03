@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { lazy } from "react";
 import withSuspense from "../hoc/WithSuspense";
+import CheckoutPage from "../pages/CheckoutPage";
+import PaymentResult from "../pages/PaymentResult";
 
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
@@ -111,6 +113,14 @@ export const router = createBrowserRouter([
       {
         path: "/Cart",
         element: <CartPageSuspended />,
+      },
+      {
+        path: "/Checkout",
+        element: <CheckoutPage />,
+      },
+      {
+        path: "/payment-result",
+        element: <PaymentResult />,
       },
     ],
   },

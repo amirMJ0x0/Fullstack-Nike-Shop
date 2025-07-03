@@ -7,6 +7,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const commentRoutes = require('./routes/commentRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const zibalRoutes = require('./routes/zibalRoutes');
 const dotenv = require("dotenv")
 dotenv.config();
 
@@ -26,6 +28,9 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/user", userRoutes)
 app.use('/api/comments', commentRoutes);
+app.use('/api/orders', orderRoutes);
+app.use("/api/pay/zibal", zibalRoutes);
+
 
 
 mongoose.connect(process.env.MONGODB_URI, {

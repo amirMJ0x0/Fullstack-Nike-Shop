@@ -109,3 +109,20 @@ export const updateUserProfile = async (fields) => {
     }
 };
 
+export const getUserOrders = async () => {
+    try {
+        const res = await api.get("/orders/my")
+        return res.data
+    } catch (error) {
+        throw error.response?.data || error
+    }
+}
+
+export const createOrder = async (order) => {
+    try {
+        const res = await api.post("/orders/add", order);
+        return res.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};

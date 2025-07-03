@@ -1,16 +1,28 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartProvider";
 import { getProduct } from "../services/productServices";
-import { Button, Heading, HStack, Image, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Heading,
+  HStack,
+  Image,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 import CartItem from "../components/CartItem";
 import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const CartPage = () => {
-  const { cart, loading } = useCart();
+  const { cart, loading, subtotal, totalDiscount, tax, total, taxAmount } =
+    useCart();
   const [products, setProducts] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
-
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const toast = useToast();
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (!cart?.items) return;
@@ -52,20 +64,6 @@ const CartPage = () => {
       </div>
     );
 
-  const subtotal = products.reduce(
-    (acc, item) => acc + item.productId.price * item.quantity,
-    0
-  );
-  const totalDiscount = products.reduce(
-    (acc, item) =>
-      acc +
-      ((item.productId.price * item.productId.discount) / 100) * item.quantity,
-    0
-  );
-  const taxAmount = 2;
-  const tax = subtotal * (taxAmount / 100);
-  const total = subtotal - totalDiscount + tax;
-
   return (
     <section className="padding-x mt-10 mb-32">
       <Helmet>
@@ -101,7 +99,24 @@ const CartPage = () => {
             <p>Total:</p>
             <p>${total.toFixed(2)}</p>
           </HStack>
-          <Button colorScheme="orange" className="w-full">
+          <Button
+            colorScheme="orange"
+            className="w-full"
+            onClick={() => {
+              if (user) navigate("/Checkout");
+              else {
+                //show a toast message or redirect to login page
+                toast({
+                  title: "Please login to checkout",
+                  status: "error",
+                  duration: 3000,
+                  isClosable: true,
+                  position: "top-right",
+                });
+                navigate("/login");
+              }
+            }}
+          >
             Checkout
           </Button>
         </Stack>

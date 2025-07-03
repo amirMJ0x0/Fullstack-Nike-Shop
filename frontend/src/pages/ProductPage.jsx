@@ -10,6 +10,7 @@ import {
   Button,
   Heading,
   HStack,
+  Image,
   Text,
   useDisclosure,
   useRadioGroup,
@@ -78,7 +79,7 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (size && color) {
-      addToCart(product._id, color, size,1);
+      addToCart(product._id, color, size, 1);
     } else {
       setIsError(true);
     }
@@ -100,19 +101,18 @@ const ProductPage = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Image Section */}
         <div className="flex-1">
-          <div className="relative border flex justify-center items-center lg:h-[385px]">
+          <div className="relative border flex justify-center items-center lg:h-[385px] overflow-hidden">
             <div className="absolute top-5 left-5">
               <SaveProduct productId={productId} />
             </div>
-            <img
+            <Image
               src={product.imageUrl[0]}
               alt={product.name}
-              className="rounded-lg"
               ref={productImageRef}
             />
           </div>
 
-          <div className="flex mt-4 gap-4">
+          <div className="flex mt-4 gap-4 !z-50">
             {product.imageUrl.map((img, idx) => (
               <img
                 key={idx}

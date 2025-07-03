@@ -118,6 +118,23 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Cart calculations (for use in CartPage, CheckoutPage, etc.)
+  const products = cart?.items || [];
+  const subtotal = products.reduce(
+    (acc, item) => acc + (item.productId?.price || 0) * item.quantity,
+    0
+  );
+  const totalDiscount = products.reduce(
+    (acc, item) =>
+      acc +
+      (((item.productId?.price || 0) * (item.productId?.discount || 0)) / 100) *
+        item.quantity,
+    0
+  );
+  const taxAmount = 2;
+  const tax = subtotal * (taxAmount / 100);
+  const total = subtotal - totalDiscount + tax;
+
   useEffect(() => {
     fetchCart();
   }, [user]);
@@ -130,6 +147,11 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         reduceQuantity,
         totalItems,
+        subtotal,
+        totalDiscount,
+        tax,
+        total,
+        taxAmount,
       }}
     >
       {children}
