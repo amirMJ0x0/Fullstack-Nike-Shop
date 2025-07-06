@@ -46,8 +46,18 @@ const ProfileContextMenu = ({ textColor, bgColor }) => {
               >
                 View Profile
               </MenuItem>
-              <MenuItem icon={<GrBasket />}>My Orders</MenuItem>
-              <MenuItem icon={<GrFavorite />}>Wish List</MenuItem>
+              <MenuItem
+                icon={<GrBasket />}
+                onClick={() => navigate("/profile/orders")}
+              >
+                My Orders
+              </MenuItem>
+              <MenuItem
+                icon={<GrFavorite />}
+                onClick={() => navigate("/profile/my-favorites")}
+              >
+                Wish List
+              </MenuItem>
               <MenuItem
                 icon={<GrLogout />}
                 onClick={logOut}

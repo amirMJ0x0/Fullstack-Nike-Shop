@@ -18,7 +18,7 @@ const createZibalRequest = async (req, res) => {
         if (zibalRes.data.result === 100) {
             await Order.findByIdAndUpdate(orderId, {
                 "paymentInfo.method": "Card",
-                "paymentInfo.paymentResult.trackId": zibalRes.data.trackId,
+                "paymentInfo.paymentResult.trackId": String(zibalRes.data.trackId),
                 "paymentInfo.paymentResult.status": "WaitingForVerification"
             });
 
@@ -48,6 +48,7 @@ const verifyPayment = async (req, res) => {
                     status: "Paid",
                     "paymentInfo.paidAt": new Date(),
                     "paymentInfo.paymentResult.verifyStatus": verifyRes.data.result,
+                    "paymentInfo.paymentResult.status": "Verified",
                 },
                 { new: true }
             );

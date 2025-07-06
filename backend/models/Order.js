@@ -8,22 +8,29 @@ const orderItemSchema = new mongoose.Schema({
     image: String,
 });
 
-const orderSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    items: [orderItemSchema],
-    shippingInfo: {
-        address: { type: String, required: true },
-        city: { type: String, required: true },
-        postalCode: { type: String, required: true },
-        country: { type: String, required: true },
+const orderSchema = new mongoose.Schema(
+    {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        items: [orderItemSchema],
+        shippingInfo: {
+            address: { type: String, required: true },
+            city: { type: String, required: true },
+            postalCode: { type: String, required: true },
+            country: { type: String, required: true },
+        },
+        total: { type: Number, required: true },
+        status: {
+            type: String,
+            enum: ["Pending", "Paid", "Shipped", "Delivered"],
+            default: "Pending",
+        },
+        paymentInfo: {
+            method: { type: String, required: true },
+            paidAt: { type: Date },
+            paymentResult: Object,
+        },
     },
-    total: { type: Number, required: true },
-    status: { type: String, enum: ['Pending', 'Paid', 'Shipped', 'Delivered'], default: 'Pending' },
-    paymentInfo: {
-        method: String,
-        paidAt: Date,
-        paymentResult: Object, // for storing fake/future payment details
-    },
-}, { timestamps: true });
+    { timestamps: true }
+);
 
 module.exports = mongoose.model('Order', orderSchema); 

@@ -24,7 +24,6 @@ const PaymentResult = () => {
     const verifyPayment = async () => {
       try {
         const res = await api.post("/pay/zibal/verify", { trackId });
-        localStorage.setItem("payment-res", JSON.stringify(res.data));
 
         if (res.data.success) {
           setStatus("success");
@@ -50,7 +49,7 @@ const PaymentResult = () => {
 
         {status === "loading" && <Spinner size="xl" />}
         {status === "success" && (
-          <Box bg="green.500" fontSize={"4xl"}>
+          <Box color="green.500" fontSize={"4xl"}>
             <FaCircleCheck />
           </Box>
         )}

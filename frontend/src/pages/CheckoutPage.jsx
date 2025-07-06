@@ -17,6 +17,7 @@ import {
   Stack,
   Image,
 } from "@chakra-ui/react";
+const apiBaseUrl = import.meta.env.VITE_API_URL;
 import { useCart } from "../context/CartProvider";
 import { createOrder } from "../services/userServices";
 import { useAuth } from "../context/AuthProvider";
@@ -104,18 +105,19 @@ const CheckoutPage = () => {
           method: paymentMethod,
         },
       };
-      const res = await createOrder(orderData);
-      setOrderId(res._id || res.id);
-      localStorage.setItem("latestOrderId", res._id);
+
+      const orderRes = await createOrder(orderData);
+      const createdOrderId = orderRes._id || orderRes.id;
+      localStorage.setItem("latestOrderId", createdOrderId);
 
       if (paymentMethod === "Card") {
-        const res = await api.post("/pay/zibal/request", {
+        const zibalRes = await api.post("/pay/zibal/request", {
           amount: total,
-          orderId,
-          callbackUrl: `http://localhost:5173/payment-result`,
+          orderId: createdOrderId,
+          callbackUrl: `${apiBaseUrl}/payment-result`,
         });
 
-        window.location.href = res.data.paymentUrl;
+        window.location.href = zibalRes.data.paymentUrl;
       }
 
       if (clearCart) clearCart();
@@ -162,7 +164,7 @@ const CheckoutPage = () => {
                       borderRadius="md"
                     >
                       <HStack>
-                        {product.imageUrl.length && (
+                        {product?.imageUrl?.length && (
                           <Image
                             src={product.imageUrl[0]}
                             alt={product.name}
