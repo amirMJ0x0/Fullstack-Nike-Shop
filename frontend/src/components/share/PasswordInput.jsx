@@ -10,10 +10,10 @@ const PasswordInput = ({
   isDisabled = false,
   value,
   onChange,
+  tabIndex,
 }) => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
-
   const inputProps = {
     pr: "4.5rem",
     variant: "flushed",
@@ -21,6 +21,7 @@ const PasswordInput = ({
     placeholder,
     focusBorderColor: "#ff6452",
     isDisabled,
+    tabIndex,
   };
 
   // If register is provided, use it (uncontrolled), else use value/onChange (controlled)
@@ -41,7 +42,8 @@ const PasswordInput = ({
           fontSize={"lg"}
           variant={"ghost"}
           onClick={handleClick}
-          tabIndex={-1}
+          tabIndex={String(Number(tabIndex) + 1)}
+          _focus={{}}
         >
           {show ? <PiEyeBold /> : <PiEyeClosedBold />}
         </Button>

@@ -52,18 +52,20 @@ const LoginPage = () => {
         className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative"
         _dark={{ bg: "gray.700" }}
       >
-        <a
+        <Link
           onClick={goBack}
-          className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+          className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:opacity-80"
+          tabIndex={"7"}
         >
           <IoIosArrowRoundBack size={"2rem"} /> Back
-        </a>
-        <a
-          href="/"
-          className="absolute right-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+        </Link>
+        <Link
+          to="/"
+          tabIndex={"8"}
+          className="absolute right-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:opacity-80"
         >
           Home <IoIosArrowRoundForward size={"2rem"} />
-        </a>
+        </Link>
         <Heading
           as="h3"
           size="lg"
@@ -84,9 +86,10 @@ const LoginPage = () => {
             <Input
               type="text"
               variant={"flushed"}
-              placeholder="abcd123@gmail.com"
+              placeholder="Enter Email"
               {...register("email")}
               focusBorderColor="#ff6452"
+              tabIndex={"1"}
             />
             {errors.email?.message && (
               <small className="text-red-600">{errors.email?.message}</small>
@@ -96,16 +99,11 @@ const LoginPage = () => {
           {/* password input  */}
 
           <FormControl>
-            <PasswordInput register={register} />
+            <PasswordInput register={register} tabIndex={"2"} />
             <Flex justifyContent={"space-between"}>
               <small className="text-red-600 mt-3">
                 {errors.password?.message}
               </small>
-              {/* {errors.password?.message && (
-                <small className="text-red-600 ">
-                  {errors.password?.message}
-                </small>
-              )} */}
               <Button
                 className="font-palanquin"
                 colorScheme="gray"
@@ -113,6 +111,15 @@ const LoginPage = () => {
                 variant={"link"}
                 disabled={loading}
                 onClick={() => navigate("/forgot-password")}
+                tabIndex={"4"}
+                _focus={{
+                  textDecoration: "underline",
+                  ring: "0",
+                  opacity: "0.8",
+                }}
+                _hover={{
+                  opacity: "0.8",
+                }}
               >
                 <span className="font-sm p-1 font-light">Forgot Password?</span>
               </Button>
@@ -125,6 +132,10 @@ const LoginPage = () => {
             type="submit"
             isLoading={loading}
             disabled={loading}
+            tabIndex={"5"}
+            _focus={{
+              opacity: "0.8",
+            }}
           >
             <span>LOGIN</span>
           </Button>
@@ -137,6 +148,7 @@ const LoginPage = () => {
             <Link
               to={"/register"}
               className="text-coral-red font-semibold underline"
+              tabIndex={"6"}
             >
               Sign up now
             </Link>

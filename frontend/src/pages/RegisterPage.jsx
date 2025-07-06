@@ -41,18 +41,20 @@ const RegisterPage = () => {
         className="w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/4 p-5 bg-slate-100 rounded-lg relative"
         _dark={{ bg: "gray.700" }}
       >
-        <a
+        <Link
           onClick={goBack}
-          className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+          tabIndex={"9"}
+          className="absolute left-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:opacity-80"
         >
           <IoIosArrowRoundBack size={"2rem"} /> Back
-        </a>
-        <a
+        </Link>
+        <Link
           href="/"
-          className="absolute right-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:animate-back"
+          tabIndex={"10"}
+          className="absolute right-3 -top-8 flex justify-center items-center text-slate-400 cursor-pointer hover:opacity-80"
         >
           Home <IoIosArrowRoundForward size={"2rem"} />
-        </a>
+        </Link>
         <Heading
           as="h3"
           size="lg"
@@ -73,9 +75,10 @@ const RegisterPage = () => {
             <Input
               type="text"
               variant={"flushed"}
-              placeholder="username"
+              placeholder="Enter Username"
               {...register("username")}
               focusBorderColor="#ff6452"
+              tabIndex={"1"}
             />
             {errors.username?.message && (
               <small className="text-red-600">{errors.username?.message}</small>
@@ -86,9 +89,10 @@ const RegisterPage = () => {
             <Input
               type="text"
               variant={"flushed"}
-              placeholder="email"
+              placeholder="Enter Email"
               {...register("email")}
               focusBorderColor="#ff6452"
+              tabIndex={"2"}
             />
             {errors.email?.message && (
               <small className="text-red-600">{errors.email?.message}</small>
@@ -96,7 +100,7 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <PasswordInput register={register} />
+            <PasswordInput register={register} tabIndex={"3"} />
             {errors.password?.message && (
               <small className="text-red-600">{errors.password?.message}</small>
             )}
@@ -107,6 +111,7 @@ const RegisterPage = () => {
               register={register}
               purpose={"confirmPassword"}
               placeholder="Confirm Password"
+              tabIndex={"5"}
             />
 
             {errors.confirmPassword?.message && (
@@ -122,6 +127,10 @@ const RegisterPage = () => {
             type="submit"
             isLoading={loading}
             disabled={loading}
+            tabIndex={"7"}
+            _focus={{
+              opacity: "0.8",
+            }}
           >
             <span>SIGN UP</span>
           </Button>
@@ -133,6 +142,7 @@ const RegisterPage = () => {
             <Link
               to={"/login"}
               className="text-coral-red font-semibold underline"
+              tabIndex={"8"}
             >
               Login
             </Link>
