@@ -9,7 +9,7 @@ router.post('/register', [
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
 ], register);
 router.post('/login', [
-    body('email').isEmail().withMessage('Please enter a valid email'),
+    body('emailOrUsername').notEmpty().withMessage('Email or username is required'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
 ], login);
 router.post('/verify-email', verifyEmail);

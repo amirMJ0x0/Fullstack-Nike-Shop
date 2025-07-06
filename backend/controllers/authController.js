@@ -49,8 +49,13 @@ const register = async (req, res) => {
 // Login
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const { emailOrUsername, password } = req.body;
+        const user = await User.findOne({
+            $or: [
+                { email: emailOrUsername },
+                { username: emailOrUsername }
+            ]
+        });
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -62,15 +67,15 @@ const login = async (req, res) => {
             const otp = generateOtp();
             const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-            await Otp.deleteMany({ email, purpose: 'email-verification' });
+            await Otp.deleteMany({ email: user.email, purpose: 'email-verification' });
             await Otp.create({
-                email,
+                email: user.email,
                 otp,
                 purpose: 'email-verification',
                 expiresAt,
             });
 
-            await sendVerificationEmail(email, otp);
+            await sendVerificationEmail(user.email, otp);
 
             return res.status(403).json({ message: 'Please verify your email before logging in.', expiresAt });
         }

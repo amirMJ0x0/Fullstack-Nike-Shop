@@ -8,6 +8,9 @@ import {
   Box,
   Text,
   Flex,
+  Select,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
@@ -29,7 +32,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const { loginAction } = useAuth();
   const onSubmit = async (data) => {
-    if (data.email !== "" && data.password !== "") {
+    if (data.emailOrUsername !== "" && data.password !== "") {
       setLoading(true);
       try {
         await loginAction(data);
@@ -81,18 +84,20 @@ const LoginPage = () => {
           })}
           className="flex flex-col gap-5 mt-10 "
         >
-          {/* email input  */}
+          {/* email or username input  */}
           <div>
             <Input
               type="text"
               variant={"flushed"}
-              placeholder="Enter Email"
-              {...register("email")}
+              placeholder="Enter Email or Username"
+              {...register("emailOrUsername")}
               focusBorderColor="#ff6452"
               tabIndex={"1"}
             />
-            {errors.email?.message && (
-              <small className="text-red-600">{errors.email?.message}</small>
+            {errors.emailOrUsername?.message && (
+              <small className="text-red-600">
+                {errors.emailOrUsername?.message}
+              </small>
             )}
           </div>
 
