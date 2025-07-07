@@ -25,6 +25,7 @@ import { useAuth } from "../context/AuthProvider";
 import api from "../services/api";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import EmptyList from "../components/share/EmptyList";
 
 const initialShipping = {
   name: "",
@@ -148,7 +149,12 @@ const CheckoutPage = () => {
       setIsPlacing(false);
     }
   };
-
+  if (!cart || !Array.isArray(cart.items)) {
+    return <Spinner size="xl" />;
+  }
+  if (step === 1 && cartItems.length === 0) {
+    return <EmptyList message={"Your cart is empty."} />;
+  }
   return (
     <Box maxW="600px" className="!padding-x" mx="auto" mb={"36"} mt={"6"}>
       <Helmet>
@@ -202,9 +208,9 @@ const CheckoutPage = () => {
                           size="sm"
                           colorScheme="red"
                           variant="outline"
-                          onClick={() =>
-                            removeFromCart(item._id || product._id)
-                          }
+                          onClick={() => {
+                            removeFromCart(product._id);
+                          }}
                         >
                           Remove
                         </Button>
