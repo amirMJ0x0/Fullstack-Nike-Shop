@@ -1,7 +1,8 @@
 import axios from 'axios';
+const baseURL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL,
     withCredentials: true
 });
 
@@ -50,7 +51,7 @@ api.interceptors.response.use(
                 const { accessToken } = data;
 
                 processQueue(null, accessToken);
-                
+
                 originalRequest.headers['Authorization'] = 'Bearer ' + accessToken;
                 return api(originalRequest);
             } catch (refreshError) {

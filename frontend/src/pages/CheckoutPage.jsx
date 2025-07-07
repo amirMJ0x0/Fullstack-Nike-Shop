@@ -18,7 +18,7 @@ import {
   Image,
   Flex,
 } from "@chakra-ui/react";
-const apiBaseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_REACT_APP_URL;
 import { useCart } from "../context/CartProvider";
 import { createOrder } from "../services/userServices";
 import { useAuth } from "../context/AuthProvider";
@@ -129,7 +129,7 @@ const CheckoutPage = () => {
         const zibalRes = await api.post("/pay/zibal/request", {
           amount: total,
           orderId: createdOrderId,
-          callbackUrl: `${apiBaseUrl}/payment-result`,
+          callbackUrl: `${baseUrl}/payment-result`,
         });
 
         window.location.href = zibalRes.data.paymentUrl;

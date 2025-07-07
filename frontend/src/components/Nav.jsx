@@ -40,7 +40,7 @@ const Nav = () => {
   const bgColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("black", "white");
   const btnRef = useRef();
-  const apiBaseUrl = import.meta.env.VITE_API_URL;
+  const baseUrl = import.meta.env.VITE_REACT_APP_URL;
 
   const onOpenSearch = () => {
     setIsSearchOpen(true);
@@ -73,7 +73,7 @@ const Nav = () => {
               </Link>
             </div>
             <div className="font-montserrat leading-normal">
-              <Link to={`${apiBaseUrl}/products?sale=true`} className="">
+              <Link to={`${baseUrl}/products?sale=true`} className="">
                 <Text _dark={{ color: "gray.400" }}>Sales</Text>
               </Link>
             </div>
@@ -222,7 +222,7 @@ const Nav = () => {
                   <li className="font-montserrat leading-normal text-lg text-slate-gray">
                     <Link
                       onClick={onDrawerClose}
-                      to={`${apiBaseUrl}/products?sale=true`}
+                      to={`${baseUrl}/products?sale=true`}
                       className=""
                     >
                       <Text _dark={{ color: "gray.300" }}>Sales</Text>

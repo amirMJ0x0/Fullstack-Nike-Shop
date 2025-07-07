@@ -8,7 +8,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { BiMinus, BiPlus, BiTrash } from "react-icons/bi";
-import ColorBadge from "./share/colorBadge";
+import ColorBadge from "./share/ColorBadge";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartProvider";
 import { memo } from "react";

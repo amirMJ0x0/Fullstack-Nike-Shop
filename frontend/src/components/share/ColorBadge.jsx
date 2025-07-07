@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { memo } from "react";
 import { colors } from "../../constants";
 import { Box, Text } from "@chakra-ui/react";
 import useThemeSwitcher from "../../hooks/useThemeSwitcher";
@@ -21,11 +21,11 @@ const ColorBadge = ({ productColor }) => {
       <Box
         bgColor={bgColor}
         rounded={"full"}
-        w={{base:"15px",md:"20px"}}
-        h={{base:"15px",md:"20px"}}
+        w={{ base: "15px", md: "20px" }}
+        h={{ base: "15px", md: "20px" }}
         className="!border-coral-red border"
       ></Box>
-      <Text fontSize={{base:"xs",md:"sm"}}>{productColor}</Text>
+      <Text fontSize={{ base: "xs", md: "sm" }}>{productColor}</Text>
     </div>
   );
 };
