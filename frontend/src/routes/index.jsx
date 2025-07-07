@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { lazy } from "react";
-import withSuspense from "../hoc/WithSuspense";
+import WithSuspense from "../hoc/WithSuspense";
 
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
@@ -22,25 +22,25 @@ const PrivateRoute = lazy(() => import("../components/share/PrivateRoute"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const PaymentResult = lazy(() => import("../pages/PaymentResult"));
 
-const HomePageSuspended = withSuspense(HomePage);
-const NotFoundPageSuspended = withSuspense(NotFoundPage);
-const MainLayoutSuspended = withSuspense(MainLayout);
-const ProductsListPageSuspended = withSuspense(ProductsListPage);
-const ProductPageSuspended = withSuspense(ProductPage);
-const LoginPageSuspended = withSuspense(LoginPage);
-const RegisterPageSuspended = withSuspense(RegisterPage);
-const VerifyEmailSuspended = withSuspense(VerifyEmail);
-const ProfilePageSuspended = withSuspense(ProfilePage);
-const ForgotPasswordPageSuspended = withSuspense(ForgotPasswordPage);
-const AccountInfoSuspended = withSuspense(AccountInfo);
-const OrdersSuspended = withSuspense(Orders);
-const MyFavoritesSuspended = withSuspense(MyFavorites);
-const MyCommentsSuspended = withSuspense(MyComments);
-const CartPageSuspended = withSuspense(CartPage);
-const PrivateRouteSuspended = withSuspense(PrivateRoute);
-const AboutUsSuspended = withSuspense(AboutUs);
-const CheckoutPageSuspended = withSuspense(CheckoutPage);
-const PaymentResultSuspended = withSuspense(PaymentResult);
+const HomePageSuspended = WithSuspense(HomePage);
+const NotFoundPageSuspended = WithSuspense(NotFoundPage);
+const MainLayoutSuspended = WithSuspense(MainLayout);
+const ProductsListPageSuspended = WithSuspense(ProductsListPage);
+const ProductPageSuspended = WithSuspense(ProductPage);
+const LoginPageSuspended = WithSuspense(LoginPage);
+const RegisterPageSuspended = WithSuspense(RegisterPage);
+const VerifyEmailSuspended = WithSuspense(VerifyEmail);
+const ProfilePageSuspended = WithSuspense(ProfilePage);
+const ForgotPasswordPageSuspended = WithSuspense(ForgotPasswordPage);
+const AccountInfoSuspended = WithSuspense(AccountInfo);
+const OrdersSuspended = WithSuspense(Orders);
+const MyFavoritesSuspended = WithSuspense(MyFavorites);
+const MyCommentsSuspended = WithSuspense(MyComments);
+const CartPageSuspended = WithSuspense(CartPage);
+const PrivateRouteSuspended = WithSuspense(PrivateRoute);
+const AboutUsSuspended = WithSuspense(AboutUs);
+const CheckoutPageSuspended = WithSuspense(CheckoutPage);
+const PaymentResultSuspended = WithSuspense(PaymentResult);
 
 export const router = createBrowserRouter([
   {
