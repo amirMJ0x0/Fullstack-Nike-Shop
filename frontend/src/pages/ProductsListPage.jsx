@@ -72,7 +72,6 @@ const ProductsListPage = () => {
 
   const debouncedHandleCheckboxChange = useDebounce(handleFilterChange, 300);
 
-  let windowWidth = window.innerWidth;
   return (
     <section className="max-container max-2xl:padding-x max-sm:px-4">
       <Helmet>

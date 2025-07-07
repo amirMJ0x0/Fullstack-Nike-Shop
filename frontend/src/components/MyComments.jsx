@@ -19,6 +19,7 @@ import CustomModal from "./share/CustomModal";
 import { useState } from "react";
 import useEditComment from "../hooks/useEditComment";
 import CommentModal from "./commentModal";
+import EmptyList from "./share/EmptyList";
 
 const MyComments = () => {
   const navigate = useNavigate();
@@ -179,16 +180,7 @@ const MyComments = () => {
           ))}
         </List>
       ) : (
-        <div className="flex justify-center my-20">
-          <Image
-            className="size-72 md:size-1/3"
-            src={"/No-results-found.png"}
-            alt="There is no favorites yet."
-            loading="lazy"
-            opacity={50}
-            draggable={false}
-          />
-        </div>
+        <EmptyList message={"You have no reviews yet."} />
       )}
     </div>
   );

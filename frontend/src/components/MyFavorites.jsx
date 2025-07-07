@@ -3,6 +3,7 @@ import { getSavedProducts } from "../services/userServices";
 import { Heading, Image, List, ListItem, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./share/Loading";
+import EmptyList from "./share/EmptyList";
 
 const MyFavorites = () => {
   const navigate = useNavigate();
@@ -49,16 +50,7 @@ const MyFavorites = () => {
           ))}
         </List>
       ) : (
-        <div className="flex justify-center my-20">
-          <Image
-            className="size-72 md:size-1/3"
-            src={"/No-results-found.png"}
-            alt="There is no favorites yet."
-            loading="lazy"
-            opacity={50}
-            draggable={false}
-          />
-        </div>
+        <EmptyList message={"You have no favorites yet."} />
       )}
     </div>
   );
