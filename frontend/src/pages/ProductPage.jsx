@@ -20,7 +20,7 @@ import { PiUserCircleDuotone } from "react-icons/pi";
 import Loading from "../components/share/Loading";
 import { Helmet } from "react-helmet-async";
 import RadioCard from "../components/share/RadioCard";
-import CommentModal from "../components/commentModal";
+import CommentModal from "../components/CommentModal";
 import { useAuth } from "../context/AuthProvider";
 import moment from "moment";
 import SaveProduct from "../components/SaveProduct";

@@ -18,7 +18,7 @@ import useModal from "../hooks/useModal";
 import CustomModal from "./share/CustomModal";
 import { useState } from "react";
 import useEditComment from "../hooks/useEditComment";
-import CommentModal from "./commentModal";
+import CommentModal from "./CommentModal";
 import EmptyList from "./share/EmptyList";
 
 const MyComments = () => {
