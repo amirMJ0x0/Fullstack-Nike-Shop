@@ -16,8 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 const CartPage = () => {
-  const { cart, loading, subtotal, totalDiscount, tax, total, taxAmount } =
-    useCart();
+  const { cart, loading } = useCart();
   const [products, setProducts] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const { user } = useAuth();
@@ -64,6 +63,19 @@ const CartPage = () => {
       </div>
     );
 
+  // Calculate subtotal, totalDiscount, tax, and total from products state
+  const subtotal = products.reduce(
+    (acc, item) => acc + item.productId.price * item.quantity,
+    0
+  );
+  const totalDiscount = products.reduce(
+    (acc, item) => acc + item.productId.discount * item.quantity,
+    0
+  );
+  const taxAmount = 2; // Assuming a flat tax rate of 2%
+  const tax = (subtotal - totalDiscount) * (taxAmount / 100);
+  const total = subtotal - totalDiscount + tax;
+
   return (
     <section className="padding-x mt-10 mb-32">
       <Helmet>
@@ -103,7 +115,7 @@ const CartPage = () => {
             colorScheme="orange"
             className="w-full"
             onClick={() => {
-              if (user) navigate("/Checkout");
+              if (user) navigate("/checkout");
               else {
                 //show a toast message or redirect to login page
                 toast({

@@ -16,12 +16,15 @@ import {
   Spinner,
   Stack,
   Image,
+  Flex,
 } from "@chakra-ui/react";
 const apiBaseUrl = import.meta.env.VITE_API_URL;
 import { useCart } from "../context/CartProvider";
 import { createOrder } from "../services/userServices";
 import { useAuth } from "../context/AuthProvider";
 import api from "../services/api";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 
 const initialShipping = {
   name: "",
@@ -33,17 +36,7 @@ const initialShipping = {
 };
 
 const CheckoutPage = () => {
-  const {
-    cart,
-    removeFromCart,
-    clearCart,
-    subtotal,
-    totalDiscount,
-    tax,
-    total,
-    taxAmount,
-  } = useCart();
-
+  const { cart, removeFromCart, clearCart } = useCart();
   const [step, setStep] = useState(1);
   const [shipping, setShipping] = useState(initialShipping);
   const [shippingError, setShippingError] = useState({});
@@ -51,8 +44,13 @@ const CheckoutPage = () => {
   const [isPlacing, setIsPlacing] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const toast = useToast();
-  const [products, setProducts] = useState([]);
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // scroll to top on step change
+    window.scrollTo(0, 0);
+  }, [step]);
 
   useEffect(() => {
     if (user) {
@@ -69,6 +67,22 @@ const CheckoutPage = () => {
 
   // Step 1: Review Cart
   const cartItems = cart?.items || [];
+
+  // Calculate all totals from cartItems with full product info
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + (item.productId?.price || 0) * item.quantity,
+    0
+  );
+  const totalDiscount = cartItems.reduce(
+    (acc, item) =>
+      acc +
+      (((item.productId?.price || 0) * (item.productId?.discount || 0)) / 100) *
+        item.quantity,
+    0
+  );
+  const taxAmount = 2;
+  const tax = subtotal * (taxAmount / 100);
+  const total = subtotal - totalDiscount + tax;
 
   // Step 2: Shipping validation
   const validateShipping = () => {
@@ -107,9 +121,9 @@ const CheckoutPage = () => {
       };
 
       const orderRes = await createOrder(orderData);
-      const createdOrderId = orderRes._id || orderRes.id;
+      const createdOrderId = orderRes.orderNumber;
       localStorage.setItem("latestOrderId", createdOrderId);
-
+      setOrderId(localStorage.getItem("latestOrderId") || createdOrderId);
       if (paymentMethod === "Card") {
         const zibalRes = await api.post("/pay/zibal/request", {
           amount: total,
@@ -136,7 +150,10 @@ const CheckoutPage = () => {
   };
 
   return (
-    <Box maxW="600px" mx="auto" mt={8} p={4}>
+    <Box maxW="600px" className="!padding-x" mx="auto" mb={"36"} mt={"6"}>
+      <Helmet>
+        <title>Nike - Checkout</title>
+      </Helmet>
       <Heading size="lg" mb={6}>
         Checkout
       </Heading>
@@ -150,7 +167,6 @@ const CheckoutPage = () => {
               <Text>Your cart is empty.</Text>
             ) : (
               <VStack align="stretch" spacing={3}>
-                {console.log(cartItems)}
                 {cartItems.map((item) => {
                   const product = item.productId;
 
@@ -332,20 +348,21 @@ const CheckoutPage = () => {
                 <option value="Cash">Cash on Delivery</option>
               </Select>
             </FormControl>
-            {/* Optionally add card details fields here if paymentMethod === 'Card' */}
-            <Button
-              colorScheme="green"
-              mt={4}
-              onClick={handlePlaceOrder}
-              isLoading={isPlacing}
-              loadingText="Placing Order..."
-              isDisabled={cart.length === 0}
-            >
-              Place Order
-            </Button>
-            <Button variant="ghost" mt={2} onClick={() => setStep(2)}>
-              Back to Shipping
-            </Button>
+            <Flex>
+              <Button
+                colorScheme="green"
+                mt={4}
+                onClick={handlePlaceOrder}
+                isLoading={isPlacing}
+                loadingText="Placing Order..."
+                isDisabled={cart.length === 0}
+              >
+                Place Order
+              </Button>
+              <Button variant="ghost" mt={4} onClick={() => setStep(2)}>
+                Back to Shipping
+              </Button>
+            </Flex>
           </Box>
         )}
         {step === 4 && (
@@ -355,7 +372,11 @@ const CheckoutPage = () => {
             </Heading>
             <Text mb={2}>Thank you for your purchase.</Text>
             {orderId && <Text fontWeight="bold">Order ID: {orderId}</Text>}
-            <Button colorScheme="blue" mt={4} onClick={() => setStep(1)}>
+            <Button
+              colorScheme="blue"
+              mt={4}
+              onClick={() => navigate("/products")}
+            >
               Shop More
             </Button>
           </Box>

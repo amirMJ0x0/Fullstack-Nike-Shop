@@ -40,7 +40,6 @@ const verifyPayment = async (req, res) => {
             merchant: process.env.ZIBAL_SANDBOX_KEY,
             trackId,
         });
-
         if (verifyRes.data.result === 100) {
             const order = await Order.findOneAndUpdate(
                 { "paymentInfo.paymentResult.trackId": trackId },

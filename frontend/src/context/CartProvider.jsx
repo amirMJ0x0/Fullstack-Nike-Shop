@@ -117,23 +117,21 @@ export const CartProvider = ({ children }) => {
       console.error("Error reducing quantity:", error);
     }
   };
+  const clearCart = async () => {
+    try {
+      if (user) {
+        const res = await api.delete("/cart");
+        console.log("clearCart res: ", res);
 
-  // Cart calculations (for use in CartPage, CheckoutPage, etc.)
-  const products = cart?.items || [];
-  const subtotal = products.reduce(
-    (acc, item) => acc + (item.productId?.price || 0) * item.quantity,
-    0
-  );
-  const totalDiscount = products.reduce(
-    (acc, item) =>
-      acc +
-      (((item.productId?.price || 0) * (item.productId?.discount || 0)) / 100) *
-        item.quantity,
-    0
-  );
-  const taxAmount = 2;
-  const tax = subtotal * (taxAmount / 100);
-  const total = subtotal - totalDiscount + tax;
+        setCart(res.data.cart || { items: [] });
+      } else {
+        clearCartFromLocalStorage();
+        setCart({ items: [] });
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
+  };
 
   useEffect(() => {
     fetchCart();
@@ -146,12 +144,8 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         reduceQuantity,
+        clearCart,
         totalItems,
-        subtotal,
-        totalDiscount,
-        tax,
-        total,
-        taxAmount,
       }}
     >
       {children}

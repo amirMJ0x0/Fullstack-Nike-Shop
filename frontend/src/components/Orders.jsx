@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Box,
   Heading,
@@ -41,7 +40,16 @@ const Orders = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : orders.length === 0 ? (
-        <Text>No orders found.</Text>
+        <div className="flex justify-center my-20">
+          <Image
+            className="size-72 md:size-1/3"
+            src={"/No-results-found.png"}
+            alt="There is no favorites yet."
+            loading="lazy"
+            opacity={50}
+            draggable={false}
+          />
+        </div>
       ) : (
         <Table variant="simple">
           <Thead>
@@ -56,7 +64,7 @@ const Orders = () => {
           <Tbody>
             {orders.map((order) => (
               <Tr key={order._id}>
-                <Td>{order._id.slice(-6).toUpperCase()}</Td>
+                <Td>{order.orderNumber.slice(-6)}</Td>
                 <Td>{new Date(order.createdAt).toLocaleDateString()}</Td>
                 <Td>{order.status}</Td>
                 <Td>${order.total.toFixed(2)}</Td>

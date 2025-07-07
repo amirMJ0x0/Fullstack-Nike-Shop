@@ -90,7 +90,7 @@ const MyComments = () => {
       <Heading size={"lg"} p={2}>
         My Reviews
       </Heading>
-      {myComments?.length > 0 && (
+      {myComments?.length > 0 ? (
         <List mt={2} spacing={2}>
           {myComments?.map((comment, index) => (
             <ListItem
@@ -178,6 +178,17 @@ const MyComments = () => {
             </ListItem>
           ))}
         </List>
+      ) : (
+        <div className="flex justify-center my-20">
+          <Image
+            className="size-72 md:size-1/3"
+            src={"/No-results-found.png"}
+            alt="There is no favorites yet."
+            loading="lazy"
+            opacity={50}
+            draggable={false}
+          />
+        </div>
       )}
     </div>
   );

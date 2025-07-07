@@ -114,6 +114,20 @@ const mergeCart = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const clearCart = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    // Fix: match the field name in your Cart model (userId, not user)
+    const cart = await Cart.findOneAndUpdate({ userId }, { items: [] });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+    res.status(200).json({ message: "Cart cleared", cart });
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
   getCart,
@@ -121,4 +135,5 @@ module.exports = {
   removeFromCart,
   reduceCartItem,
   mergeCart,
+  clearCart
 };

@@ -27,13 +27,13 @@ const theme = extendTheme({
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <ChakraProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </ChakraProvider>
-    </HelmetProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <HelmetProvider>
+    <ChakraProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ChakraProvider>
+  </HelmetProvider>
+  // </React.StrictMode>
 );

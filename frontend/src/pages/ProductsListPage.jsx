@@ -89,7 +89,6 @@ const ProductsListPage = () => {
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
-      <div className="my-7 mx-4">Ad & Banner</div>
 
       <div className="flex justify-between items-center max-md:mx-2 max-container max-sm:gap-2">
         {/* Filter Products Section (Mobile Devices)  */}

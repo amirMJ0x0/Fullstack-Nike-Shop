@@ -103,7 +103,7 @@ const LoginPage = () => {
 
           {/* password input  */}
 
-          <FormControl>
+          <div>
             <PasswordInput register={register} tabIndex={"2"} />
             <Flex justifyContent={"space-between"}>
               <small className="text-red-600 mt-3">
@@ -112,7 +112,7 @@ const LoginPage = () => {
               <Button
                 className="font-palanquin"
                 colorScheme="gray"
-                type="submit"
+                type="button"
                 variant={"link"}
                 disabled={loading}
                 onClick={() => navigate("/forgot-password")}
@@ -129,7 +129,7 @@ const LoginPage = () => {
                 <span className="font-sm p-1 font-light">Forgot Password?</span>
               </Button>
             </Flex>
-          </FormControl>
+          </div>
 
           <Button
             className="shadow-sm !bg-coral-red hover:!shadow-lg hover:opacity-90"

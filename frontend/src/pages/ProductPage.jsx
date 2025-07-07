@@ -58,6 +58,10 @@ const ProductPage = () => {
   const { mutate, isLoading: isAddingComment } = useAddComment(product?._id);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const existingItem = cart?.items.find(
       (item) => item.productId == productId
     );

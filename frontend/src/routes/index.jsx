@@ -1,8 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { lazy } from "react";
 import withSuspense from "../hoc/WithSuspense";
-import CheckoutPage from "../pages/CheckoutPage";
-import PaymentResult from "../pages/PaymentResult";
 
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
@@ -21,6 +19,8 @@ const CartPage = lazy(() => import("../pages/CartPage"));
 const MyComments = lazy(() => import("../components/MyComments"));
 const MyFavorites = lazy(() => import("../components/MyFavorites"));
 const PrivateRoute = lazy(() => import("../components/share/PrivateRoute"));
+const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
+const PaymentResult = lazy(() => import("../pages/PaymentResult"));
 
 const HomePageSuspended = withSuspense(HomePage);
 const NotFoundPageSuspended = withSuspense(NotFoundPage);
@@ -39,6 +39,8 @@ const MyCommentsSuspended = withSuspense(MyComments);
 const CartPageSuspended = withSuspense(CartPage);
 const PrivateRouteSuspended = withSuspense(PrivateRoute);
 const AboutUsSuspended = withSuspense(AboutUs);
+const CheckoutPageSuspended = withSuspense(CheckoutPage);
+const PaymentResultSuspended = withSuspense(PaymentResult);
 
 export const router = createBrowserRouter([
   {
@@ -116,11 +118,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/Checkout",
-        element: <CheckoutPage />,
+        element: <CheckoutPageSuspended />,
       },
       {
         path: "/payment-result",
-        element: <PaymentResult />,
+        element: <PaymentResultSuspended />,
       },
     ],
   },

@@ -11,7 +11,6 @@ const PaymentResult = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const orderId = localStorage.getItem("latestOrderId");
-  console.log(orderId);
 
   useEffect(() => {
     const trackId = searchParams.get("trackId");
@@ -24,7 +23,6 @@ const PaymentResult = () => {
     const verifyPayment = async () => {
       try {
         const res = await api.post("/pay/zibal/verify", { trackId });
-
         if (res.data.success) {
           setStatus("success");
           setMessage(res.data.message || "Payment successful!");
@@ -58,11 +56,23 @@ const PaymentResult = () => {
             <FaCircleXmark />
           </Box>
         )}
-        {status !== "loading" && <Text fontSize="lg">{message}</Text>}
         {status !== "loading" && (
-          <Button colorScheme="blue" onClick={() => navigate("/")}>
-            Back to Home
-          </Button>
+          <>
+            <Text fontSize="lg">{message}</Text>
+
+            {orderId && (
+              <Box fontSize="lg">
+                Order ID:{" "}
+                <Text className="font-palanquin" color={"gray.500"}>
+                  {orderId}
+                </Text>
+              </Box>
+            )}
+
+            <Button colorScheme="orange" onClick={() => navigate("/")}>
+              Back to Home
+            </Button>
+          </>
         )}
       </VStack>
     </Box>

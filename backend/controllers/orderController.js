@@ -2,9 +2,15 @@ const Order = require('../models/Order.js');
 
 // Create a new order
 const createOrder = async (req, res) => {
+    const generateOrderNumber = async () => {
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        return `NSO-${randomNum}`;
+    };
+    const orderNumber = await generateOrderNumber();
     try {
         const order = new Order({
             user: req.user.id,
+            orderNumber,
             ...req.body,
         });
         await order.save();
