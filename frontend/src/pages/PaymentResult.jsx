@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { Box, Spinner, Text, Heading, Button, VStack } from "@chakra-ui/react";
 import api from "../services/api";
 import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
+import { Helmet } from "react-helmet-async";
 
 const PaymentResult = () => {
   const [searchParams] = useSearchParams();
@@ -43,6 +44,9 @@ const PaymentResult = () => {
   return (
     <Box mt={10} textAlign="center" mb={64}>
       <VStack spacing={4}>
+        <Helmet>
+          <title>Payment Result</title>
+        </Helmet>
         <Heading size="lg">Payment Result</Heading>
 
         {status === "loading" && <Spinner size="xl" />}

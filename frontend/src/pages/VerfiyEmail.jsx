@@ -18,6 +18,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useModal from "../hooks/useModal";
 import { MdEdit } from "react-icons/md";
 import CustomModal from "../components/share/CustomModal";
+import { Helmet } from "react-helmet-async";
 
 export default function VerifyEmail() {
   const navigate = useNavigate();
@@ -235,6 +236,9 @@ export default function VerifyEmail() {
 
   return (
     <div className="h-screen">
+      <Helmet>
+        <title>Verify Email</title>
+      </Helmet>
       <CustomModal
         isOpen={editModal.isOpen}
         onClose={editModal.close}
