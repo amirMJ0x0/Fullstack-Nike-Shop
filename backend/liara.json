@@ -2,7 +2,7 @@
     "platform": "node",
     "port": 3000,
     "app": "api-nike-shop",
-    "platformConfig": {
-        "version": "18"
+    "node": {
+        "version": "22"
     }
 }
