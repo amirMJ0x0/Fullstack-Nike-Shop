@@ -1,7 +1,7 @@
 const ServiceCard = ({ imgURL, label, subtext }) => {
   return (
     <div
-      className="flex-1 sm:w-[350px] sm:min-w-[350px] w-full rouded-[20px] px-10 py-16 shadow-3xl"
+      className="flex-1 sm:w-[350px] sm:min-w-[350px] w-full rouded-[20px] px-10 py-16 shadow-md"
       data-aos="flip-down"
     >
       <div className="flex size-11 justify-center items-center bg-coral-red rounded-full">

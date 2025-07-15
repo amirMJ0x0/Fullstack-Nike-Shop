@@ -16,7 +16,7 @@ const Hero = () => {
 
   return (
     <section
-      className="w-full flex xl:flex-row min-h-screen max-container"
+      className="w-full flex xl:flex-row lg:min-h-screen max-container"
       id="home"
     >
       <div className="relative xl:w-3/5 flex flex-col max-sm:padding-x max-xl:padding-l justify-start items-start pt-2 md:pt-14 lg:w-1/2">
@@ -34,7 +34,11 @@ const Hero = () => {
           Discover stylish Nike arrivals, quality comfort, and innovation for
           your active life.
         </p>
-        <Button label="Shop Now" iconURL={arrowRight} />
+        <Button
+          label="Shop Now"
+          iconURL={arrowRight}
+          to={"/products?sort=newest"}
+        />
 
         <div className="flex flex-row justify-between md:justify-start md:items-start flex-wrap w-full mt-10 md:mt-20 gap-6 md:gap-10 xl:gap-16 ">
           {statistics.map((stat) => (

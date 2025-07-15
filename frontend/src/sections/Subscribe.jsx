@@ -1,4 +1,4 @@
-import Button from "../components/Button";
+import { Button } from "@chakra-ui/react";
 
 const Subscribe = () => {
   return (
@@ -11,9 +11,21 @@ const Subscribe = () => {
         Newsletters
       </h3>
       <div className="lg:max-w-[40%] w-full flex items-center max-sm:flex-col gap-5 p-2.5 sm:border sm:border-slate-gray rounded-full">
-        <input type="text" placeholder="subscribe@nike.com" className="input" />
+        <input
+          type="text"
+          placeholder="subscribe@nike.com"
+          className="input !bg-transparent"
+        />
         <div className="flex max-sm:justify-end items-center max-sm:w-full">
-          <Button label="Sing Up" fullWidth />
+          <Button
+            w={"full"}
+            rounded={"full"}
+            bg={"coral"}
+            color={"white"}
+            className="py-8"
+          >
+            Subscribe
+          </Button>
         </div>
       </div>
     </section>

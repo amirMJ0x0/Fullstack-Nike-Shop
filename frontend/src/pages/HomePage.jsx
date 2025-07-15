@@ -37,7 +37,7 @@ const HomePage = () => {
       {/* <section className="padding">
         <SpecialOffer />
       </section> */}
-      <section className="padding bg-pale-blue">
+      <section className="padding bg-[rgba(0,0,0,0.1)]">
         <CustomerReviews />
       </section>
       <section className="padding-x sm:py-32 py-16 w-full ">
