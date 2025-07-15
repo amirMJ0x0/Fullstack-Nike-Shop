@@ -1,11 +1,10 @@
 import ProductCard from "../components/ProductCard";
-import { useRef } from "react";
 import Pagination from "../components/ui/Pagination";
 import { Image, Text } from "@chakra-ui/react";
 import { useProductQuery } from "../hooks/useProductQuery";
 import SkeletonCard from "../components/SkeletonCard";
+
 const ProductsList = () => {
-  const resultRef = useRef(null);
   const {
     page,
     data,
@@ -14,12 +13,11 @@ const ProductsList = () => {
     onPreviousPage,
     onNextPage,
     goSpecificPage,
+    resultRef,
+    scrollToRef,
   } = useProductQuery();
 
   const { products, totalPages, totalItems } = data || {};
-  const scrollToRef = () => {
-    if (resultRef.current) window.scrollTo(0, resultRef.current.offsetTop);
-  };
 
   const isLoadingState = isLoading || isFetching;
 
@@ -66,8 +64,14 @@ const ProductsList = () => {
           page={page}
           goSpecificPage={goSpecificPage}
           totalPages={totalPages}
-          onPreviousPage={onPreviousPage}
-          onNextPage={onNextPage}
+          onPreviousPage={() => {
+            onPreviousPage();
+            scrollToRef();
+          }}
+          onNextPage={() => {
+            onNextPage();
+            scrollToRef();
+          }}
           scrollToRef={scrollToRef}
         />
       )}

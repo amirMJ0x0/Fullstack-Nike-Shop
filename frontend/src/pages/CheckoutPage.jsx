@@ -26,6 +26,7 @@ import api from "../services/api";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import EmptyList from "../components/share/EmptyList";
+import { scrollTo } from "../utils/scrollToTop";
 
 const initialShipping = {
   name: "",
@@ -49,8 +50,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // scroll to top on step change
-    window.scrollTo(0, 0);
+    scrollTo();
   }, [step]);
 
   useEffect(() => {

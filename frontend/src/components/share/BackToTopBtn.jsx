@@ -1,6 +1,7 @@
 import { Box, Link } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdOutlineVerticalAlignTop } from "react-icons/md";
+import { scrollTo } from "../../utils/scrollToTop";
 
 const BackToTopBtn = () => {
   const [scrollPosition, setScrollPosition] = useState();
@@ -17,10 +18,10 @@ const BackToTopBtn = () => {
   return (
     <>
       {scrollPosition > 1000 && (
-        <Link onClick={() => window.scrollTo({ top: "0" })} title="Back to top">
+        <Link onClick={() => scrollTo()} title="Back to top">
           <Box
             position="fixed"
-            bottom={["20px","30px"]}
+            bottom={["20px", "30px"]}
             right={["14px", "64px"]}
             zIndex={1}
             bg="#FF6452"
@@ -31,7 +32,7 @@ const BackToTopBtn = () => {
             // data-aos-duration="1000"
             data-aos-delay="100"
             shadow={"md"}
-            fontSize={{base:"xl",md:"3xl"}}
+            fontSize={{ base: "xl", md: "3xl" }}
           >
             <MdOutlineVerticalAlignTop />
           </Box>

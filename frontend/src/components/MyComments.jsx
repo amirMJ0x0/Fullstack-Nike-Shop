@@ -20,6 +20,7 @@ import { useState } from "react";
 import useEditComment from "../hooks/useEditComment";
 import CommentModal from "./CommentModal";
 import EmptyList from "./share/EmptyList";
+import { scrollTo } from "../utils/scrollToTop";
 
 const MyComments = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const MyComments = () => {
 
   const handleSelectProduct = (productId) => {
     navigate(`/products/${productId}`);
-    window.scrollTo(0, 700);
+    scrollTo(700);
   };
 
   //use useMutation hook for deleting comment

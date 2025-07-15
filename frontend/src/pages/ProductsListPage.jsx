@@ -1,5 +1,5 @@
 import { Button, Select, Text, useDisclosure } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SidebarFilterProducts from "../sections/SidebarFilterProducts";
 import ProductsList from "../sections/ProductsList";
 import useDebounce from "../hooks/useDebounce";
@@ -7,6 +7,7 @@ import { BsFilter } from "react-icons/bs";
 import { Helmet } from "react-helmet-async";
 import FilterProductsDrawer from "../components/FilterProductsDrawer";
 import { useSearchParams } from "react-router-dom";
+import { scrollTo } from "../utils/scrollToTop";
 
 const ProductsListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,7 +19,9 @@ const ProductsListPage = () => {
     onClose: onDrawerClose,
   } = useDisclosure();
   const filterDrawerBtnRef = useRef();
-
+  useEffect(() => {
+    scrollTo();
+  }, []);
   const filters = {
     size: searchParams.getAll("size") || [],
     color: searchParams.getAll("color") || [],

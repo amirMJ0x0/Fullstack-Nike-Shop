@@ -25,6 +25,7 @@ import { useAuth } from "../context/AuthProvider";
 import moment from "moment";
 import SaveProduct from "../components/SaveProduct";
 import { getCommentsByProductId } from "../services/commentServices";
+import { scrollTo } from "../utils/scrollToTop";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -58,7 +59,7 @@ const ProductPage = () => {
   const { mutate, isLoading: isAddingComment } = useAddComment(product?._id);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollTo();
   }, []);
 
   useEffect(() => {
