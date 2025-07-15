@@ -12,12 +12,8 @@ import {
   HStack,
   Text,
   Flex,
-  Input,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import useModal from "../hooks/useModal";
-import { MdEdit } from "react-icons/md";
-import CustomModal from "../components/share/CustomModal";
 import { Helmet } from "react-helmet-async";
 
 export default function VerifyEmail() {
@@ -31,9 +27,6 @@ export default function VerifyEmail() {
   const [verifying, setVerifying] = useState(false); //Prevents multiple submissions
   const isMounted = useRef(true); // Prevents state updates after unmount
   const authChannel = new BroadcastChannel("auth");
-  const editModal = useModal();
-  const [editedEmail, setEditedEmail] = useState(email);
-  const [emailError, setEmailError] = useState("");
 
   const [secondsRemaining, setSecondsRemaining] = useState(() => {
     const savedExpiresAt = sessionStorage.getItem("expiresAt");
@@ -148,44 +141,6 @@ export default function VerifyEmail() {
     return cleanup;
   };
 
-  const validateEmail = (value) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  };
-
-  const handleEditEmail = async () => {
-    if (!validateEmail(editedEmail)) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
-    setEmailError("");
-    try {
-      // Call your backend to update the email and resend OTP
-      await api.post("/auth/update-email", {
-        oldEmail: email,
-        newEmail: editedEmail,
-      });
-      toast({
-        title: "Email updated!",
-        description: "A new verification code has been sent.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top-right",
-      });
-      // Update local state and close modal
-      setEditedEmail(editedEmail);
-      editModal.close();
-      // Optionally update the search param or state for email
-      window.history.replaceState(
-        null,
-        "",
-        `?email=${encodeURIComponent(editedEmail)}`
-      );
-    } catch (error) {
-      setEmailError(error.response?.data?.message || "Failed to update email.");
-    }
-  };
-
   const handleResend = async () => {
     if (!canResend) return;
 
@@ -220,10 +175,6 @@ export default function VerifyEmail() {
     }
   };
 
-  const handleModal = () => {
-    setModalOpen(true);
-  };
-
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60)
       .toString()
@@ -239,28 +190,6 @@ export default function VerifyEmail() {
       <Helmet>
         <title>Verify Email</title>
       </Helmet>
-      <CustomModal
-        isOpen={editModal.isOpen}
-        onClose={editModal.close}
-        onConfirm={handleEditEmail}
-        title="Edit Email"
-        confirmText="Update Email"
-      >
-        <Input
-          type="text"
-          variant="flushed"
-          placeholder="abcd123@gmail.com"
-          value={editedEmail}
-          onChange={(e) => setEditedEmail(e.target.value)}
-          focusBorderColor="#ff6452"
-          isInvalid={!!emailError}
-        />
-        {emailError && (
-          <Text color="red.500" fontSize="sm" mt={2}>
-            {emailError}
-          </Text>
-        )}
-      </CustomModal>
       <VStack spacing={4} maxW="md" mx="auto" mt={12}>
         <Heading size="lg" className="!font-montserrat">
           Verify Your Email
@@ -271,16 +200,8 @@ export default function VerifyEmail() {
           </Text>
           <Flex alignItems={"center"} justifyContent={"center"}>
             <Text opacity={0.7} fontWeight={"bold"} className="font-montserrat">
-              {editedEmail}
+              {email}
             </Text>
-            <Button
-              color={"coral"}
-              variant={"unstyled"}
-              className="!flex !justify-center !items-center"
-              onClick={() => editModal.open()}
-            >
-              <MdEdit />
-            </Button>
           </Flex>
         </Box>
 

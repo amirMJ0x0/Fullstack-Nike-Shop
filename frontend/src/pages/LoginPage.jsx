@@ -1,17 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthProvider";
-import {
-  Button,
-  Heading,
-  Input,
-  FormControl,
-  Box,
-  Text,
-  Flex,
-  Select,
-  InputGroup,
-  InputRightElement,
-} from "@chakra-ui/react";
+import { Button, Heading, Input, Box, Text, Flex } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { yupResolver } from "@hookform/resolvers/yup";

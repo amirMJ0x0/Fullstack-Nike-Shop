@@ -144,7 +144,7 @@ const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         if (error.response?.status === 403) {
-          const { email } = data;
+          const { email } = error.response.data;
           const { expiresAt } = error.response.data;
           sessionStorage.setItem("expiresAt", expiresAt);
 

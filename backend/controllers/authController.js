@@ -77,7 +77,7 @@ const login = async (req, res) => {
 
             await sendVerificationEmail(user.email, otp);
 
-            return res.status(403).json({ message: 'Please verify your email before logging in.', expiresAt });
+            return res.status(403).json({ message: 'Please verify your email before logging in.', email: user.email, expiresAt });
         }
 
         finalizeAuth(res, user);
@@ -145,41 +145,6 @@ const resendVerification = async (req, res) => {
     }
 };
 
-// Update Email
-const updateEmail = async (req, res) => {
-    const { oldEmail, newEmail } = req.body;
-    try {
-        const user = await User.findOne({ email: oldEmail, isVerified: false });
-        if (!user) {
-            return res.status(404).json({ message: "Unverified user not found." });
-        }
-        const emailExists = await User.findOne({ email: newEmail });
-        if (emailExists) {
-            return res.status(409).json({ message: "This email is already in use." });
-        }
-        user.email = newEmail;
-        user.isVerified = false
-        await user.save();
-
-        await Otp.deleteMany({ email: oldEmail, purpose: "email-verification" });
-
-        const otp = generateOtp();
-        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
-        await Otp.create({
-            email: newEmail,
-            otp,
-            purpose: "email-verification",
-            expiresAt,
-        });
-
-        await sendVerificationEmail(newEmail, otp);
-
-        res.status(200).json({ message: "Email updated and verification sent." });
-    } catch (error) {
-        console.error("Update email error:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
 
 // Refresh Token
 const refresh = async (req, res) => {
@@ -344,4 +309,4 @@ const resetPassword = async (req, res) => {
         res.status(500).json({ message: "Server error" })
     }
 }
-module.exports = { register, login, verifyEmail, resendVerification, updateEmail, refresh, logout, userInfo, forgotPassword, verifyResetOtp, resetPassword }
+module.exports = { register, login, verifyEmail, resendVerification, refresh, logout, userInfo, forgotPassword, verifyResetOtp, resetPassword }
