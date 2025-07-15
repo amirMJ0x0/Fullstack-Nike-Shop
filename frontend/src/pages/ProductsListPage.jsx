@@ -32,7 +32,9 @@ const ProductsListPage = () => {
 
   const handleFilterChange = (filterType, value) => {
     const newParams = new URLSearchParams(searchParams);
-
+    if (newParams.has("page")) {
+      newParams.set("page", "1");
+    }
     if (filterType === "sale") {
       if (newParams.get("sale") === "true") {
         newParams.delete("sale");
