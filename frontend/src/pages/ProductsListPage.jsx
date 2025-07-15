@@ -1,12 +1,4 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Button,
-  Select,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Select, Text, useDisclosure } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import SidebarFilterProducts from "../sections/SidebarFilterProducts";
 import ProductsList from "../sections/ProductsList";
@@ -20,7 +12,6 @@ const ProductsListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialSort = searchParams.get("sort") || "mostRelevant";
   const [sortType, setSortType] = useState(initialSort);
-  const [showNotFoundLogo, setShowNotFoundLogo] = useState();
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -77,17 +68,6 @@ const ProductsListPage = () => {
       <Helmet>
         <title>Nike - Products</title>
       </Helmet>
-      <div className="text-gray-400 my-5 mx-4">
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="./">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink>Products</BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
-      </div>
 
       <div className="flex justify-between items-center max-md:mx-2 max-container max-sm:gap-2">
         {/* Filter Products Section (Mobile Devices)  */}
@@ -145,13 +125,9 @@ const ProductsListPage = () => {
             handleFilterChange={debouncedHandleCheckboxChange}
           />
         </div>
-        <div
-          className={`grid !w-full col-span-3 ${
-            showNotFoundLogo ? "lg:justify-center" : "lg:justify-end"
-          }`}
-        >
-          {/* Products Section */}
-          <ProductsList setShowNotFoundLogo={setShowNotFoundLogo} />
+        {/* Products Section */}
+        <div className={`grid !w-full col-span-3 `}>
+          <ProductsList />
         </div>
       </section>
     </section>
