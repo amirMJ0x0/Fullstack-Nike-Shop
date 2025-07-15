@@ -11,8 +11,10 @@ import { useRef, useState } from "react";
 
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Button } from "@chakra-ui/react";
+import useThemeSwitcher from "../hooks/useThemeSwitcher";
 
 const PopularProducts = () => {
+  const { colorMode } = useThemeSwitcher();
   const { data, error } = useQuery({
     queryKey: ["products"],
     queryFn: () => getAllProducts("sort=popularity"),
@@ -95,8 +97,13 @@ const PopularProducts = () => {
           zIndex={"40"}
           shadow={"md"}
           size={{ base: "sm", md: "xl" }}
+          _dark={{ bgColor: "coral" }}
         >
-          <FaChevronRight className="text-sm sm:text-md md:text-2xl text-coral-red" />
+          <FaChevronRight
+            className={`text-sm sm:text-md md:text-2xl ${
+              colorMode === "dark" ? "text-white" : "text-coral-red"
+            }`}
+          />
         </Button>
         <Button
           disabled={isFirstSlide}
@@ -111,8 +118,13 @@ const PopularProducts = () => {
           onClick={() => {
             swiperRef.current?.slidePrev();
           }}
+          _dark={{ bgColor: "coral" }}
         >
-          <FaChevronLeft className="text-sm sm:text-md md:text-2xl text-coral-red" />
+          <FaChevronLeft
+            className={`text-sm sm:text-md md:text-2xl ${
+              colorMode === "dark" ? "text-white" : "text-coral-red"
+            }`}
+          />
         </Button>
       </div>
     </section>
