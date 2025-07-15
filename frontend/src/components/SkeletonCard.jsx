@@ -17,7 +17,12 @@ const SkeletonCard = () => {
       shadow={{ base: "base", md: "md" }}
     >
       <CardBody p={{ base: "1", md: "2" }}>
-        <Skeleton borderRadius="2xl" className="size-64" />
+        <Skeleton
+          borderRadius="2xl"
+          // className="w-44 h-36 md:size-64"
+          w={{ base: "176px", md: "256px" }}
+          h={{ base: "124px", md: "256px" }}
+        />
 
         <Stack
           mt={{ base: "3", md: "4" }}
@@ -25,18 +30,26 @@ const SkeletonCard = () => {
           px={1}
           pb={{ base: 1, sm: 0 }}
         >
-          <SkeletonText mt="2" noOfLines={1} skeletonHeight="4" width="30%" />
-          <SkeletonText mt="2" noOfLines={1} skeletonHeight="4" width="80%" />
-          <SkeletonText mt="3" noOfLines={1} skeletonHeight="3" width="40%" />
+          <SkeletonText
+            mt="2"
+            noOfLines={1}
+            skeletonHeight={{ base: "2", md: "4" }}
+            width="30%"
+          />
+          <SkeletonText
+            mt="2"
+            noOfLines={1}
+            skeletonHeight={{ base: "3", md: "4" }}
+            width="80%"
+          />
+          <SkeletonText
+            mt="3"
+            noOfLines={1}
+            skeletonHeight={{ base: "2", md: "3" }}
+            width="20%"
+          />
         </Stack>
       </CardBody>
-
-      <CardFooter px={1} py={2}>
-        <Stack direction="row" spacing={4} align="center" w="100%">
-          <Skeleton height="20px" width="60px" />
-          <Skeleton height="20px" width="40px" />
-        </Stack>
-      </CardFooter>
     </Card>
   );
 };
