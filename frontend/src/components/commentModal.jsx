@@ -32,7 +32,7 @@ const CommentModal = ({
       setText(initialData.text || "");
       setRating(initialData.rating || 5);
     }
-  }, [initialData, isOpen]);
+  }, [isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

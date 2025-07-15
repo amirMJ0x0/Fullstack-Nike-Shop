@@ -243,6 +243,7 @@ const ProductPage = () => {
                   </Text>
                 </div>
                 <ReactStars
+                  key={product.averageRating}
                   count={5}
                   size={22}
                   edit={false}
@@ -280,8 +281,7 @@ const ProductPage = () => {
                       { text, rating },
                       {
                         onSuccess: () => {
-                          setText("");
-                          onClose();
+                          onModalClose();
                         },
                       }
                     );
