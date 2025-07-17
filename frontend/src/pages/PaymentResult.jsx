@@ -12,6 +12,7 @@ const PaymentResult = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const orderId = localStorage.getItem("latestOrderId");
+  const trackId = searchParams.get("trackId");
 
   useEffect(() => {
     const trackId = searchParams.get("trackId");
@@ -27,6 +28,7 @@ const PaymentResult = () => {
         if (res.data.success) {
           setStatus("success");
           setMessage(res.data.message || "Payment successful!");
+          localStorage.removeItem("latestOrderId");
         } else {
           setStatus("error");
           setMessage(res.data.message || "Payment failed.");
@@ -72,8 +74,18 @@ const PaymentResult = () => {
                 </Text>
               </Box>
             )}
-
-            <Button colorScheme="orange" onClick={() => navigate("/")}>
+            {trackId && (
+              <Text fontSize="sm" color="gray.400">
+                Track ID: {trackId}
+              </Text>
+            )}
+            <Button
+              colorScheme="orange"
+              onClick={() => {
+                localStorage.removeItem("latestOrderId");
+                navigate("/");
+              }}
+            >
               Back to Home
             </Button>
           </>

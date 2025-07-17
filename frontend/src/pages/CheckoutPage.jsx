@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Heading,
@@ -6,7 +6,6 @@ import {
   Button,
   Divider,
   Text,
-  HStack,
   Input,
   FormControl,
   FormLabel,
@@ -15,8 +14,8 @@ import {
   useToast,
   Spinner,
   Stack,
-  Image,
   Flex,
+  HStack,
 } from "@chakra-ui/react";
 const baseUrl = import.meta.env.VITE_REACT_APP_URL;
 import { useCart } from "../context/CartProvider";
@@ -38,7 +37,8 @@ const initialShipping = {
 };
 
 const CheckoutPage = () => {
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cart, clearCart, subtotal, totalDiscount, tax, total, taxRate } =
+    useCart();
   const [step, setStep] = useState(1);
   const [shipping, setShipping] = useState(initialShipping);
   const [shippingError, setShippingError] = useState({});
@@ -66,26 +66,7 @@ const CheckoutPage = () => {
     }
   }, [user]);
 
-  // Step 1: Review Cart
-  const cartItems = cart?.items || [];
-
-  // Calculate all totals from cartItems with full product info
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + (item.productId?.price || 0) * item.quantity,
-    0
-  );
-  const totalDiscount = cartItems.reduce(
-    (acc, item) =>
-      acc +
-      (((item.productId?.price || 0) * (item.productId?.discount || 0)) / 100) *
-        item.quantity,
-    0
-  );
-  const taxAmount = 2;
-  const tax = subtotal * (taxAmount / 100);
-  const total = subtotal - totalDiscount + tax;
-
-  // Step 2: Shipping validation
+  // Step 1: Shipping validation
   const validateShipping = () => {
     const errors = {};
     if (!shipping.name) errors.name = "Name is required";
@@ -97,12 +78,12 @@ const CheckoutPage = () => {
     return Object.keys(errors)?.length === 0;
   };
 
-  // Step 3: Place order
+  // Step 2: Place order
   const handlePlaceOrder = async () => {
     setIsPlacing(true);
     try {
       const orderData = {
-        items: cartItems.map((item) => ({
+        items: cart?.items.map((item) => ({
           product: item.product?._id || item._id,
           name: item.name,
           price: item.price,
@@ -133,10 +114,11 @@ const CheckoutPage = () => {
         });
 
         window.location.href = zibalRes.data.paymentUrl;
+        return;
       }
 
       if (clearCart) clearCart();
-      setStep(4);
+      setStep(3);
     } catch (err) {
       toast({
         title: "Order failed",
@@ -149,10 +131,11 @@ const CheckoutPage = () => {
       setIsPlacing(false);
     }
   };
+
   if (!cart || !Array.isArray(cart.items)) {
     return <Spinner size="xl" />;
   }
-  if (step === 1 && cartItems.length === 0) {
+  if (step === 1 && cart?.items.length === 0) {
     return <EmptyList message={"Your cart is empty."} />;
   }
   return (
@@ -165,94 +148,11 @@ const CheckoutPage = () => {
       </Heading>
       <VStack align="stretch" spacing={6}>
         {step === 1 && (
-          <Box>
-            <Heading size="md" mb={2}>
-              Review Cart
-            </Heading>
-            {cartItems.length === 0 ? (
-              <Text>Your cart is empty.</Text>
-            ) : (
-              <VStack align="stretch" spacing={3}>
-                {cartItems.map((item) => {
-                  const product = item.productId;
-
-                  return (
-                    <HStack
-                      key={item._id || product._id}
-                      justify="space-between"
-                      align="center"
-                      p={2}
-                      borderWidth={1}
-                      borderRadius="md"
-                    >
-                      <HStack>
-                        {product?.imageUrl?.length && (
-                          <Image
-                            src={product.imageUrl[0]}
-                            alt={product.name}
-                            boxSize="50px"
-                            objectFit="cover"
-                            borderRadius="md"
-                          />
-                        )}
-                        <Box>
-                          <Text fontWeight="bold">{product.name}</Text>
-                          <Text fontSize="sm">x{item.quantity}</Text>
-                        </Box>
-                      </HStack>
-                      <HStack>
-                        <Text>
-                          ${(product.price * item.quantity).toFixed(2)}
-                        </Text>
-                        <Button
-                          size="sm"
-                          colorScheme="red"
-                          variant="outline"
-                          onClick={() => {
-                            removeFromCart(product._id);
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      </HStack>
-                    </HStack>
-                  );
-                })}
-                <HStack justify="space-between" pt={2}>
-                  <Text fontWeight="bold">Subtotal:</Text>
-                  <Text fontWeight="bold">${subtotal.toFixed(2)}</Text>
-                </HStack>
-                <HStack justify="space-between">
-                  <Text>Discount:</Text>
-                  <Text color="red.500">-${totalDiscount.toFixed(2)}</Text>
-                </HStack>
-                <HStack justify="space-between">
-                  <Text>Tax ({taxAmount}%):</Text>
-                  <Text>${tax.toFixed(2)}</Text>
-                </HStack>
-                <HStack justify="space-between" fontWeight="bold">
-                  <Text fontWeight="bold">Total:</Text>
-                  <Text fontWeight="bold">${total.toFixed(2)}</Text>
-                </HStack>
-                <Button
-                  colorScheme="orange"
-                  mt={4}
-                  onClick={() => setStep(2)}
-                  isDisabled={cartItems.length === 0}
-                >
-                  Next: Shipping Info
-                </Button>
-              </VStack>
-            )}
-          </Box>
-        )}
-
-        {step === 2 && (
           <Box
             as="form"
             onSubmit={(e) => {
               e.preventDefault();
-              if (validateShipping()) setStep(3);
+              if (validateShipping()) setStep(2);
             }}
           >
             <Heading size="md" mb={2}>
@@ -332,17 +232,39 @@ const CheckoutPage = () => {
               <Button colorScheme="orange" mt={2} type="submit">
                 Next: Payment
               </Button>
-              <Button variant="ghost" mt={2} onClick={() => setStep(1)}>
+              <Button variant="ghost" mt={2} onClick={() => navigate("/cart")}>
                 Back to Cart
               </Button>
             </Stack>
           </Box>
         )}
-        {step === 3 && (
+        {step === 2 && (
           <Box>
             <Heading size="md" mb={2}>
               Payment
             </Heading>
+            <VStack align="stretch" mb={4}>
+              <HStack justify="space-between">
+                <Text>Subtotal:</Text>
+                <Text>${subtotal.toFixed(2)}</Text>
+              </HStack>
+              <HStack justify="space-between">
+                <Text>Discount:</Text>
+                <Text className="text-red-500">
+                  -${totalDiscount.toFixed(2)}
+                </Text>
+              </HStack>
+              <HStack justify="space-between">
+                <Text>Tax (2%):</Text>
+                <Text>${tax.toFixed(2)}</Text>
+              </HStack>
+              <Divider />
+              <HStack justify="space-between" fontWeight="bold">
+                <Text>Total:</Text>
+                <Text>${total.toFixed(2)}</Text>
+              </HStack>
+            </VStack>
+
             <FormControl mb={4}>
               <FormLabel>Payment Method</FormLabel>
               <Select
@@ -371,7 +293,7 @@ const CheckoutPage = () => {
             </Flex>
           </Box>
         )}
-        {step === 4 && (
+        {step === 3 && (
           <Box textAlign="center">
             <Heading size="md" mb={2}>
               Order Placed!
