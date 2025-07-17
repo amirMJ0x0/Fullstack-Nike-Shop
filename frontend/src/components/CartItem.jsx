@@ -50,7 +50,7 @@ const CartItem = memo(({ itemInfo }) => {
               opacity={productInfo.discount > 0 ? "0.7" : "1"}
               fontWeight={productInfo.discount > 0 ? "light" : "bold"}
             >
-              ${productInfo.price.toFixed(2)}
+              ${productInfo?.price?.toFixed(2)}
             </Heading>
             {/* discount  */}
             <Heading className="lg:hidden" size={{ base: "sm", md: "md" }}>
@@ -117,7 +117,7 @@ const CartItem = memo(({ itemInfo }) => {
           className="max-lg:hidden"
           textDecoration={productInfo.discount > 0 && "line-through"}
         >
-          ${productInfo.price.toFixed(2)}
+          ${productInfo?.price?.toFixed(2)}
         </Heading>
       </div>
     </Box>

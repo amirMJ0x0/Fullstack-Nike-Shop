@@ -36,6 +36,7 @@ const addToCart = async (req, res) => {
       cart.items.push({ productId, quantity, color, size });
     }
     await cart.save();
+    await cart.populate("items.productId");
     res.status(200).json({ message: "Product added to cart", cart });
   } catch (error) {
     console.error("Error adding product to cart:", error);
@@ -54,6 +55,7 @@ const removeFromCart = async (req, res) => {
     }
     cart.items = cart.items.filter((item) => item.productId.toString() !== productId);
     await cart.save();
+    await cart.populate("items.productId");
     res.status(200).json({ message: "Product removed from cart", cart });
   } catch (error) {
     console.error("Error removing product from cart:", error);
@@ -81,6 +83,7 @@ const reduceCartItem = async (req, res) => {
       cart.items.splice(itemIndex, 1);
     }
     await cart.save();
+    await cart.populate("items.productId");
     res.status(200).json({ message: "Quantity reduced", cart });
   } catch (error) {
     console.error("Error reducing quantity:", error);
@@ -108,6 +111,7 @@ const mergeCart = async (req, res) => {
       }
     });
     await cart.save();
+    await cart.populate("items.productId");
     res.status(200).json({ message: "Cart updated", cart });
   } catch (error) {
     console.error("Error merging cart:", error.message);

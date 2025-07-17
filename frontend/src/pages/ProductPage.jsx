@@ -64,7 +64,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     const existingItem = cart?.items.find(
-      (item) => item.productId == productId
+      (item) => item.productId._id == productId
     );
     if (existingItem) setIsInCart(true);
   }, [cart, color]);

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import api from "../services/api";
 import { useAuth } from "./AuthProvider";
 import {
@@ -13,6 +13,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const { user } = useAuth();
 
   const totalItems =
@@ -41,6 +42,8 @@ export const CartProvider = ({ children }) => {
       console.error("Error fetching cart:", error.message);
     } finally {
       setLoading(false);
+      setInitialLoading(false);
+      console.log({ initialLoading, cart });
     }
   };
 
@@ -61,13 +64,13 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (productId, color, size, quantity = 1) => {
     try {
       if (user) {
-        const response = await api.post("/cart/add", {
+        const { data } = await api.post("/cart/add", {
           productId,
           quantity,
           color,
           size,
         });
-        setCart(response.data.cart);
+        setCart(data.cart);
       } else {
         const updatedCart = addProductToLocalCart(
           productId,
@@ -103,12 +106,12 @@ export const CartProvider = ({ children }) => {
   const reduceQuantity = async (productId, color, size) => {
     try {
       if (user) {
-        await api.post("/cart/reduce", {
+        const { data } = await api.post("/cart/reduce", {
           productId,
           color,
           size,
         });
-        fetchCart();
+        setCart(data.cart || { items: [] });
       } else {
         const updatedCart = reduceQuantityFromLocalCart(productId, color, size);
         setCart(updatedCart);
@@ -136,16 +139,48 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     fetchCart();
   }, [user]);
+
+  const { subtotal, totalDiscount, tax, total, taxRate } = useMemo(() => {
+    const items = cart?.items || [];
+    const rate = 2;
+    const sub = items.reduce((sum, item) => {
+      const priceAfterDiscount =
+        item.productId.price * (1 - item.productId.discount / 100);
+      return sum + priceAfterDiscount * item.quantity;
+    }, 0);
+
+    const disc = items.reduce((sum, item) => {
+      return (
+        sum +
+        item.productId.price * (item.productId.discount / 100) * item.quantity
+      );
+    }, 0);
+    const taxAmount = (sub * rate) / 100;
+    return {
+      subtotal: sub,
+      totalDiscount: disc,
+      tax: taxAmount,
+      total: sub + taxAmount,
+      taxRate: rate,
+    };
+  }, [cart]);
+
   return (
     <CartContext.Provider
       value={{
         loading,
+        initialLoading,
         cart,
         addToCart,
         removeFromCart,
         reduceQuantity,
         clearCart,
         totalItems,
+        subtotal,
+        totalDiscount,
+        tax,
+        total,
+        taxRate,
       }}
     >
       {children}
