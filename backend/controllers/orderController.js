@@ -1,12 +1,14 @@
 const Order = require('../models/Order.js');
+const Product = require('../models/Product.js');
+const { generateOrderNumber } = require('../utils/generateOrderNumber.js');
 
 // Create a new order
 const createOrder = async (req, res) => {
-    const generateOrderNumber = async () => {
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        return `NSO-${randomNum}`;
-    };
     const orderNumber = await generateOrderNumber();
+    if (!req.body.deliveryDate) {
+        return res.status(400).json({ message: "Delivery date must be at least 2 days from now" });
+    }
+
     try {
         const order = new Order({
             user: req.user.id,
@@ -14,6 +16,7 @@ const createOrder = async (req, res) => {
             ...req.body,
         });
         await order.save();
+        await order.populate({ path: "items.product", select: "name price imageUrl" });
         res.status(201).json(order);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -23,7 +26,9 @@ const createOrder = async (req, res) => {
 // Get all orders
 const getOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 });
+        const orders = await Order.find({ user: req.user.id })
+            .populate("items.product")
+            .sort({ createdAt: -1 });
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -33,7 +38,11 @@ const getOrders = async (req, res) => {
 // Get a single order by ID
 const getOrderById = async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id);
+        const order = await Order.findById(req.params.id).populate({
+            path: "items.product",
+            model: "Product",
+            select: "name price imageUrl",
+        });
         if (!order) return res.status(404).json({ message: 'Order not found' });
         res.json(order);
     } catch (error) {
@@ -41,27 +50,6 @@ const getOrderById = async (req, res) => {
     }
 };
 
-// Update an order by ID
-const updateOrder = async (req, res) => {
-    try {
-        const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!order) return res.status(404).json({ message: 'Order not found' });
-        res.json(order);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
-
-// Delete an order by ID
-const deleteOrder = async (req, res) => {
-    try {
-        const order = await Order.findByIdAndDelete(req.params.id);
-        if (!order) return res.status(404).json({ message: 'Order not found' });
-        res.json({ message: 'Order deleted' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
 
-module.exports = { createOrder, getOrders, getOrderById, updateOrder, deleteOrder }
+module.exports = { createOrder, getOrders, getOrderById }

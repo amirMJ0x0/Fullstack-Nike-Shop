@@ -1,6 +1,6 @@
 const express = require("express");
 const { verifyToken } = require("../middlewares/authMiddleware");
-const { createOrder, getOrders, getOrderById, updateOrder, deleteOrder, pay } = require("../controllers/orderController.js");
+const { createOrder, getOrders, getOrderById } = require("../controllers/orderController.js");
 
 const router = express.Router();
 
