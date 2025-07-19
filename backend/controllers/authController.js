@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Otp = require("../models/Otp");
+const dotenv = require("dotenv");
+dotenv.config();
 const { generateTokens } = require("../utils/generateTokens");
 const { generateOtp } = require("../utils/generateOtp");
 const { sendVerificationEmail, sendPasswordResetEmail } = require("../utils/email");
@@ -165,18 +167,19 @@ const refresh = async (req, res) => {
 
         user.refreshToken = newRefreshToken;
         await user.save();
+        const isProduction = process.env.NODE_ENV === "production";
 
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 15 * 60 * 1000,
         });
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
