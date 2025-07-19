@@ -117,7 +117,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/Cart",
-        element: <CartPageSuspended />,
+        element: (
+          <PrivateRouteSuspended>
+            <CartPageSuspended />,
+          </PrivateRouteSuspended>
+        ),
       },
       {
         path: "/Checkout",

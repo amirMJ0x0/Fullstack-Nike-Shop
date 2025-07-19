@@ -14,6 +14,7 @@ import {
   Text,
   useDisclosure,
   useRadioGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { BiPlus, BiSolidChevronRight } from "react-icons/bi";
 import { PiUserCircleDuotone } from "react-icons/pi";
@@ -57,17 +58,22 @@ const ProductPage = () => {
     queryFn: () => getCommentsByProductId(productId),
   });
   const { mutate, isLoading: isAddingComment } = useAddComment(product?._id);
-
+  const toast = useToast();
   useEffect(() => {
     scrollTo();
   }, []);
 
   useEffect(() => {
-    const existingItem = cart?.items.find(
-      (item) => item.productId._id == productId
-    );
-    if (existingItem) setIsInCart(true);
-  }, [cart, color]);
+    const existingItem = cart?.items.find((item) => {
+      const id =
+        typeof item.productId === "string"
+          ? item.productId
+          : item.productId._id;
+      return id === productId;
+    });
+
+    setIsInCart(!!existingItem);
+  }, [cart, color, productId]);
 
   const { getRootProps: getRootPropsSize, getRadioProps: getRadioPropsSize } =
     useRadioGroup({
@@ -177,7 +183,21 @@ const ProductPage = () => {
             {isInCart ? (
               <Box className="flex gap-3 !mt-8">
                 <Link to={"/cart"}>
-                  <Button size={"lg"} rightIcon={<BiSolidChevronRight />}>
+                  <Button
+                    size={"lg"}
+                    rightIcon={<BiSolidChevronRight />}
+                    onClick={() =>
+                      !user
+                        ? toast({
+                            title: "Please login to see the product in cart",
+                            status: "error",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "top-right",
+                          })
+                        : null
+                    }
+                  >
                     Show in Cart
                   </Button>
                 </Link>

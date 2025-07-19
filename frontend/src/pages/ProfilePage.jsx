@@ -50,7 +50,7 @@ const ProfilePage = () => {
         <Divider orientation="vertical" h={"auto"} />
         <main className="md:flex-1 p-4 md:ml-4">
           {isProfilePage ? (
-            <Heading size={"lg"} mx={"auto"}>
+            <Heading size={"lg"} mx={"auto"} mb={20}>
               Welcome {user.username}
             </Heading>
           ) : (

@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { useCart } from "../context/CartProvider";
-import { getProduct } from "../services/productServices";
 import {
   Button,
   Heading,
