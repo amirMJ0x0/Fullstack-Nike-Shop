@@ -13,7 +13,7 @@ const VerifyEmail = lazy(() => import("../pages/VerfiyEmail"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 const AccountInfo = lazy(() => import("../components/AccountInfo"));
-const Orders = lazy(() => import("../components/Orders"));
+const MyOrdersPage = lazy(() => import("../pages/MyOrdersPage"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 const CartPage = lazy(() => import("../pages/CartPage"));
 const MyComments = lazy(() => import("../components/MyComments"));
@@ -21,6 +21,7 @@ const MyFavorites = lazy(() => import("../components/MyFavorites"));
 const PrivateRoute = lazy(() => import("../components/share/PrivateRoute"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const PaymentResult = lazy(() => import("../pages/PaymentResult"));
+const OrderDetailPage = lazy(() => import("../pages/OrderDetailPage"));
 
 const HomePageSuspended = WithSuspense(HomePage);
 const NotFoundPageSuspended = WithSuspense(NotFoundPage);
@@ -33,7 +34,7 @@ const VerifyEmailSuspended = WithSuspense(VerifyEmail);
 const ProfilePageSuspended = WithSuspense(ProfilePage);
 const ForgotPasswordPageSuspended = WithSuspense(ForgotPasswordPage);
 const AccountInfoSuspended = WithSuspense(AccountInfo);
-const OrdersSuspended = WithSuspense(Orders);
+const OrdersSuspended = WithSuspense(MyOrdersPage);
 const MyFavoritesSuspended = WithSuspense(MyFavorites);
 const MyCommentsSuspended = WithSuspense(MyComments);
 const CartPageSuspended = WithSuspense(CartPage);
@@ -41,6 +42,7 @@ const PrivateRouteSuspended = WithSuspense(PrivateRoute);
 const AboutUsSuspended = WithSuspense(AboutUs);
 const CheckoutPageSuspended = WithSuspense(CheckoutPage);
 const PaymentResultSuspended = WithSuspense(PaymentResult);
+const OrderDetailPageSuspended = WithSuspense(OrderDetailPage);
 
 export const router = createBrowserRouter([
   {
@@ -123,6 +125,10 @@ export const router = createBrowserRouter([
       {
         path: "/payment-result",
         element: <PaymentResultSuspended />,
+      },
+      {
+        path: "/orders/:id",
+        element: <OrderDetailPageSuspended />,
       },
     ],
   },
