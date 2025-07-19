@@ -1,34 +1,50 @@
 // pages/PaymentResult.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Box, Spinner, Text, Heading, Button, VStack } from "@chakra-ui/react";
 import api from "../services/api";
 import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 import { Helmet } from "react-helmet-async";
+import { useCart } from "../context/CartProvider";
+import { useAuth } from "../context/AuthProvider";
 
 const PaymentResult = () => {
+  const { clearCart } = useCart();
+  const [cartCleared, setCartCleared] = useState(false);
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
+  const { user, isLoading } = useAuth();
+  const [hasVerified, setHasVerified] = useState(false);
+
   const navigate = useNavigate();
-  const orderId = localStorage.getItem("latestOrderId");
+  const { id, orderNum } = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("latestOrderId") || "{}");
+    } catch {
+      return {};
+    }
+  }, []);
+
   const trackId = searchParams.get("trackId");
 
   useEffect(() => {
-    const trackId = searchParams.get("trackId");
-    if (!trackId) {
-      setStatus("error");
-      setMessage("Missing payment track ID.");
-      return;
-    }
-
     const verifyPayment = async () => {
+      const trackId = searchParams.get("trackId");
+      if (!trackId) {
+        setStatus("error");
+        setMessage("Missing payment track ID.");
+        return;
+      }
       try {
         const res = await api.post("/pay/zibal/verify", { trackId });
         if (res.data.success) {
           setStatus("success");
           setMessage(res.data.message || "Payment successful!");
-          localStorage.removeItem("latestOrderId");
+          if (user && !cartCleared) {
+            await clearCart();
+            setCartCleared(true);
+          }
         } else {
           setStatus("error");
           setMessage(res.data.message || "Payment failed.");
@@ -37,11 +53,18 @@ const PaymentResult = () => {
         console.error(err);
         setStatus("error");
         setMessage(err.response?.data?.message || "Something went wrong");
+      } finally {
+        setHasVerified(true); // ✅ جلوگیری از رفرش مجدد
       }
     };
 
-    verifyPayment();
-  }, [searchParams]);
+    if (!isLoading && !hasVerified) {
+      verifyPayment();
+    }
+  }, [user, searchParams, isLoading, hasVerified]);
+  useEffect(() => {
+    console.log("⏳ useEffect running: ", { user, isLoading, hasVerified });
+  }, [user, isLoading, hasVerified]);
 
   return (
     <Box mt={10} textAlign="center" mb={64}>
@@ -66,11 +89,11 @@ const PaymentResult = () => {
           <>
             <Text fontSize="lg">{message}</Text>
 
-            {orderId && (
+            {orderNum && (
               <Box fontSize="lg">
                 Order ID:{" "}
                 <Text className="font-palanquin" color={"gray.500"}>
-                  {orderId}
+                  {orderNum}
                 </Text>
               </Box>
             )}
@@ -82,11 +105,11 @@ const PaymentResult = () => {
             <Button
               colorScheme="orange"
               onClick={() => {
+                navigate(`/orders/${id}`);
                 localStorage.removeItem("latestOrderId");
-                navigate("/");
               }}
             >
-              Back to Home
+              View Order Detail
             </Button>
           </>
         )}
