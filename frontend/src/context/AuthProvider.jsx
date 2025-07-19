@@ -62,34 +62,6 @@ const AuthProvider = ({ children }) => {
     [userData]
   );
 
-  // Handle token refresh
-  const handleTokenRefresh = useCallback(async () => {
-    const now = Date.now();
-    // Prevent multiple refresh attempts within 30 seconds
-    if (isRefreshing || !isActiveTab || now - lastRefreshTime < 30000) return;
-
-    setIsRefreshing(true);
-    setLastRefreshTime(now);
-
-    try {
-      await api.post("/auth/refresh");
-      queryClient.invalidateQueries(["userInfo"]);
-    } catch (error) {
-      if (error.response?.status === 401) {
-        navigate("/login");
-      }
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [isRefreshing, navigate, isActiveTab, lastRefreshTime, queryClient]);
-
-  // Auto refresh token when tab becomes active
-  useEffect(() => {
-    if (isActiveTab && user) {
-      handleTokenRefresh();
-    }
-  }, [isActiveTab, user, handleTokenRefresh]);
-
   // Register Action with memoization
   const registerAction = useCallback(
     async (data) => {
@@ -204,7 +176,6 @@ const AuthProvider = ({ children }) => {
       loginAction,
       logOut,
       registerAction,
-      handleTokenRefresh,
     }),
     [
       user,
@@ -214,7 +185,6 @@ const AuthProvider = ({ children }) => {
       loginAction,
       logOut,
       registerAction,
-      handleTokenRefresh,
     ]
   );
 
