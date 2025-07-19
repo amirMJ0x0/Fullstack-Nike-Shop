@@ -8,9 +8,12 @@ import {
   removeProductFromLocalCart,
   reduceQuantityFromLocalCart,
 } from "../utils/cartHelpers";
+import { useToast } from "@chakra-ui/react";
+import { delay } from "../utils/delay";
 
 const CartContext = createContext();
 export const CartProvider = ({ children }) => {
+  const toast = useToast();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -23,6 +26,16 @@ export const CartProvider = ({ children }) => {
   const fetchCart = async () => {
     try {
       setLoading(true);
+
+      const shouldForceClear = localStorage.getItem("forceClearCart");
+
+      if (shouldForceClear === "true") {
+        clearCartFromLocalStorage();
+        localStorage.removeItem("forceClearCart");
+        setCart({ items: [] });
+        return;
+      }
+
       if (user) {
         const response = await api.get("/cart");
         const localCart = getCartFromLocalStorage();
@@ -43,7 +56,6 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
       setInitialLoading(false);
-      console.log({ initialLoading, cart });
     }
   };
 
@@ -120,19 +132,27 @@ export const CartProvider = ({ children }) => {
       console.error("Error reducing quantity:", error);
     }
   };
-  const clearCart = async () => {
+  const clearCart = async (retryCount = 0) => {
     try {
-      if (user) {
-        const res = await api.delete("/cart");
-        console.log("clearCart res: ", res);
-
-        setCart(res.data.cart || { items: [] });
-      } else {
-        clearCartFromLocalStorage();
-        setCart({ items: [] });
+      if (!user?._id) {
+        if (retryCount < 3) {
+          console.warn("User not ready, retrying clearCart...");
+          await delay(500);
+          return clearCart(retryCount + 1);
+        } else {
+          clearCartFromLocalStorage();
+          localStorage.setItem("forceClearCart", "true");
+          setCart({ items: [] });
+          console.error("User still not available after retries.");
+        }
+        return;
       }
+
+      const res = await api.delete("/cart");
+
+      setCart(res.data.cart || { items: [] });
     } catch (error) {
-      console.error("Error clearing cart:", error);
+      console.error("🔥 Error clearing cart:", error);
     }
   };
 

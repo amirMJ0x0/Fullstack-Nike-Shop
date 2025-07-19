@@ -21,7 +21,6 @@ const CartPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
-  console.log("render", { initialLoading, cart });
   if (initialLoading) return <Loading />;
 
   if (!cart || cart.items.length === 0)

@@ -121,7 +121,6 @@ const mergeCart = async (req, res) => {
 const clearCart = async (req, res) => {
   const userId = req.user.id;
   try {
-    // Fix: match the field name in your Cart model (userId, not user)
     const cart = await Cart.findOneAndUpdate({ userId }, { items: [] });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
