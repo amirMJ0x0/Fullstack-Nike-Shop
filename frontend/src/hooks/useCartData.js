@@ -18,6 +18,6 @@ export const useCartData = () => {
     },
     enabled: !!user || typeof window !== "undefined", // allow localStorage read even if no user
     staleTime: 1000 * 60 * 1, // 3 min
-    // cacheTime: 1000 * 60 * 10, // 10 min
+    cacheTime: 1000 * 60 * 10, // 10 min
   });
 };
