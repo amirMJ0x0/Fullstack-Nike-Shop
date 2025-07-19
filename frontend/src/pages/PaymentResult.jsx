@@ -50,11 +50,19 @@ const PaymentResult = () => {
           setMessage(res.data.message || "Payment failed.");
         }
       } catch (err) {
+        navigate("/error", {
+          state: {
+            code: err.response?.status || 500,
+            message:
+              err.response?.data?.message ||
+              "Unexpected error occurred during payment.",
+          },
+        });
         console.error(err);
         setStatus("error");
         setMessage(err.response?.data?.message || "Something went wrong");
       } finally {
-        setHasVerified(true); // ✅ جلوگیری از رفرش مجدد
+        setHasVerified(true);
       }
     };
 
@@ -62,9 +70,7 @@ const PaymentResult = () => {
       verifyPayment();
     }
   }, [user, searchParams, isLoading, hasVerified]);
-  useEffect(() => {
-    console.log("⏳ useEffect running: ", { user, isLoading, hasVerified });
-  }, [user, isLoading, hasVerified]);
+
 
   return (
     <Box mt={10} textAlign="center" mb={64}>

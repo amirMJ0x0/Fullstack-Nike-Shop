@@ -84,7 +84,7 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (size && color) {
-      addToCart(product._id, color, size, 1);
+      addToCart({ productId: product._id, color, size, quantity: 1 });
     } else {
       setIsError(true);
     }

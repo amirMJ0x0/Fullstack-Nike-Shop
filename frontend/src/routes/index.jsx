@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { lazy } from "react";
 import WithSuspense from "../hoc/WithSuspense";
+import ErrorPage from "../pages/ErrorPage";
 
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
@@ -48,7 +49,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayoutSuspended />,
-    errorElement: <NotFoundPageSuspended />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         path: "/",
@@ -129,6 +130,10 @@ export const router = createBrowserRouter([
       {
         path: "/orders/:id",
         element: <OrderDetailPageSuspended />,
+      },
+      {
+        path: "/error",
+        element: <ErrorPage />,
       },
     ],
   },

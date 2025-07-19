@@ -73,7 +73,11 @@ const CartItem = memo(({ itemInfo }) => {
           {itemInfo.quantity > 1 ? (
             <Button
               onClick={() =>
-                reduceQuantity(productInfo._id, itemInfo.color, itemInfo.size)
+                reduceQuantity({
+                  productId: productInfo._id,
+                  color: itemInfo.color,
+                  size: itemInfo.size,
+                })
               }
               size={{ base: "sm", md: "md" }}
               colorScheme="red"
@@ -92,7 +96,11 @@ const CartItem = memo(({ itemInfo }) => {
           <Heading size={"md"}>{itemInfo.quantity}</Heading>
           <Button
             onClick={() =>
-              addToCart(productInfo._id, itemInfo.color, itemInfo.size)
+              addToCart({
+                productId: productInfo._id,
+                color: itemInfo.color,
+                size: itemInfo.size,
+              })
             }
             size={{ base: "sm", md: "md" }}
           >
