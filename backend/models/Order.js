@@ -22,6 +22,11 @@ const orderSchema = new mongoose.Schema(
             postalCode: { type: String, required: true },
             country: { type: String, required: true },
         },
+        deliveryDate: {
+            type: Date,
+            required: true,
+            min: Date.now() + 1000 * 60 * 60 * 24 * 2,
+        },
         total: { type: Number, required: true },
         status: {
             type: String,
