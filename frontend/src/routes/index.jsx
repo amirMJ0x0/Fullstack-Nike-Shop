@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
 import WithSuspense from "../hoc/WithSuspense";
 import ErrorPage from "../pages/ErrorPage";
-import PrivateRoute from "../components/share/PrivateRoute";
+
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
 const AboutUs = lazy(() => import("../pages/AboutUs"));
