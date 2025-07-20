@@ -1,8 +1,9 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
 import WithSuspense from "../hoc/WithSuspense";
 import ErrorPage from "../pages/ErrorPage";
 
+const PrivateRoute = import("../components/share/PrivateRoute");
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const ProductPage = lazy(() => import("../pages/ProductPage"));
 const AboutUs = lazy(() => import("../pages/AboutUs"));
@@ -19,7 +20,6 @@ const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 const CartPage = lazy(() => import("../pages/CartPage"));
 const MyComments = lazy(() => import("../components/MyComments"));
 const MyFavorites = lazy(() => import("../components/MyFavorites"));
-const PrivateRoute = lazy(() => import("../components/share/PrivateRoute"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const PaymentResult = lazy(() => import("../pages/PaymentResult"));
 const OrderDetailPage = lazy(() => import("../pages/OrderDetailPage"));
@@ -39,7 +39,6 @@ const OrdersSuspended = WithSuspense(MyOrdersPage);
 const MyFavoritesSuspended = WithSuspense(MyFavorites);
 const MyCommentsSuspended = WithSuspense(MyComments);
 const CartPageSuspended = WithSuspense(CartPage);
-const PrivateRouteSuspended = WithSuspense(PrivateRoute);
 const AboutUsSuspended = WithSuspense(AboutUs);
 const CheckoutPageSuspended = WithSuspense(CheckoutPage);
 const PaymentResultSuspended = WithSuspense(PaymentResult);
@@ -49,7 +48,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayoutSuspended />,
-    errorElement: <NotFoundPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -89,7 +88,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <PrivateRouteSuspended />,
+        element: <PrivateRoute />,
         children: [
           {
             path: "",
@@ -118,9 +117,9 @@ export const router = createBrowserRouter([
       {
         path: "/Cart",
         element: (
-          <PrivateRouteSuspended>
-            <CartPageSuspended />,
-          </PrivateRouteSuspended>
+          <PrivateRoute>
+            <CartPageSuspended />
+          </PrivateRoute>
         ),
       },
       {
@@ -134,10 +133,6 @@ export const router = createBrowserRouter([
       {
         path: "/orders/:id",
         element: <OrderDetailPageSuspended />,
-      },
-      {
-        path: "/error",
-        element: <ErrorPage />,
       },
     ],
   },
