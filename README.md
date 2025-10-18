@@ -1,30 +1,52 @@
-# Nike Project
+<div dir="rtl">
 
-Welcome to the **Nike Project**! This project is built using **React** and is designed to provide a seamless and interactive user experience.
+# 👟 Nike Store E-Commerce Platform
 
-## Features
+![Project Preview](https://i.postimg.cc/mgWKMm9Y/image.png)
 
-- Modern UI/UX design.
-- Responsive and mobile-friendly.
-- Dynamic components powered by React.
-- Easy to navigate and user-friendly.
+یک پروژه فول‌استک و مدرن فروشگاهی (E-Commerce) با الهام از طراحی وبسایت نایکی، که با استفاده از **React 18** برای فرانت‌اند و **Node.js/Express** برای بک‌اند توسعه داده شده است. این پلتفرم با تمرکز بر امنیت، عملکرد بالا، و تجربه کاربری (UX) بهینه، پیاده‌سازی شده است.
 
-## Technologies Used
+## ✨ ویژگی‌های کلیدی
 
-- **React**: Frontend library.
-- **Tailwindcss**: Styling.
-- **JavaScript**: Logic and interactivity.
-- **Chakra UI**: A modular and accessible component library for building React applications.
-- **React Query**: A powerful data-fetching library for managing server state in React.
+| حوزه | ویژگی‌ها | ابزارها و تکنولوژی‌ها |
+| :--- | :--- | :--- |
+| **احراز هویت (Auth)** | ثبت‌نام، ورود، و خروج کاربر، تأیید ایمیل از طریق **OTP** (یکبار مصرف). | JSON Web Tokens (JWT), Nodemailer |
+| **محصولات** | مشاهده کامل محصولات، **فیلترینگ** پیشرفته، **جستجو**، **مرتب‌سازی** (Sorting)، و **Pagination** (صفحه‌بندی). | Mongoose Aggregation |
+| **کاربری** | مشاهده **سفارشات**، **محصولات مورد علاقه**، **کامنت‌ها** و امکان **ویرایش اطلاعات کاربری** در بخش پروفایل. | React Query, React Hook Form |
+| **خرید و پرداخت** | افزودن به سبد خرید، **ثبت سفارش** و فرآیند **پرداخت شبیه‌سازی‌شده** (Fake Payment Gateway). | Mongoose Transactions (اختیاری) |
+| **تعامل کاربر** | **ثبت نظر** (کامنت) و **امتیازدهی** به محصولات توسط کاربران. | Mongoose |
+| **طراحی و UX** | رابط کاربری **Responsive**  برای تمامی دستگاه‌ها، قابلیت تغییر **تم تاریک و روشن** (Dark/Light Mode). | Chakra UI v2, CSS-in-JS |
 
-## Contributing
+***
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+## 💻 تکنولوژی‌های استفاده شده
 
-## License
+### فرانت‌اند (Client-Side)
+| نام | توضیحات |
+| :--- | :--- |
+| **React 18** | کتابخانه اصلی جاوااسکریپت برای ساخت UI. |
+| **Vite** | ابزار بیلد فوق‌سریع نسل جدید. |
+| **Chakra UI v2** | کتابخانه کامپوننت‌های ماژولار و Accessible. |
+| **Tailwindcss v3** | استایل دهی |
+| **React Query** | مدیریت وضعیت سرور (Server State) و Caching. |
+| **React Hook Form** | مدیریت فرم‌ها با عملکرد بالا و اعتبار سنجی آسان. |
 
-This project is licensed under the [MIT License](LICENSE).
+### بک‌اند (Server-Side)
+| نام | توضیحات |
+| :--- | :--- |
+| **Node.js** | محیط اجرای سمت سرور. |
+| **Express.js** | فریم‌ورک سریع و مینیمال برای ساخت API. |
+| **Mongoose** | کتابخانه ODM برای کار با پایگاه داده MongoDB. |
+| **jsonwebtoken** | پیاده‌سازی احراز هویت مبتنی بر توکن. |
+| **Nodemailer** | ارسال ایمیل‌های تأیید و OTP. |
 
-## Contact
 
-For any inquiries, please contact [your-email@example.com].
+
+
+## 
+***
+![Project Logo](https://i.postimg.cc/qRmdx2TY/favicon-3.png)
+### توسعه داده شده با ❤️ توسط امیر 
+اگر با این پروژه حال کردید ، استار ⭐ بدید! 
+
+</div>
